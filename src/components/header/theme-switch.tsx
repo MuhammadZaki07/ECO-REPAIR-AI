@@ -1,6 +1,3 @@
-"use client";
-
-import * as React from "react";
 import { Moon, Sun } from "@aliimam/icons";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";

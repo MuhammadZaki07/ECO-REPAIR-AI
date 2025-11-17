@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Home",
+    "href": "#",
+    "description": "Landing section showcasing EcoRepair AI project highlights."
+  },
+  {
+    "title": "Features",
+    "href": "#features",
+    "description": "AI-powered repair features, Multi-Modal Scanner, and Eco-Coin gamification."
+  },
+  {
+    "title": "Eco-Coin / Rewards",
+    "href": "#eco-coin",
+    "description": "Gamification system with Eco-Coin rewards and redemption center."
+  },
+  {
+    "title": "Community",
+    "href": "#community",
+    "description": "Showcase of Success Stories from users."
+  },
+  {
+    "title": "SparePart Hub",
+    "href": "#sparepart-hub",
+    "description": "Interactive map for spare parts, upcycle centers, and e-waste collection."
+  },
+  {
+    "title": "Contact",
+    "href": "#contact",
+    "description": "Reach out for inquiries or collaborations."
+  }
+]

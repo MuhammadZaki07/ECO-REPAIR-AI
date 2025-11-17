@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Multi-Modal AI Scanner",
+    "description": "Instant damage diagnosis from photos. Our AI identifies objects, analyzes the damage, and presents specific solutions.",
+    "icon": "IconCamera"
+  },
+  {
+    "title": "Specific Repair Guides",
+    "description": "Get step-by-step guides (LLM Generated) optimized for your item. No more overly general tutorials.",
+    "icon": "IconDirections"
+  },
+  {
+    "title": "Eco-Coin Gamification",
+    "description": "Collect Eco-Coins every time you successfully repair an item. Exchange coins for vouchers or environmental donations.",
+    "icon": "IconCoins"
+  },
+  {
+    "title": "SparePart Hub Map",
+    "description": "Find the location of used spare part stores, recycling centers (E-Waste), or the nearest repair shops via an interactive map.",
+    "icon": "IconMapPin"
+  },
+  {
+    "title": "Repair History Tracker",
+    "description": "Track your personal environmental contributions. View a list of items you've saved from the trash.",
+    "icon": "IconHistory"
+  },
+  {
+    "title": "Success Stories Showcase",
+    "description": "Share inspiration! Upload Before & After photos of your repairs and interact with the Eco-Fixer community.",
+    "icon": "IconUsers"
+  },
+  {
+    "title": "Supports Circular Economy",
+    "description": "Every repair you make is a real step toward reducing E-Waste and promoting a sustainable lifestyle.",
+    "icon": "IconRecycle"
+  },
+  {
+    "title": "Modern Data Security",
+    "description": "Built on Edge Functions (Supabase) to guarantee API Key security and optimal system performance.",
+    "icon": "IconShieldLock"
+  }
+]

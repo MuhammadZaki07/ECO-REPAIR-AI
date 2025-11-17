@@ -1,0 +1,138 @@
+import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
+import { Spotlight } from "../ui/spotlight-new";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ParticleCircle } from "../ui/particle-circle";
+import { useTheme } from "next-themes";
+
+/**
+ * HeroSection – Responsive, Clean, AI-themed
+ * ---------------------------------------------------------------------------
+ * Notes:
+ * - Background effects use pointer-events-none to avoid interaction issues.
+ * - Buttons override hover styles to prevent global grey hover.
+ * - Grid is responsive: single-column on mobile/tablet, two-column on md+.
+ * - ParticleCircle uses fixed size but can be made dynamic using clamp().
+ * - Includes AI badge & neon styling.
+ */
+
+export function HeroSection() {
+  const { theme } = useTheme();
+
+  const particleColors =
+    theme === "dark"
+      ? ["#aaff00", "#c6ff4c", "#e8ffb5", "#d9ff62", "#f2ffdf"]
+      : ["#4caf50", "#81c784", "#a5d6a7", "#c8e6c9", "#e8f5e9"];
+
+  return (
+    <section className="relative w-full min-h-screen overflow-hidden px-6 md:px-12 lg:px-20">
+      {/* Background Ripple Grid */}
+      <BackgroundRippleEffect rows={10} cellSize={60} />
+
+      {/* Bottom Fade – Responsive (Dark / Light) */}
+      <div
+        className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[200%] h-[clamp(40%,65%,85%)] z-10"
+        style={{
+          background: `radial-gradient(
+      ellipse 110% 80% at 30% 100%,
+      var(--bottom-fade-start),
+      var(--bottom-fade-middle) 45%,
+      var(--bottom-fade-end) 85%
+    )`,
+        }}
+      />
+
+      {/* Spotlight Layering */}
+      <Spotlight
+        gradientFirst="radial-gradient(68% 68% at 55% 31%, hsla(210,100%,85%,0.18) 0, hsla(210,100%,55%,0.05) 50%, hsla(210,100%,45%,0) 80%)"
+        gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(210,100%,85%,0.12) 0, hsla(210,100%,55%,0.04) 80%, transparent 100%)"
+        gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(210,100%,85%,0.10) 0, hsla(210,100%,45%,0.03) 80%, transparent 100%)"
+        width={600}
+        height={1400}
+        smallWidth={240}
+        translateY={-380}
+        duration={8}
+        xOffset={80}
+      />
+
+      {/* GRID LAYOUT – Responsive */}
+      <div className="relative lg:mt-[30px] z-20 grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
+        {/* LEFT CONTENT – Text + Buttons */}
+
+        <div className="flex flex-col items-start max-w-2xl text-left mt-20 md:mt-0">
+          <div className="flex items-center gap-3">
+            <div className="h-1.5 w-20 rounded-full bg-[#aaff00] opacity-80 blur-[1px]" />
+            <span className="px-2 py-1 text-xs font-bold text-black bg-[#aaff00] rounded-full drop-shadow-[0_0_10px_#aaff0040]">
+              AI
+            </span>
+          </div>
+
+          <h1 className="text-4xl font-bold dark:text-white text-black leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-[6rem]">
+            <span className="block text-[#aaff00] drop-shadow-[0_0_30px_#aaff00aa] sm:text-5xl md:text-6xl lg:text-[5rem]">
+              EcoRepair{" "}
+              <span className="dark:text-[#ffffff] text-black sm:text-5xl md:text-6xl lg:text-[7rem]">
+                -AI
+              </span>
+            </span>
+            <span className="block">Fix It, Don’t Trash It</span>
+          </h1>
+
+          <p className="mt-6 lg:max-w-lg max-w-xs dark:text-neutral-300/80 text-neutral-900 text-base sm:text-lg md:text-xl leading-relaxed">
+            AI-powered digital assistant to visually analyze device damages and
+            provide fast, clear, and easy-to-follow repair guidance.
+          </p>
+
+          <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+            <Link to="/dashboard">
+              <Button
+                size="lg"
+                className="
+                  bg-[#aaff00] text-black font-semibold
+                  hover:bg-[#c6ff4c] 
+                  shadow-[0_0_20px_#aaff0040]
+                  hover:shadow-[0_0_35px_#aaff0060]
+                  transition-all duration-300
+                  !hover:text-black !text-black
+                  !hover:border-transparent
+                "
+              >
+                Start Scan
+              </Button>
+            </Link>
+
+            <Link to="" target="_blank">
+              <Button
+                variant="outline"
+                size="lg"
+                className="
+                  border-neutral-500/50 dark:text-white text-black
+                  backdrop-blur-sm
+                  hover:bg-white/5
+                  hover:border-neutral-300/80
+                  transition-all duration-300
+                  !hover:text-white
+                "
+              >
+                SparePart Hub
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* RIGHT CONTENT – Particle Circle */}
+        <div className="relative flex items-center justify-center pointer-events-none right-17 lg:right-0 md:right-0">
+          <ParticleCircle
+            particleCount={1600}
+            shrinkDuration={11}
+            growDuration={11}
+            colors={particleColors}
+            baseRadius={0.33}
+            particleSize={[1.5, 6]}
+            enableBlendMode={true}
+            size={600}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
