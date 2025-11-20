@@ -3,12 +3,12 @@ import { Equal, X } from "@aliimam/icons";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Menus } from "@/components/header/menus";
-import { ModeToggle } from "@/components/header/theme-switch";
-import Logo from "../Logo";
 import menuItems from "@/data/ListMenuItems.json";
 import type { MenuItem } from "@/types/menu";
-import { ProfileMenu } from "../ui/ProfileMenu";
+import Logo from "@/components/Logo";
+import { Menus } from "./menus";
+import { ModeToggle } from "./theme-switch";
+import { ProfileMenu } from "@/components/ui/ProfileMenu";
 
 const Header = () => {
   const [menuState, setMenuState] = React.useState(false);

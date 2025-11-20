@@ -1,6 +1,10 @@
+import { CoreCapabilitiesSection } from "@/components/sections/CoreCapabilitiesSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
-import { HeroSection } from "@/components/sections/Hero";
-import ProcessSection from "@/components/sections/ProcessSection";
+import { FinalCTASection } from "@/components/sections/FinalCTASection";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { ImpactStatsSection } from "@/components/sections/ImpactStatsSection";
+import RewardSystemSection from "@/components/sections/RewardSystemSection";
+import ProcessSection from "@/components/sections/StepSection";
 
 function LandingPage() {
   return (
@@ -8,6 +12,10 @@ function LandingPage() {
       <HeroSection />
       <FeaturesSection/>
       <ProcessSection/>
+      <RewardSystemSection/>
+      <CoreCapabilitiesSection/>
+      <ImpactStatsSection/>
+      <FinalCTASection/>
     </section>
   );
 }

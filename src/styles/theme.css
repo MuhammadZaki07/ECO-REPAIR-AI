@@ -65,7 +65,7 @@
   --popover-foreground: #171717;
 
   /* Primary / Secondary / Accent colors */
-  --primary: #404040;
+  --primary: #f3f3f3;
   --primary-foreground: #fafafa;
   --secondary: #e5e5e5;
   --secondary-foreground: #171717;
@@ -118,7 +118,7 @@
   --popover: #1f1f1f;
   --popover-foreground: #fafafa;
 
-  --primary: #404040;
+  --primary: #aaff00;
   --primary-foreground: #fafafa;
   --secondary: #262626;
   --secondary-foreground: #e5e5e5;

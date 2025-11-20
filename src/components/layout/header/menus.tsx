@@ -7,7 +7,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/header/navigation-menu";
+} from "@/components/layout/header/navigation-menu";
 import { cn } from "@/lib/utils";
 import menuItems from "@/data/ListMenuItems.json";
 import type { MenuItem } from "@/types/menu";

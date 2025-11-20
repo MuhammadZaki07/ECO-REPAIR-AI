@@ -33,7 +33,7 @@ export function ProfileMenu() {
         onClick={() => setOpen(!open)}
         className={`cursor-pointer ${bg} border ${border} rounded-full p-0.5`}
       >
-        <Avatar src="/profile.jpg" alt="User Name" size={40} />
+        <Avatar src="/vite.svg" alt="User Name" size={40} />
       </div>
 
       {open && (
