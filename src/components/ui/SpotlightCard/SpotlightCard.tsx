@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { FlickeringGrid } from "../flickering-grid";
 
 const SpotlightCard = ({
   children,
@@ -12,47 +13,33 @@ const SpotlightCard = ({
 
   const handleMouseMove = (e) => {
     if (!divRef.current || isFocused) return;
-
     const rect = divRef.current.getBoundingClientRect();
     setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-    setOpacity(0.6);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-    setOpacity(0);
-  };
-
-  const handleMouseEnter = () => {
-    setOpacity(0.6);
-  };
-
-  const handleMouseLeave = () => {
-    setOpacity(0);
   };
 
   return (
     <div
       ref={divRef}
       onMouseMove={handleMouseMove}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className={`relative rounded-3xl border border-neutral-500/[0.5] dark:bg-neutral-900 bg-neutral-100 overflow-hidden p-8 ${className}`}
+      onMouseEnter={() => setOpacity(0.6)}
+      onMouseLeave={() => setOpacity(0)}
+      className={`relative rounded-3xl border border-neutral-500/40 
+          dark:bg-neutral-900 bg-neutral-100 overflow-hidden
+          flex items-center justify-center  /* >>> FIX */
+          ${className}`}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 ease-in-out"
-        style={{
-          opacity,
-          background: `radial-gradient(circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 80%)`,
-        }}
-      />
-      {children}
+      {/* <FlickeringGrid
+        className="absolute inset-0 w-full h-full z-0"
+        squareSize={3}
+        gridGap={6}
+        color="#6B7280"
+        maxOpacity={0.3}
+        flickerChance={0.1}
+      /> */}
+
+      <div className="relative z-20 w-full flex flex-col items-center justify-center">
+        {children}
+      </div>
     </div>
   );
 };

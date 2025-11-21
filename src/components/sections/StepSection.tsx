@@ -177,7 +177,7 @@ export default function StepSection() {
 
       <div className="relative z-20 max-w-7xl mx-auto">
         <div className="text-center lg:mb-20 mb-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
             How It{" "}
             <PointerHighlight
               rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"

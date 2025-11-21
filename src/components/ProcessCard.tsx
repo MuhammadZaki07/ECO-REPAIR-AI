@@ -46,7 +46,7 @@ export const ProcessCard = ({
         mobileActive || mobileCompleted ? "" : "pointer-events-none"
       }`}
     >
-      <div className="relative z-10 mb-6">
+      <div className="relative z-10 mb-6 hidden lg:block">
         <div
           className="w-20 h-20 rounded-2xl dark:bg-black bg-neutral-500 border dark:border-muted/50 flex items-center justify-center dark:shadow-lg shadow-primary/30 dark:shadow-primary/20 transition-all duration-300 group-hover:scale-110"
           style={{
@@ -61,7 +61,7 @@ export const ProcessCard = ({
       </div>
 
       <div
-        className="bg-white dark:bg-black rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-neutral-800 hover:border-primary w-full h-full dark:group-hover:scale-105"
+        className="bg-white dark:bg-black w-[350px] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-neutral-800 hover:border-primary lg:w-full h-full dark:group-hover:scale-105"
         style={{
           opacity: mobileActive || mobileCompleted ? 1 : 0.5,
           filter: mobileActive || mobileCompleted ? "none" : "blur(1.5px)",

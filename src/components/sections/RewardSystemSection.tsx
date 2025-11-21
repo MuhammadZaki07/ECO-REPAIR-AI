@@ -34,8 +34,8 @@ function RewardSystemSection() {
       </div>
 
       <div className="relative z-50 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold tracking-tight dark:text-white flex items-center gap-2 justify-center leading-none">
+        <div className="text-center mb-10 md:mb-16 px-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight dark:text-white flex flex-col sm:flex-row items-center gap-2 justify-center leading-tight">
             Fix More. Earn More.
             <PointerHighlight
               rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
@@ -48,7 +48,7 @@ function RewardSystemSection() {
             </PointerHighlight>
           </h2>
 
-          <p className="mt-3 text-lg dark:text-white/60 text-neutral-800/50 max-w-3xl mx-auto">
+          <p className="mt-4 text-base sm:text-lg dark:text-white/60 text-neutral-800/70 max-w-xl sm:max-w-2xl md:max-w-3xl mx-auto leading-relaxed">
             Eco-Coin is our gamification system designed to reward every repair
             action you take, turning your effort into valuable <i>rewards</i>{" "}
             and meaningful environmental impact.

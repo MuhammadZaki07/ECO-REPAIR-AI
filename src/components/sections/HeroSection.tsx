@@ -54,9 +54,9 @@ export function HeroSection() {
         xOffset={80}
       />
 
-      <div className="relative lg:mt-[30px] z-20 grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
-        <div className="flex flex-col items-start max-w-2xl text-left mt-20 md:mt-0">
-          <div className="flex items-center gap-3">
+      <div className="relative lg:mt-[30px] z-20 top-25 lg:top-0 md:top-0 lg:grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
+        <div className="flex flex-col items-start max-w-2xl text-left lg:mt-20 md:mt-0">
+          <div className="flex items-center gap-3 mb-5 lg:mb-0">
             <div className="h-1.5 w-20 rounded-full bg-[#aaff00] opacity-80 blur-[1px]" />
             <span className="w-10 h-10 text-xs font-bold text-primary bg-black rounded-full drop-shadow-[0_0_10px_#aaff0040] flex justify-center items-center">
               <Leaf strokeWidth={2} />
@@ -64,7 +64,7 @@ export function HeroSection() {
           </div>
 
           <h1 className="text-4xl font-bold dark:text-white text-black leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-[6rem]">
-            <span className="block drop-shadow-[0_0_30px_#aaff00aa] sm:text-5xl md:text-6xl lg:text-[5rem]">
+            <span className="block drop-shadow-[0_0_30px_#aaff00aa] sm:text-5xl md:text-6xl lg:text-[5rem] mb-4 lg:mb-0">
               <Cover className="text-[#aaff00] dark:text-[#aaff00]">
                 EcoRepair
               </Cover>
@@ -80,7 +80,7 @@ export function HeroSection() {
             provide fast, clear, and easy-to-follow repair guidance.
           </p>
 
-          <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-12 flex gap-4 flex-row">
             <Link to="/dashboard">
               <Button
                 size="lg"
@@ -110,7 +110,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center pointer-events-none right-17 lg:right-0 md:right-0">
+        <div className="relative items-center justify-center pointer-events-none right-17 hidden lg:flex lg:right-0 md:right-0">
           <ParticleCircle
             particleCount={1600}
             shrinkDuration={11}

@@ -24,22 +24,22 @@ export function FinalCTASection() {
           />
 
           <div className="relative z-10 flex flex-col items-center justify-center space-y-4">
-            <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter dark:text-white text-neutral-800 max-w-4xl mx-auto">
-                    Ready to Fix the Future?
+            <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter dark:text-neutral-200 text-neutral-800 max-w-4xl mx-auto">
+              Ready to Fix the Future?
             </h2>
             <p className="mt-4 text-xl dark:text-white/70 text-neutral-700/50 max-w-3xl mx-auto">
               Start your first instant diagnosis. Get AI-guided repair
               instructions, collect Eco-Coins, and join the repair revolution.
             </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 w-full">   
+            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 w-full">
               <Link to={"/scan"} className="w-full sm:w-auto">
                 <Button
                   variant="secondary"
                   size="lg"
                   className="w-full cursor-pointer sm:w-auto text-white border-white/30 dark:hover:bg-white/10 bg-neutral-600 font-semibold text-lg py-3 px-8 transition-colors duration-300"
                 >
-                 Start Scanning Now
+                  Start Scanning Now
                 </Button>
               </Link>
 

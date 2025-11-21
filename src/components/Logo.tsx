@@ -21,14 +21,14 @@ const Logo = ({
   const computedHeight = height ?? size ?? 40;
 
   const lightSrc =
-    variant === "full" ? "/vite.svg" : "/vite.svg";
-  const darkSrc = variant === "full" ? "/vite.svg" : "/vite.svg";
+    variant === "full" ? "/Logo.svg" : "/Logo.svg";
+  const darkSrc = variant === "full" ? "/Logo.svg" : "/Logo.svg";
   return (
     <picture>
       <source srcSet={darkSrc} media="(prefers-color-scheme: dark)" />
       <img
-        src={error ? "/vite.svg" : lightSrc}
-        alt="Eco Repair Logo"
+        src={error ? "/Logo.svg" : lightSrc}
+        alt="Eco Repair"
         height={computedHeight}
         width={computedWidth}
         onError={handleError}

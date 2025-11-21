@@ -1,15 +1,22 @@
+import Logo from "@/components/Logo";
+
 export function Footer() {
   return (
-    <footer className="dark:bg-black bg-neutral-200 border-t border-white/10 py-12 md:py-20">
+    <footer className="dark:bg-black bg-neutral-200 border-t border-white/10 py-12 md:pt-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-          <div className="col-span-2 md:col-span-1">
-            <h3 className="text-2xl font-bold dark:text-primary text-neutral-900">
-              EcoRepair AI
-            </h3>
-            <p className="mt-2 text-sm text-neutral-900 dark:text-white/60">
+          <div className="col-span-2 md:col-span-1 flex flex-col">
+            <div className="flex items-center gap-3 mb-3">
+              <Logo className="w-12 h-12" />
+              <span className="text-xl font-bold text-neutral-900 dark:text-primary/80">
+                ECO REPAIR AI
+              </span>
+            </div>
+
+            <p className="text-sm text-neutral-900 dark:text-white/60">
               Fix It. Don't Trash It.
             </p>
+
             <p className="mt-4 text-xs text-neutral-900 dark:text-white/40 max-w-xs">
               Platform AI Multi-Modal untuk memandu Anda dalam Circular Economy.
             </p>

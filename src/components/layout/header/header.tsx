@@ -46,13 +46,7 @@ const Header = () => {
                   variant="full"
                   height={50}
                   width={50}
-                  className="h-10 z-10 w-full hidden dark:block"
-                />
-                <Logo
-                  variant="full"
-                  height={50}
-                  width={50}
-                  className="h-10 z-10 w-full dark:hidden block"
+                  className="h-10 z-10 w-full"
                 />
               </a>
               <div className="flex gap-2">
@@ -87,7 +81,6 @@ const Header = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col items-start space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:gap-2 lg:gap-4">
-                {/* Mode toggle */}
                 <ModeToggle />
 
                 {/* Dashboard button */}

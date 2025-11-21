@@ -7,7 +7,7 @@ export default function FeaturesSection() {
     <section className="relative z-10 py-10 md:py-12 lg:py-20 w-full dark:bg-black bg-neutral-50">
       <div className="max-w-7xl mx-auto">
       <div className="text-center mb-16 px-6">
-        <h2 className="text-4xl md:text-5xl font-bold dark:text-white text-black tracking-tight">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold dark:text-white text-black tracking-tight">
           Core <span className="text-primary">Features</span> of Our Platform
         </h2>
         <p className="mt-4 text-lg dark:text-white/70 text-neutral-800/50 max-w-3xl mx-auto">
