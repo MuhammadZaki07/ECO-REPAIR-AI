@@ -7,10 +7,10 @@ export function CoreCapabilitiesSection() {
     <section className="py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-semibold tracking-tight text-white">
-            Core Platform Capabilities. One Step Ahead.
+          <h2 className="text-5xl font-bold tracking-tight dark:text-white text-neutral-800">
+            Core Platform Capabilities. <span className="text-primary">One Step Ahead.</span>
           </h2>
-          <p className="mt-3 text-lg text-white/60 max-w-3xl mx-auto">
+          <p className="mt-3 text-lg dark:text-white/60 text-neutral-800/50 max-w-3xl mx-auto">
             We combine Multi-Modal AI intelligence, gamification, and an
             integrated community network to transform the way you repair.
             Everything you need, all in one place.

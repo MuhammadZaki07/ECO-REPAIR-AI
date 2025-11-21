@@ -4,6 +4,7 @@ import { iconMap } from "@/data/iconMap";
 import { ProcessCard } from "../ProcessCard";
 import { TerminalStep } from "../TerminalStep";
 import { DotBackground } from "../ui/DotBackground";
+import { PointerHighlight } from "../ui/pointer-highlight";
 
 /* ----------------------------------------------------------------------
   StepSection Component
@@ -147,7 +148,7 @@ export default function StepSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen lg:py-20 md:py-16 py-10 px-4 overflow-hidden"
+      className="relative min-h-screen lg:py-20 md:py-16 py-10 px-4 overflow-hidden dark:bg-black bg-neutral-100"
     >
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <DotBackground />
@@ -155,30 +156,36 @@ export default function StepSection() {
         {/* Gradient dari bawah ke atas */}
         <div
           className="absolute inset-0 
-                  bg-gradient-to-t from-primary/80 via-transparent to-transparent 
+                  bg-gradient-to-t  via-transparent to-transparent 
                   dark:from-black/80 dark:via-transparent dark:to-transparent"
         ></div>
 
         {/* Gradient dari atas ke bawah */}
         <div
           className="absolute inset-0 
-                  bg-gradient-to-b from-primary/80 via-transparent to-transparent 
+                  bg-gradient-to-b via-transparent to-transparent 
                   dark:from-black/80 dark:via-transparent dark:to-transparent"
         ></div>
 
         {/* Gradient dari kanan ke kiri */}
         <div
           className="absolute inset-0 
-                  bg-gradient-to-l from-primary/80 via-transparent to-transparent 
+                  bg-gradient-to-l via-transparent to-transparent 
                   dark:from-black/80 dark:via-transparent dark:to-transparent"
         ></div>
       </div>
 
       <div className="relative z-20 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center lg:mb-20 mb-10">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
             How It{" "}
-            <span className="text-emerald-500 dark:text-primary">Works</span>
+            <PointerHighlight
+              rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
+              pointerClassName="text-indigo-400"
+              containerClassName="inline-block"
+            >
+              <span className="text-primary dark:text-primary">Works</span>
+            </PointerHighlight>
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto transition-colors duration-300">
             Step-by-step AI-powered repair process. Modern, clean, and premium
@@ -208,14 +215,14 @@ export default function StepSection() {
           })}
         </div>
 
-        <TerminalStep
+        {/* <TerminalStep
           key={hasStarted ? "terminal-started" : "terminal-wait"}
           hasStarted={hasStarted}
           alreadyPlayedOnce={alreadyPlayedOnce}
           activeStep={activeStep}
           steps={steps}
           isComplete={isComplete}
-        />
+        /> */}
       </div>
     </section>
   );

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ParticleCircle } from "../ui/particle-circle";
 import { useTheme } from "next-themes";
+import { Cover } from "../ui/cover";
+import { Leaf } from "lucide-react";
 
 /**
  * HeroSection – Responsive, Clean, AI-themed
@@ -25,11 +27,9 @@ export function HeroSection() {
       : ["#4caf50", "#81c784", "#a5d6a7", "#c8e6c9", "#e8f5e9"];
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden px-6 md:px-12 lg:px-20">
-      {/* Background Ripple Grid */}
+    <section className="relative w-full min-h-screen overflow-hidden px-6 md:px-12 lg:px-20 dark:bg-black bg-neutral-50">
       <BackgroundRippleEffect rows={10} cellSize={60} />
 
-      {/* Bottom Fade – Responsive (Dark / Light) */}
       <div
         className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[200%] h-[clamp(40%,65%,85%)] z-10"
         style={{
@@ -42,7 +42,6 @@ export function HeroSection() {
         }}
       />
 
-      {/* Spotlight Layering */}
       <Spotlight
         gradientFirst="radial-gradient(68% 68% at 55% 31%, hsla(210,100%,85%,0.18) 0, hsla(210,100%,55%,0.05) 50%, hsla(210,100%,45%,0) 80%)"
         gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(210,100%,85%,0.12) 0, hsla(210,100%,55%,0.04) 80%, transparent 100%)"
@@ -55,21 +54,20 @@ export function HeroSection() {
         xOffset={80}
       />
 
-      {/* GRID LAYOUT – Responsive */}
       <div className="relative lg:mt-[30px] z-20 grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
-        {/* LEFT CONTENT – Text + Buttons */}
-
         <div className="flex flex-col items-start max-w-2xl text-left mt-20 md:mt-0">
           <div className="flex items-center gap-3">
             <div className="h-1.5 w-20 rounded-full bg-[#aaff00] opacity-80 blur-[1px]" />
-            <span className="px-2 py-1 text-xs font-bold text-black bg-[#aaff00] rounded-full drop-shadow-[0_0_10px_#aaff0040]">
-              AI
+            <span className="w-10 h-10 text-xs font-bold text-primary bg-black rounded-full drop-shadow-[0_0_10px_#aaff0040] flex justify-center items-center">
+              <Leaf strokeWidth={2} />
             </span>
           </div>
 
           <h1 className="text-4xl font-bold dark:text-white text-black leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-[6rem]">
-            <span className="block text-[#aaff00] drop-shadow-[0_0_30px_#aaff00aa] sm:text-5xl md:text-6xl lg:text-[5rem]">
-              EcoRepair{" "}
+            <span className="block drop-shadow-[0_0_30px_#aaff00aa] sm:text-5xl md:text-6xl lg:text-[5rem]">
+              <Cover className="text-[#aaff00] dark:text-[#aaff00]">
+                EcoRepair
+              </Cover>
               <span className="dark:text-[#ffffff] text-black sm:text-5xl md:text-6xl lg:text-[7rem]">
                 -AI
               </span>
@@ -86,15 +84,7 @@ export function HeroSection() {
             <Link to="/dashboard">
               <Button
                 size="lg"
-                className="
-                  bg-[#aaff00] text-black font-semibold
-                  hover:bg-[#c6ff4c] 
-                  shadow-[0_0_20px_#aaff0040]
-                  hover:shadow-[0_0_35px_#aaff0060]
-                  transition-all duration-300
-                  !hover:text-black !text-black
-                  !hover:border-transparent
-                "
+                className="cursor-pointer text-black hover:text-white hover:bg-primary/50 bg-[#aaff00]"
               >
                 Start Scan
               </Button>
@@ -105,6 +95,7 @@ export function HeroSection() {
                 variant="outline"
                 size="lg"
                 className="
+                cursor-pointer
                   border-neutral-500/50 dark:text-white text-black
                   backdrop-blur-sm
                   hover:bg-white/5
@@ -119,7 +110,6 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* RIGHT CONTENT – Particle Circle */}
         <div className="relative flex items-center justify-center pointer-events-none right-17 lg:right-0 md:right-0">
           <ParticleCircle
             particleCount={1600}

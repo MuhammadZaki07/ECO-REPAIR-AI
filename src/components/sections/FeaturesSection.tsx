@@ -4,11 +4,25 @@ import featuresData from "@/data/features.json";
 
 export default function FeaturesSection() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 relative z-10 py-10 max-w-7xl mx-auto lg:py-20 md:py-12">
-      {featuresData.map((feature, index) => (
-        <Feature key={feature.title} {...feature} index={index} />
-      ))}
-    </div>
+    <section className="relative z-10 py-10 md:py-12 lg:py-20 w-full dark:bg-black bg-neutral-50">
+      <div className="max-w-7xl mx-auto">
+      <div className="text-center mb-16 px-6">
+        <h2 className="text-4xl md:text-5xl font-bold dark:text-white text-black tracking-tight">
+          Core <span className="text-primary">Features</span> of Our Platform
+        </h2>
+        <p className="mt-4 text-lg dark:text-white/70 text-neutral-800/50 max-w-3xl mx-auto">
+          Discover the key functionalities that empower Eco-Fixers to repair
+          smarter, earn Eco-Coins, and contribute to a sustainable circular
+          economy.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 relative z-10 py-10 max-w-7xl mx-auto lg:py-20 md:py-12">
+        {featuresData.map((feature, index) => (
+          <Feature key={feature.title} {...feature} index={index} />
+        ))}
+      </div>
+      </div>
+    </section>
   );
 }
 

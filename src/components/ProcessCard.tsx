@@ -48,7 +48,7 @@ export const ProcessCard = ({
     >
       <div className="relative z-10 mb-6">
         <div
-          className="w-20 h-20 rounded-2xl dark:bg-black bg-accent-foreground border dark:border-muted/50 flex items-center justify-center shadow-lg shadow-primary/30 dark:shadow-primary/20 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-primary/40"
+          className="w-20 h-20 rounded-2xl dark:bg-black bg-neutral-500 border dark:border-muted/50 flex items-center justify-center dark:shadow-lg shadow-primary/30 dark:shadow-primary/20 transition-all duration-300 group-hover:scale-110"
           style={{
             opacity: mobileActive || mobileCompleted ? 1 : 0.5,
           }}
@@ -61,13 +61,13 @@ export const ProcessCard = ({
       </div>
 
       <div
-        className="bg-white dark:bg-black rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-neutral-800 hover:border-emerald-500 w-full h-full dark:group-hover:scale-105"
+        className="bg-white dark:bg-black rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-neutral-800 hover:border-primary w-full h-full dark:group-hover:scale-105"
         style={{
           opacity: mobileActive || mobileCompleted ? 1 : 0.5,
           filter: mobileActive || mobileCompleted ? "none" : "blur(1.5px)",
         }}
       >
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 text-center group-hover:text-emerald-500 dark:group-hover:text-primary transition-colors duration-300">
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 text-center group-hover:text-primary dark:group-hover:text-primary transition-colors duration-300">
           {title}
         </h3>
         <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-center">

@@ -45,7 +45,7 @@ export const SkeletonTwo = () => {
           key={"skelenton-two" + i}
           variants={variants}
           style={{ maxWidth: Math.random() * (90 - 50) + 50 + "%" }}
-          className={`flex flex-row rounded-full border border-neutral-100 dark:border-white/[0.1] p-1.5 items-center space-x-2 bg-[#161616] w-full h-4 ${
+          className={`flex flex-row rounded-full border border-neutral-100 dark:border-white/[0.1] p-1.5 items-center space-x-2 dark:bg-[#161616] bg-neutral-400 w-full h-4 ${
             i % 3 === 0 ? `bg-[${SoftGreen}]/20` : ""
           }`}
         >
@@ -100,10 +100,10 @@ export const SkeletonThree = () => {
       }}
     >
       <IconCoins className="w-12 h-12 text-[#4ade80]" strokeWidth={1.5} />
-      <motion.div className="text-4xl font-bold text-white tracking-tighter">
+      <motion.div className="text-4xl font-bold dark:text-white text-neutral-800 tracking-tighter">
         {count.toLocaleString()}
       </motion.div>
-      <p className="text-sm text-white/60">Eco-Coins Balance</p>
+      <p className="text-sm dark:text-white/60 text-neutral-700">Eco-Coins Balance</p>
     </motion.div>
   );
 };

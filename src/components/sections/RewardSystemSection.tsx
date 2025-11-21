@@ -28,14 +28,14 @@ function RewardSystemSection() {
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <DotBackground />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent dark:from-black/80" />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-transparent to-transparent dark:from-black/80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-transparent to-transparent dark:from-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-t via-transparent to-transparent dark:from-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-b via-transparent to-transparent dark:from-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-r via-transparent to-transparent dark:from-black/80" />
       </div>
 
       <div className="relative z-50 max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-6xl font-semibold tracking-tight text-white flex items-center gap-2 justify-center leading-none">
+          <h2 className="text-5xl font-bold tracking-tight dark:text-white flex items-center gap-2 justify-center leading-none">
             Fix More. Earn More.
             <PointerHighlight
               rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
@@ -48,7 +48,7 @@ function RewardSystemSection() {
             </PointerHighlight>
           </h2>
 
-          <p className="mt-3 text-lg text-white/60 max-w-3xl mx-auto">
+          <p className="mt-3 text-lg dark:text-white/60 text-neutral-800/50 max-w-3xl mx-auto">
             Eco-Coin is our gamification system designed to reward every repair
             action you take, turning your effort into valuable <i>rewards</i>{" "}
             and meaningful environmental impact.
@@ -56,7 +56,7 @@ function RewardSystemSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="rounded-xl p-6 bg-black border border-black/10 dark:border-white/10 relative overflow-hidden">
+          <div className="rounded-xl p-6 dark:bg-black bg-neutral-50 border border-black/10 dark:border-white/10 relative overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:18px_18px] dark:bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)]" />
 
             <div className="relative">
@@ -95,10 +95,11 @@ function RewardSystemSection() {
             </div>
           </div>
 
-          <div className="rounded-xl p-6 bg-black border border-black/10 dark:border-white/10 relative overflow-hidden">
+          <div className="rounded-xl p-6 dark:bg-black bg-neutral-50 border border-black/10 dark:border-white/10 relative overflow-hidden">
             <div className="relative z-10">
-              <motion.div className="relative h-44 w-full rounded-2xl overflow-hidden bg-gradient-to-br from-neutral-900/80 to-neutral-950/80 backdrop-blur-xl shadow-2xl">
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:36px_36px] opacity-60" />
+              <motion.div className="relative h-44 w-full rounded-2xl overflow-hidden bg-gradient-to-br dark:from-neutral-900/80 dark:to-neutral-950/80 from-neutral-500/80 to-neutral-900/80 backdrop-blur-xl shadow-2xl">
+                <div className="absolute hidden dark:block inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:36px_36px] opacity-60" />
+                <div className="absolute dark:hidden block inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.080)_1px,transparent_1px)] bg-[size:36px_36px] opacity-90" />
                 <div className="absolute top-1/2 left-12 -translate-y-1/2">
                   <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 dark:from-yellow-600 dark:to-yellow-700 shadow-[0_0_30px_rgba(255,215,0,0.45)] animate-float flex items-center justify-center">
                     <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.55),rgba(255,255,255,0)_45%)] dark:bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.25),rgba(255,255,255,0)_45%)]" />
@@ -123,7 +124,7 @@ function RewardSystemSection() {
                 />
               </motion.div>
 
-              <div className="mx-auto mt-4 max-w-lg text-lg font-bold tracking-tight text-white">
+              <div className="mx-auto mt-4 max-w-lg text-lg font-bold tracking-tight dark:text-white text-black">
                 Redeem your{" "}
                 <PointerHighlight
                   rectangleClassName="bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 leading-loose"
@@ -141,7 +142,7 @@ function RewardSystemSection() {
             </div>
           </div>
 
-          <div className="rounded-xl p-6 bg-black border border-black/10 dark:border-white/10 relative overflow-hidden">
+          <div className="rounded-xl p-6 dark:bg-black bg-neutral-50 border border-black/10 dark:border-white/10 relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://www.toptal.com/designers/subtlepatterns/uploads/noise.png')] opacity-[0.18] dark:opacity-[0.12]" />
 
             <div className="relative">
