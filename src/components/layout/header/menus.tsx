@@ -11,47 +11,80 @@ import {
 import { cn } from "@/lib/utils";
 import menuItems from "@/data/ListMenuItems.json";
 import type { MenuItem } from "@/types/menu";
+import { useTranslation } from "react-i18next";
 
 export function Menus() {
   const menus: MenuItem[] = menuItems;
+  const { t } = useTranslation();
+  const slugify = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/\//g, " ")
+      .replace(/\s+/g, "_")
+      .replace(/[^\w_]/g, "");
+
   return (
     <NavigationMenu viewport={true}>
       <NavigationMenuList>
-        {menus.map((item) =>
-          item.subItems ? (
+        {menus.map((item) => {
+          const key = slugify(item.title);
+
+          return item.subItems ? (
             <NavigationMenuItem key={item.title}>
-              <NavigationMenuTrigger className="bg-transparent text-xs">{item.title}</NavigationMenuTrigger>
+              <NavigationMenuTrigger className="bg-transparent text-xs">
+                {t(`menu.${key}.title`)}
+              </NavigationMenuTrigger>
+
               <NavigationMenuContent className="p-2">
                 <ul className="grid gap-3 md:grid-cols-3 max-w-xl lg:w-3xl">
-                  {item.subItems.map((sub) => (
-                    <ListItem key={sub.title} title={sub.title} href={sub.href}>
-                      {sub.description}
-                    </ListItem>
-                  ))}
+                  {item.subItems.map((sub) => {
+                    const subKey = slugify(sub.title);
+                    return (
+                      <ListItem
+                        key={sub.title}
+                        title={t(`menu.${subKey}.title`)}
+                        href={sub.href}
+                      >
+                        {t(`menu.${subKey}.description`)}
+                      </ListItem>
+                    );
+                  })}
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
           ) : (
             <NavigationMenuItem key={item.title}>
-              <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent text-xs")}>
-                <a href={item.href}>{item.title}</a>
+              <NavigationMenuLink
+                asChild
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  "bg-transparent text-[15px] font-semibold"
+                )}
+              >
+                <a href={item.href}>{t(`menu.${key}.title`)}</a>
               </NavigationMenuLink>
             </NavigationMenuItem>
-          )
-        )}
+          );
+        })}
       </NavigationMenuList>
     </NavigationMenu>
   );
 }
 
-// ListItem Component
-function ListItem({ title, children, href, ...props }: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+function ListItem({
+  title,
+  children,
+  href,
+  ...props
+}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
-        <a className="p-3" href={href}>
+        <a className="p-3" title={title} href={href}>
           <div className="text-sm leading-none font-medium">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-xs leading-snug">{children}</p>
+          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
+            {children}
+          </p>
         </a>
       </NavigationMenuLink>
     </li>

@@ -1,38 +1,38 @@
 import { IconBolt, IconClipboardList, IconCoins, IconUsers, IconMapPin } from "@tabler/icons-react";
 import { SkeletonFive, SkeletonFour, SkeletonOne, SkeletonThree, SkeletonTwo } from "./skeletons";
 
-export const items = [
+export const items = (t) => [
   {
-    title: "AI Multi-Modal Diagnosis",
-    description: "Unggah foto kerusakan, dan dapatkan analisis visual (Vision AI) dan panduan perbaikan (LLM) secara instan.",
+    title: t("core_section.bento.items.ai_diagnosis.title"),
+    description: t("core_section.bento.items.ai_diagnosis.description"),
     header: <SkeletonOne />,
     className: "md:col-span-1",
     icon: <IconBolt className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Repair History Tracking",
-    description: "Lacak semua barang yang telah Anda selamatkan dan ukur kontribusi Anda terhadap lingkungan.",
+    title: t("core_section.bento.items.repair_history.title"),
+    description: t("core_section.bento.items.repair_history.description"),
     header: <SkeletonTwo />,
     className: "md:col-span-1",
     icon: <IconClipboardList className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Eco-Coin Gamification",
-    description: "Hasilkan Eco-Coin dari setiap perbaikan sukses. Tukarkan dengan reward nyata di Redemption Center.",
+    title: t("core_section.bento.items.eco_coin.title"),
+    description: t("core_section.bento.items.eco_coin.description"),
     header: <SkeletonThree />,
     className: "md:col-span-1",
     icon: <IconCoins className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Community Success Stories",
-    description: "Bagikan foto 'Before' dan 'After' perbaikan Anda, dapatkan apresiasi, dan bantu menginspirasi Eco-Fixer lainnya.",
+    title: t("core_section.bento.items.community_stories.title"),
+    description: t("core_section.bento.items.community_stories.description"),
     header: <SkeletonFour />,
     className: "md:col-span-2",
     icon: <IconUsers className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "Local SparePart Hub Locator",
-    description: "Temukan sumber suku cadang bekas, pusat daur ulang, dan bengkel terdekat di peta terintegrasi.",
+    title: t("core_section.bento.items.sparepart_locator.title"),
+    description: t("core_section.bento.items.sparepart_locator.description"),
     header: <SkeletonFive />,
     className: "md:col-span-1",
     icon: <IconMapPin className="h-4 w-4 text-neutral-500" />,

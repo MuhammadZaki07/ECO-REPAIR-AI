@@ -1,32 +1,32 @@
 [
   {
+    "key": "home",
     "title": "Home",
-    "href": "#",
-    "description": "Landing section showcasing EcoRepair AI project highlights."
+    "href": "#top",
+    "description": "Kembali ke bagian utama yang menampilkan visi dan highlights proyek EcoRepair AI."
   },
   {
+    "key": "features",
     "title": "Features",
     "href": "#features",
-    "description": "AI-powered repair features, Multi-Modal Scanner, and Eco-Coin gamification."
+    "description": "Jelajahi kapabilitas inti platform, termasuk fitur AI Multi-Modal dan ekosistem lengkap (Menggabungkan Features Section & Core Capabilities Section)."
   },
   {
-    "title": "Eco-Coin / Rewards",
-    "href": "#eco-coin",
-    "description": "Gamification system with Eco-Coin rewards and redemption center."
+    "key": "how_it_works",
+    "title": "How It Works",
+    "href": "#how-it-works",
+    "description": "Pahami alur kerja tiga langkah yang sederhana dari foto kerusakan hingga solusi perbaikan berbasis AI (Mapping ke ProcessSection)."
   },
   {
-    "title": "Community",
-    "href": "#community",
-    "description": "Showcase of Success Stories from users."
+    "key": "rewards",
+    "title": "Rewards",
+    "href": "#rewards",
+    "description": "Pelajari sistem gamifikasi Eco-Coin, cara mendapatkan koin, dan menukarkannya di Redemption Center (Mapping ke RewardSystemSection)."
   },
   {
-    "title": "SparePart Hub",
-    "href": "#sparepart-hub",
-    "description": "Interactive map for spare parts, upcycle centers, and e-waste collection."
-  },
-  {
-    "title": "Contact",
-    "href": "#contact",
-    "description": "Reach out for inquiries or collaborations."
+    "key": "impact",
+    "title": "Impact",
+    "href": "#impact",
+    "description": "Lihat bukti sosial dan kontribusi nyata proyek melalui statistik metrik lingkungan dan komunitas (Mapping ke ImpactStatsSection)."
   }
 ]

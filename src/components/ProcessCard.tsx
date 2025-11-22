@@ -48,13 +48,13 @@ export const ProcessCard = ({
     >
       <div className="relative z-10 mb-6 hidden lg:block">
         <div
-          className="w-20 h-20 rounded-2xl dark:bg-black bg-neutral-500 border dark:border-muted/50 flex items-center justify-center dark:shadow-lg shadow-primary/30 dark:shadow-primary/20 transition-all duration-300 group-hover:scale-110"
+          className="w-20 h-20 rounded-2xl dark:bg-black bg-neutral-100 border dark:border-muted/50 flex items-center justify-center dark:shadow-lg shadow-primary/30 dark:shadow-primary/20 transition-all duration-300 group-hover:scale-110"
           style={{
             opacity: mobileActive || mobileCompleted ? 1 : 0.5,
           }}
         >
           <Icon
-            className="w-10 h-10 text-emerald-50 dark:text-emerald-100 dark:group-hover:text-primary"
+            className="w-10 h-10 text-neutral-500 dark:text-emerald-100 dark:group-hover:text-primary"
             strokeWidth={1}
           />
         </div>

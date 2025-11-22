@@ -7,13 +7,11 @@ export function ProfileMenu() {
   const [open, setOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
-  // Gunakan CSS variable global
   const bg = `bg-[var(--card)]`;
   const border = `border-[var(--border)]`;
   const text = `text-[var(--card-foreground)]`;
-  const hover = `hover:bg-[var(--accent)]/20`; // neon hijau transparan saat hover
+  const hover = `hover:bg-[var(--accent)]/20`;
 
-  // Klik di luar dropdown menutup menu
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -28,7 +26,6 @@ export function ProfileMenu() {
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* div clickable untuk avatar */}
       <div
         onClick={() => setOpen(!open)}
         className={`cursor-pointer ${bg} border ${border} rounded-full p-0.5`}

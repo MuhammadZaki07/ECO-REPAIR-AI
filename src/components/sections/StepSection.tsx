@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import steps from "@/data/step.json";
 import { iconMap } from "@/data/iconMap";
 import { ProcessCard } from "../ProcessCard";
-import { TerminalStep } from "../TerminalStep";
 import { DotBackground } from "../ui/DotBackground";
 import { PointerHighlight } from "../ui/pointer-highlight";
+import { useTranslation } from "react-i18next";
 
 /* ----------------------------------------------------------------------
   StepSection Component
@@ -46,20 +46,14 @@ import { PointerHighlight } from "../ui/pointer-highlight";
 
   ---------------------------------------------------------------------- */
 
-export default function StepSection() {
-  // State animasi per-step
+export function StepSection() {
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-
-  // State kontrol view & debounce
   const [hasStarted, setHasStarted] = useState(false);
   const [alreadyPlayedOnce, setAlreadyPlayedOnce] = useState(false);
-
-  // Ref untuk intersection observer
+  const { t } = useTranslation();
   const sectionRef = useRef(null);
-
-  // Durasi perpindahan antar-step
   const INTERVAL_DURATION = 1500;
 
   /* ----------------------------------------------------------------------
@@ -139,7 +133,7 @@ export default function StepSection() {
     steps[1],
     steps[2],
     steps[3],
-    steps[7], // zigzag row 2
+    steps[7],
     steps[6],
     steps[5],
     steps[4],
@@ -147,8 +141,9 @@ export default function StepSection() {
 
   return (
     <section
+      id="how-it-works"
       ref={sectionRef}
-      className="relative min-h-screen lg:py-20 md:py-16 py-10 px-4 overflow-hidden dark:bg-black bg-neutral-100"
+      className="relative py-24 md:py-32 px-4 overflow-hidden dark:bg-black bg-neutral-100"
     >
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <DotBackground />
@@ -178,18 +173,18 @@ export default function StepSection() {
       <div className="relative z-20 max-w-7xl mx-auto">
         <div className="text-center lg:mb-20 mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
-            How It{" "}
             <PointerHighlight
               rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
               pointerClassName="text-indigo-400"
               containerClassName="inline-block"
             >
-              <span className="text-primary dark:text-primary">Works</span>
+              <span className="text-primary dark:text-primary">
+                {t("how_it_works_section.how_it_works.title")}
+              </span>
             </PointerHighlight>
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto transition-colors duration-300">
-            Step-by-step AI-powered repair process. Modern, clean, and premium
-            design.
+            {t("how_it_works_section.how_it_works.description")}
           </p>
         </div>
 
@@ -201,9 +196,9 @@ export default function StepSection() {
             return (
               <ProcessCard
                 key={item.step}
-                step={item.step}
-                title={item.title}
-                description={item.description}
+                step={t("how_it_works_section.how_it_works.step")}
+                title={t("how_it_works_section.how_it_works.title")}
+                description={t("how_it_works_section.how_it_works.description")}
                 icon={Icon}
                 index={index}
                 isLast={index === steps.length - 1}

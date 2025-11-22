@@ -1,0 +1,244 @@
+{
+  "header": {
+    "dashboard": "dasbor"
+  },
+
+  "menu": {
+    "home": {
+      "title": "Beranda",
+      "description": "Kembali ke bagian utama yang menampilkan visi dan highlight proyek EcoRepair AI."
+    },
+    "features": {
+      "title": "Features",
+      "description": "Jelajahi kapabilitas inti platform, termasuk fitur AI Multi-Modal dan ekosistem lengkap (Menggabungkan Features Section & Core Capabilities Section)."
+    },
+    "how_it_works": {
+      "title": "Cara Kerja",
+      "description": "Pahami alur kerja tiga langkah yang sederhana dari foto kerusakan hingga solusi perbaikan berbasis AI (Mapping ke ProcessSection)."
+    },
+    "rewards": {
+      "title": "Rewards",
+      "description": "Pelajari sistem gamifikasi Eco-Coin, cara mendapatkan koin, dan menukarkannya di Redemption Center (Mapping ke RewardSystemSection)."
+    },
+    "impact": {
+      "title": "Dampak",
+      "description": "Lihat bukti sosial dan kontribusi nyata proyek melalui statistik metrik lingkungan dan komunitas (Mapping ke ImpactStatsSection)."
+    }
+  },
+
+  "hero": {
+    "title_main": "Perbaiki, Jangan Dibuang",
+    "description": "Asisten digital berbasis AI untuk menganalisis kerusakan perangkat secara visual dan memberikan panduan perbaikan yang cepat, jelas, dan mudah diikuti.",
+    "button_start": "Mulai Pemindaian",
+    "button_sparepart": "Pusat Suku Cadang"
+  },
+
+  "features_section": {
+    "title": {
+      "before": "Fitur Inti",
+      "highlight": "Platform",
+      "after": "Kami"
+    },
+    "description": "Temukan fungsi utama yang memungkinkan Eco-Fixers memperbaiki lebih cerdas, mendapatkan Eco-Coin, dan berkontribusi pada ekonomi sirkular berkelanjutan.",
+    "features": [
+      {
+        "title": "Pemindai AI Multi-Modal",
+        "description": "Diagnosa kerusakan instan dari foto. AI kami mengidentifikasi objek, menganalisis kerusakan, dan memberikan solusi spesifik.",
+        "icon": "IconCamera"
+      },
+      {
+        "title": "Panduan Perbaikan Spesifik",
+        "description": "Dapatkan panduan langkah demi langkah (LLM Generated) yang dioptimalkan untuk item Anda. Tidak ada tutorial umum yang berlebihan.",
+        "icon": "IconDirections"
+      },
+      {
+        "title": "Gamifikasi Eco-Coin",
+        "description": "Kumpulkan Eco-Coin setiap kali Anda berhasil memperbaiki item. Tukarkan koin dengan voucher atau donasi lingkungan.",
+        "icon": "IconCoins"
+      },
+      {
+        "title": "Peta SparePart Hub",
+        "description": "Temukan lokasi toko suku cadang bekas, pusat daur ulang (E-Waste), atau bengkel terdekat melalui peta interaktif.",
+        "icon": "IconMapPin"
+      },
+      {
+        "title": "Pelacak Riwayat Perbaikan",
+        "description": "Lacak kontribusi lingkungan pribadi Anda. Lihat daftar item yang telah Anda selamatkan dari tempat sampah.",
+        "icon": "IconHistory"
+      },
+      {
+        "title": "Pameran Kisah Sukses",
+        "description": "Bagikan inspirasi! Unggah foto Before & After perbaikan Anda dan berinteraksi dengan komunitas Eco-Fixer.",
+        "icon": "IconUsers"
+      },
+      {
+        "title": "Mendukung Ekonomi Sirkular",
+        "description": "Setiap perbaikan yang Anda lakukan adalah langkah nyata untuk mengurangi E-Waste dan mempromosikan gaya hidup berkelanjutan.",
+        "icon": "IconRecycle"
+      },
+      {
+        "title": "Keamanan Data Modern",
+        "description": "Dibangun di Edge Functions (Supabase) untuk menjamin keamanan API Key dan performa sistem optimal.",
+        "icon": "IconShieldLock"
+      }
+    ]
+  },
+
+  "how_it_works_section": {
+    "how_it_works": {
+      "title": "Cara Kerjanya",
+      "description": "Proses perbaikan berbasis AI langkah demi langkah. Desain modern, bersih, dan premium."
+    },
+    "steps": [
+      {
+        "title": "Langkah 1: Diagnosa",
+        "description": "AI mengidentifikasi masalah dengan cepat."
+      },
+      {
+        "title": "Langkah 2: Panduan",
+        "description": "Ikuti instruksi untuk memperbaiki."
+      },
+      {
+        "title": "Langkah 3: Perbaikan",
+        "description": "Perbaiki perangkat menggunakan panduan langkah demi langkah."
+      },
+      {
+        "title": "Langkah 4: Verifikasi",
+        "description": "Pastikan perbaikan berhasil dan perangkat berfungsi."
+      }
+    ]
+  },
+
+  "rewards_section": {
+    "title": {
+      "before": "Perbaiki Lebih Banyak. Dapatkan Lebih Banyak.",
+      "highlight": "Dampak Segalanya."
+    },
+    "description": "Eco-Coin adalah sistem gamifikasi kami yang dirancang untuk memberi penghargaan atas setiap aksi perbaikan yang Anda lakukan, mengubah usaha Anda menjadi hadiah bernilai dan dampak lingkungan yang berarti.",
+    "cards": {
+      "one": {
+        "title": "Dapatkan Hadiah",
+        "subtitle": "untuk setiap aksi perbaikan yang Anda selesaikan.",
+        "description": "Kumpulkan Eco-Coin dengan menyelesaikan perbaikan, mengunggah Kisah Sukses, atau mendaftarkan SparePart Hub baru."
+      },
+      "two": {
+        "title": "Tukarkan",
+        "subtitle": "untuk dampak nyata.",
+        "description": "Tukarkan Eco-Coin dengan voucher diskon, donasi pohon, atau badge komunitas eksklusif."
+      },
+      "three": {
+        "title": "Tingkatkan Skor Lingkungan",
+        "subtitle": ".",
+        "description": "Semakin banyak Eco-Coin yang Anda kumpulkan, semakin besar kontribusi Anda terhadap Ekonomi Sirkular."
+      }
+    }
+  },
+
+  "core_section": {
+    "title_before": "Kemampuan Inti Platform",
+    "title_highlight": "Selangkah Lebih Maju.",
+    "description": "Kami menggabungkan kecerdasan AI Multi-Modal, gamifikasi, dan jaringan komunitas terintegrasi untuk mengubah cara Anda memperbaiki barang. Semua yang Anda butuhkan, dalam satu tempat.",
+
+    "bento": {
+      "items": {
+        "ai_diagnosis": {
+          "title": "Diagnosis AI Multi-Modal",
+          "description": "Unggah foto kerusakan untuk analisis visual (Vision AI) dan panduan perbaikan instan (LLM)."
+        },
+        "repair_history": {
+          "title": "Pelacakan Riwayat Perbaikan",
+          "description": "Lacak semua barang yang telah Anda selamatkan dan ukur kontribusi Anda terhadap lingkungan."
+        },
+        "eco_coin": {
+          "title": "Gamifikasi Eco-Coin",
+          "description": "Hasilkan Eco-Coin dari setiap perbaikan sukses, lalu tukarkan dengan hadiah nyata."
+        },
+        "community_stories": {
+          "title": "Kisah Sukses Komunitas",
+          "description": "Bagikan foto Before–After perbaikan Anda, dapatkan apresiasi, dan inspirasi Eco-Fixer lainnya."
+        },
+        "sparepart_locator": {
+          "title": "Pencari SparePart Lokal",
+          "description": "Temukan sumber suku cadang bekas, pusat daur ulang, dan bengkel terdekat melalui peta terintegrasi."
+        }
+      }
+    },
+
+    "skeleton": {
+      "three": {
+        "eco_coins_balance": "Saldo Eco-Coins"
+      },
+      "four": {
+        "before": {
+          "title": "Pemanggang Rusak (Sebelum)",
+          "status": "RUSAK"
+        },
+        "center": {
+          "title": "Diselamatkan dan diperbaiki oleh John D.",
+          "status": "DIPERBAIKI +100 Koin"
+        },
+        "right": {
+          "title": "Butuh bantuan dengan papan sirkuit ini.",
+          "status": "PERTANYAAN KOMUNITAS"
+        }
+      },
+      "five": {
+        "location_items": {
+          "electronics_store": "Toko Suku Cadang Elektronik",
+          "recycle_center_a": "Pusat Daur Ulang A"
+        }
+      }
+    }
+  },
+
+  "impact_section": {
+    "title": {
+      "before": "Dampak",
+      "highlight": "Terukur"
+    },
+    "description": "Kontribusi nyata komunitas Eco-Fixer kami terhadap Ekonomi Sirkular.",
+    "stats": {
+      "items_saved": "Item Terselamatkan",
+      "eco_coins_distributed": "Eco-Coin Terdistribusi",
+      "eco_fixers_joined": "Eco-Fixer Bergabung",
+      "sparepart_hubs_registered": "SparePart Hub Terdaftar",
+      "total_ai_diagnoses": "Total Diagnosa AI"
+    }
+  },
+
+  "final_cta": {
+    "title": "Siap Untuk Memperbaiki Masa Depan?",
+    "description": "Mulai diagnosis pertamamu sekarang. Dapatkan panduan perbaikan berbasis AI, kumpulkan Eco-Coin, dan bergabung dengan revolusi perbaikan.",
+    "cta_scan": "Mulai Scan Sekarang",
+    "cta_reward": "Cek Reward Hub"
+  },
+
+  "footer": {
+    "tagline": "Perbaiki, Jangan Buang.",
+    "description": "Platform AI Multi-Modal yang memandu Anda dalam Circular Economy.",
+
+    "platform": {
+      "title": "Platform",
+      "features": "Fitur",
+      "how": "Cara Kerja",
+      "rewards": "Hadiah Eco-Coin",
+      "community": "Komunitas"
+    },
+
+    "legal": {
+      "title": "Legal & Dokumen",
+      "privacy": "Kebijakan Privasi",
+      "terms": "Syarat & Ketentuan",
+      "docs": "Dokumentasi API",
+      "status": "Status Sistem"
+    },
+
+    "connect": {
+      "title": "Hubungi",
+      "github": "Proyek GitHub",
+      "linkedin": "LinkedIn"
+    },
+
+    "bottom": "Hak cipta dilindungi. Dibuat untuk Traspac IT Competition."
+  }
+}

@@ -1,5 +1,5 @@
 export interface ProcessCardProps {
-  step: number;
+  step: number | string;
   title: string;
   description: string;
   icon: React.ElementType;

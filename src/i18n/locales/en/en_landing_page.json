@@ -1,0 +1,244 @@
+{
+  "header": {
+    "dashboard": "dashboard"
+  },
+
+  "menu": {
+    "home": {
+      "title": "Home",
+      "description": "Returns to the main section showcasing the vision and highlights of the EcoRepair AI project."
+    },
+    "features": {
+      "title": "Features",
+      "description": "Explore the platform's core capabilities, including Multi-Modal AI features and the complete ecosystem (Mapping to Features Section & Core Capabilities Section)."
+    },
+    "how_it_works": {
+      "title": "How It Works",
+      "description": "Understand the simple three-step workflow from damage photo to AI-powered repair solution (Mapping to ProcessSection)."
+    },
+    "rewards": {
+      "title": "Rewards",
+      "description": "Learn about the Eco-Coin gamification system, how to earn coins, and redeem them at the Redemption Center (Mapping to RewardSystemSection)."
+    },
+    "impact": {
+      "title": "Impact",
+      "description": "View the social proof and real contributions of the project through environmental and community metric statistics (Mapping to ImpactStatsSection)."
+    }
+  },
+
+  "hero": {
+    "title_main": "Fix It, Don’t Trash It",
+    "description": "AI-powered digital assistant to visually analyze device damages and provide fast, clear, and easy-to-follow repair guidance.",
+    "button_start": "Start Scan",
+    "button_sparepart": "SparePart Hub"
+  },
+
+  "features_section": {
+    "title": {
+      "before": "Core",
+      "highlight": "Features",
+      "after": "of Our Platform"
+    },
+    "description": "Discover the key functionalities that empower Eco-Fixers to repair smarter, earn Eco-Coins, and contribute to a sustainable circular economy.",
+    "features": [
+      {
+        "title": "Multi-Modal AI Scanner",
+        "description": "Instant damage diagnosis from photos. Our AI identifies objects, analyzes the damage, and presents specific solutions.",
+        "icon": "IconCamera"
+      },
+      {
+        "title": "Specific Repair Guides",
+        "description": "Get step-by-step guides (LLM Generated) optimized for your item. No more overly general tutorials.",
+        "icon": "IconDirections"
+      },
+      {
+        "title": "Eco-Coin Gamification",
+        "description": "Collect Eco-Coins every time you successfully repair an item. Exchange coins for vouchers or environmental donations.",
+        "icon": "IconCoins"
+      },
+      {
+        "title": "SparePart Hub Map",
+        "description": "Find the location of used spare part stores, recycling centers (E-Waste), or the nearest repair shops via an interactive map.",
+        "icon": "IconMapPin"
+      },
+      {
+        "title": "Repair History Tracker",
+        "description": "Track your personal environmental contributions. View a list of items you've saved from the trash.",
+        "icon": "IconHistory"
+      },
+      {
+        "title": "Success Stories Showcase",
+        "description": "Share inspiration! Upload Before & After photos of your repairs and interact with the Eco-Fixer community.",
+        "icon": "IconUsers"
+      },
+      {
+        "title": "Supports Circular Economy",
+        "description": "Every repair you make is a real step toward reducing E-Waste and promoting a sustainable lifestyle.",
+        "icon": "IconRecycle"
+      },
+      {
+        "title": "Modern Data Security",
+        "description": "Built on Edge Functions (Supabase) to guarantee API Key security and optimal system performance.",
+        "icon": "IconShieldLock"
+      }
+    ]
+  },
+
+  "how_it_works_section": {
+    "how_it_works": {
+      "title": "How It Works",
+      "description": "Step-by-step AI-powered repair process. Modern, clean, and premium design."
+    },
+    "steps": [
+      {
+        "title": "Step 1: Diagnose",
+        "description": "AI identifies the problem quickly."
+      },
+      {
+        "title": "Step 2: Guide",
+        "description": "Follow instructions to fix it."
+      },
+      {
+        "title": "Step 3: Repair",
+        "description": "Fix the device using step-by-step guidance."
+      },
+      {
+        "title": "Step 4: Verify",
+        "description": "Confirm the repair is successful and device works."
+      }
+    ]
+  },
+
+  "rewards_section": {
+    "title": {
+      "before": "Fix More. Earn More.",
+      "highlight": "Impact Everything."
+    },
+    "description": "Eco-Coin is our gamification system designed to reward every repair action you take, turning your effort into valuable rewards and meaningful environmental impact.",
+    "cards": {
+      "one": {
+        "title": "Earn Rewards",
+        "subtitle": "for every repair action you complete.",
+        "description": "Collect Eco-Coins by completing repairs, uploading Success Stories, or registering new SparePart Hubs."
+      },
+      "two": {
+        "title": "Redeem",
+        "subtitle": "for real impact.",
+        "description": "Exchange them for discount vouchers, tree donations, or exclusive community badges."
+      },
+      "three": {
+        "title": "Boost your",
+        "subtitle": "Environmental Score.",
+        "description": "The more Eco-Coins you earn, the more you contribute to the Circular Economy."
+      }
+    }
+  },
+
+  "core_section": {
+    "title_before": "Core Platform Capabilities",
+    "title_highlight": "One Step Ahead.",
+    "description": "We combine Multi-Modal AI intelligence, gamification, and an integrated community network to transform the way you repair. Everything you need, all in one place.",
+
+    "bento": {
+      "items": {
+        "ai_diagnosis": {
+          "title": "AI Multi-Modal Diagnosis",
+          "description": "Upload damage photos and get instant visual analysis (Vision AI) and repair guidance (LLM)."
+        },
+        "repair_history": {
+          "title": "Repair History Tracking",
+          "description": "Track all items you've saved and measure your environmental contribution."
+        },
+        "eco_coin": {
+          "title": "Eco-Coin Gamification",
+          "description": "Earn Eco-Coins from each successful repair and redeem them for real rewards."
+        },
+        "community_stories": {
+          "title": "Community Success Stories",
+          "description": "Share your Before and After repair photos, gain recognition, and inspire other Eco-Fixers."
+        },
+        "sparepart_locator": {
+          "title": "Local SparePart Hub Locator",
+          "description": "Find used spare parts, recycling centers, and nearby repair hubs on the integrated map."
+        }
+      }
+    },
+
+    "skeleton_section": {
+      "three": {
+        "eco_coins_balance": "Eco-Coins Balance"
+      },
+      "four": {
+        "before": {
+          "title": "Broken Toaster (Before)",
+          "status": "DAMAGED"
+        },
+        "center": {
+          "title": "Saved and fixed by John D.",
+          "status": "FIXED +100 Coins"
+        },
+        "right": {
+          "title": "Need help with this circuit board.",
+          "status": "COMMUNITY Q"
+        }
+      },
+      "five": {
+        "location_items": {
+          "electronics_store": "Electronics Spare Parts Store",
+          "recycle_center_a": "Recycling Center A"
+        }
+      }
+    }
+  },
+
+  "impact_section": {
+    "title": {
+      "before": "The Impact",
+      "highlight": "Measured"
+    },
+    "description": "The real contribution of our Eco-Fixer community to the Circular Economy.",
+    "stats": {
+      "items_saved": "Items Saved",
+      "eco_coins_distributed": "Eco-Coins Distributed",
+      "eco_fixers_joined": "Eco-Fixers Joined",
+      "sparepart_hubs_registered": "SparePart Hubs Registered",
+      "total_ai_diagnoses": "Total AI Diagnoses"
+    }
+  },
+
+  "final_cta": {
+    "title": "Ready to Fix the Future?",
+    "description": "Start your first instant diagnosis. Get AI-guided repair instructions, collect Eco-Coins, and join the repair revolution.",
+    "cta_scan": "Start Scanning Now",
+    "cta_reward": "Check Reward Hub"
+  },
+
+  "footer": {
+    "tagline": "Fix It. Don't Trash It.",
+    "description": "An AI Multi-Modal platform guiding you through the Circular Economy.",
+
+    "platform": {
+      "title": "Platform",
+      "features": "Features",
+      "how": "How It Works",
+      "rewards": "Eco-Coin Rewards",
+      "community": "Community"
+    },
+
+    "legal": {
+      "title": "Legal & Docs",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "docs": "API Documentation",
+      "status": "System Status"
+    },
+
+    "connect": {
+      "title": "Connect",
+      "github": "GitHub Project",
+      "linkedin": "LinkedIn"
+    },
+
+    "bottom": "All rights reserved. Built for Traspac IT Competition."
+  }
+}

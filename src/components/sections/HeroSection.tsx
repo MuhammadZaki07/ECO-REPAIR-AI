@@ -6,6 +6,8 @@ import { ParticleCircle } from "../ui/particle-circle";
 import { useTheme } from "next-themes";
 import { Cover } from "../ui/cover";
 import { Leaf } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 /**
  * HeroSection – Responsive, Clean, AI-themed
@@ -20,6 +22,7 @@ import { Leaf } from "lucide-react";
 
 export function HeroSection() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   const particleColors =
     theme === "dark"
@@ -29,7 +32,6 @@ export function HeroSection() {
   return (
     <section className="relative w-full min-h-screen overflow-hidden px-6 md:px-12 lg:px-20 dark:bg-black bg-neutral-50">
       <BackgroundRippleEffect rows={10} cellSize={60} />
-
       <div
         className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[200%] h-[clamp(40%,65%,85%)] z-10"
         style={{
@@ -54,7 +56,7 @@ export function HeroSection() {
         xOffset={80}
       />
 
-      <div className="relative lg:mt-[30px] z-20 top-25 lg:top-0 md:top-0 lg:grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
+      <div className={`relative ${i18n.language == "id" ? "lg:mt-0 top-25 lg:top-0 md:top-0" : "lg:mt-[30px] top-25 lg:-top-8 md:top-0"} z-20 lg:grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]`}>
         <div className="flex flex-col items-start max-w-2xl text-left lg:mt-20 md:mt-0">
           <div className="flex items-center gap-3 mb-5 lg:mb-0">
             <div className="h-1.5 w-20 rounded-full bg-[#aaff00] opacity-80 blur-[1px]" />
@@ -72,12 +74,11 @@ export function HeroSection() {
                 -AI
               </span>
             </span>
-            <span className="block">Fix It, Don’t Trash It</span>
+            <span className={`block ${i18n.language == "id" ? "sm:text-5xl md:text-6xl lg:text-[4rem] mt-4" : ""}`}>{t("hero.title_main")}</span>
           </h1>
 
           <p className="mt-6 lg:max-w-lg max-w-xs dark:text-neutral-300/80 text-neutral-900 text-base sm:text-lg md:text-xl leading-relaxed">
-            AI-powered digital assistant to visually analyze device damages and
-            provide fast, clear, and easy-to-follow repair guidance.
+            {t("hero.description")}
           </p>
 
           <div className="mt-12 flex gap-4 flex-row">
@@ -86,7 +87,7 @@ export function HeroSection() {
                 size="lg"
                 className="cursor-pointer text-black hover:text-white hover:bg-primary/50 bg-[#aaff00]"
               >
-                Start Scan
+                {t("hero.button_start")}
               </Button>
             </Link>
 
@@ -104,7 +105,7 @@ export function HeroSection() {
                   !hover:text-white
                 "
               >
-                SparePart Hub
+                {t("hero.button_sparepart")}
               </Button>
             </Link>
           </div>
