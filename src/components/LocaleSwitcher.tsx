@@ -1,55 +1,42 @@
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export default function LocaleSwitcher() {
   const { i18n } = useTranslation();
-  const [open, setOpen] = useState(false);
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    const close = () => setOpen(false);
-    window.addEventListener("click", close);
-    return () => window.removeEventListener("click", close);
-  }, []);
 
   const flagMap: Record<string, string> = {
     id: "fi fi-id",
     en: "fi fi-us",
   };
 
+  const changeLang = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
-    <div
-      className="relative inline-block text-left"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={() => setOpen((prev) => !prev)}
-        className="flex cursor-pointer items-center px-3 py-2 rounded-xl border bg-secondary dark:bg-secondary data-[state=on]:hover:bg-muted data-[state=on]:bg-transparent hover:bg-accent transition"
-      >
-        <span className={`w-5 h-5 rounded-sm ${flagMap[i18n.language]}`} />
-      </button>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <button className="flex cursor-pointer items-center px-3 py-2 rounded-xl border bg-secondary dark:bg-secondary hover:bg-accent transition">
+          <span className={`w-5 h-5 rounded-sm ${flagMap[i18n.language]}`} />
+        </button>
+      </DropdownMenuTrigger>
 
-      {open && (
-        <div className="absolute sm:-right-5 md:right-0 lg:right-0 mt-2 w-40 rounded-xl border bg-popover shadow-lg p-2 z-50">
-          <button
-            onClick={() => changeLanguage("id")}
-            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-accent text-sm"
-          >
-            <span className="fi fi-id w-5 h-5 rounded-sm" /> Indonesia
-          </button>
+      <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuItem onClick={() => changeLang("id")} className="cursor-pointer">
+          <span className="fi fi-id w-5 h-5 rounded-sm mr-2" />
+          Indonesia
+        </DropdownMenuItem>
 
-          <button
-            onClick={() => changeLanguage("en")}
-            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-accent text-sm"
-          >
-            <span className="fi fi-us w-5 h-5 rounded-sm" /> English
-          </button>
-        </div>
-      )}
-    </div>
+        <DropdownMenuItem onClick={() => changeLang("en")} className="cursor-pointer">
+          <span className="fi fi-us w-5 h-5 rounded-sm mr-2" />
+          English
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

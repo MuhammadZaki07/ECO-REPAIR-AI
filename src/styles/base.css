@@ -10,5 +10,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-@custom-variant dark (&:is(.dark *));

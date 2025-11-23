@@ -1,51 +1,43 @@
-import * as React from "react";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import UserJPG from "@/assets/images/image.png";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { Avatar } from "./Avatar";
-import { useTheme } from "next-themes";
+import { Link } from "react-router-dom";
 
 export function ProfileMenu() {
-  const { theme } = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const menuRef = React.useRef<HTMLDivElement>(null);
-
-  const bg = `bg-[var(--card)]`;
-  const border = `border-[var(--border)]`;
-  const text = `text-[var(--card-foreground)]`;
-  const hover = `hover:bg-[var(--accent)]/20`;
-
-  React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
-    <div className="relative" ref={menuRef}>
-      <div
-        onClick={() => setOpen(!open)}
-        className={`cursor-pointer ${bg} border ${border} rounded-full p-0.5`}
-      >
-        <Avatar src="/sawah.jpg" alt="User Name" size={40} />
-      </div>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <div className="cursor-pointer rounded-full p-0.5">
+          <Avatar>
+            <AvatarImage src={UserJPG} alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
+      </DropdownMenuTrigger>
 
-      {open && (
-        <ul className={`absolute right-0 mt-2 w-40 ${bg} ${border} border rounded shadow-lg z-50`}>
-          {["Dashboard", "Profile", "Logout"].map((item) => (
-            <li
-              key={item}
-              className={`px-4 py-2 ${hover} cursor-pointer ${text} transition-colors`}
-              onClick={() => setOpen(false)} // Klik item menutup menu
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+      <DropdownMenuContent align="end" className="w-40 mt-3">
+        <Link to={"/admin/dashboard"}>
+          <DropdownMenuItem>
+            Dashboard
+          </DropdownMenuItem>
+        </Link>
+        <Link to={"/admin/profile"}>
+          <DropdownMenuItem>
+            Profile
+          </DropdownMenuItem>
+        </Link>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem>Logout</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
