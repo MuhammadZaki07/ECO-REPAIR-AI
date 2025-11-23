@@ -5,7 +5,7 @@ export function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="dark:bg-black bg-neutral-200 border-t border-white/10 py-12 md:pt-20">
+    <footer className="dark:bg-black bg-white border-t border-white/10 py-12 md:pt-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
           <div className="col-span-2 md:col-span-1 flex flex-col">
@@ -30,10 +30,10 @@ export function Footer() {
               {t("footer.platform.title")}
             </h4>
             <ul className="space-y-2 text-sm text-neutral-900 dark:text-white/60">
-              <li><a href="/features" className="hover:text-[#4ade80] transition-colors">{t("footer.platform.features")}</a></li>
-              <li><a href="/flow" className="hover:text-[#4ade80] transition-colors">{t("footer.platform.how")}</a></li>
-              <li><a href="/rewards" className="hover:text-[#4ade80] transition-colors">{t("footer.platform.rewards")}</a></li>
-              <li><a href="/community" className="hover:text-[#4ade80] transition-colors">{t("footer.platform.community")}</a></li>
+              <li><a href="/features" className="hover:text-primary transition-colors">{t("footer.platform.features")}</a></li>
+              <li><a href="/flow" className="hover:text-primary transition-colors">{t("footer.platform.how")}</a></li>
+              <li><a href="/rewards" className="hover:text-primary transition-colors">{t("footer.platform.rewards")}</a></li>
+              <li><a href="/community" className="hover:text-primary transition-colors">{t("footer.platform.community")}</a></li>
             </ul>
           </div>
 
@@ -42,10 +42,10 @@ export function Footer() {
               {t("footer.legal.title")}
             </h4>
             <ul className="space-y-2 text-sm text-neutral-900 dark:text-white/60">
-              <li><a href="/privacy" className="hover:text-[#4ade80] transition-colors">{t("footer.legal.privacy")}</a></li>
-              <li><a href="/terms" className="hover:text-[#4ade80] transition-colors">{t("footer.legal.terms")}</a></li>
-              <li><a href="/docs" className="hover:text-[#4ade80] transition-colors">{t("footer.legal.docs")}</a></li>
-              <li><a href="/status" className="hover:text-[#4ade80] transition-colors">{t("footer.legal.status")}</a></li>
+              <li><a href="/privacy" className="hover:text-primary transition-colors">{t("footer.legal.privacy")}</a></li>
+              <li><a href="/terms" className="hover:text-primary transition-colors">{t("footer.legal.terms")}</a></li>
+              <li><a href="/docs" className="hover:text-primary transition-colors">{t("footer.legal.docs")}</a></li>
+              <li><a href="/status" className="hover:text-primary transition-colors">{t("footer.legal.status")}</a></li>
             </ul>
           </div>
 
@@ -54,9 +54,9 @@ export function Footer() {
               {t("footer.connect.title")}
             </h4>
             <ul className="space-y-2 text-sm text-neutral-900 dark:text-white/60">
-              <li><a href="mailto:team@ecorepair.ai" className="hover:text-[#4ade80] transition-colors">team@ecorepair.ai</a></li>
-              <li><a href="https://github.com/ecorepair-project" target="_blank" className="hover:text-[#4ade80] transition-colors">{t("footer.connect.github")}</a></li>
-              <li><a href="https://linkedin.com/in/team-ecorepair" target="_blank" className="hover:text-[#4ade80] transition-colors">{t("footer.connect.linkedin")}</a></li>
+              <li><a href="mailto:team@ecorepair.ai" className="hover:text-primary transition-colors">@mhmmdzakiulmdn_</a></li>
+              <li><a href="https://github.com/ecorepair-project" target="_blank" className="hover:text-primary transition-colors">{t("footer.connect.github")}</a></li>
+              <li><a href="https://linkedin.com/in/team-ecorepair" target="_blank" className="hover:text-primary transition-colors">{t("footer.connect.linkedin")}</a></li>
             </ul>
           </div>
         </div>

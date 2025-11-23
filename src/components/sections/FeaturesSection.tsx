@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import * as Icons from "@tabler/icons-react";
 // import featuresData from "@/data/features.json";
 import { useTranslation } from "react-i18next";
+import { PointerHighlight } from "../ui/pointer-highlight";
 
 export function FeaturesSection() {
   const { t } = useTranslation();
@@ -13,10 +14,16 @@ export function FeaturesSection() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 px-6">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold dark:text-white text-black tracking-tight">
-            {t("features_section.title.before")}{" "}
+            {t("features_section.title.before")}
+            <PointerHighlight
+              rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
+              pointerClassName="text-yellow-400"
+              containerClassName="inline-block"
+            >
             <span className="text-primary">
               {t("features_section.title.highlight")}
-            </span>{" "}
+            </span>
+            </PointerHighlight>
             {t("features_section.title.after")}
           </h2>
           <p className="mt-4 text-lg dark:text-white/70 text-neutral-800/50 max-w-3xl mx-auto">

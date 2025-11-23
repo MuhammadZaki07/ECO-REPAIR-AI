@@ -68,10 +68,7 @@ export function MagicCard({
 
   return (
     <div
-      className={cn(
-        "group relative rounded-xl overflow-hidden",
-        className
-      )}
+      className={cn("group relative rounded-xl overflow-hidden", className)}
       onPointerMove={handlePointerMove}
       onPointerLeave={reset}
       onPointerEnter={reset}
@@ -90,15 +87,18 @@ export function MagicCard({
       />
       <div className="bg-background absolute inset-px rounded-[inherit]" />
       <motion.div
-        className="pointer-events-none absolute inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:opacity-100 dark:group-hover:opacity-100 dark:block hidden"
         style={{
           background: useMotionTemplate`
-            radial-gradient(${gradientSize}px circle at ${mouseX}px ${mouseY}px, ${gradientColor}, transparent 100%)
-          `,
+      radial-gradient(${gradientSize}px circle at ${mouseX}px ${mouseY}px, ${gradientColor}, transparent 100%)
+    `,
           opacity: gradientOpacity,
         }}
       />
-      <div className="relative flex flex-col justify-center items-center">{children}</div>
+
+      <div className="relative flex flex-col justify-center items-center">
+        {children}
+      </div>
     </div>
   );
 }

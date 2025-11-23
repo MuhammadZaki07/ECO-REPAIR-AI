@@ -19,7 +19,6 @@
 import { DotBackground } from "../ui/DotBackground";
 import { PointerHighlight } from "../ui/pointer-highlight";
 import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
 import CardOne from "../RewardSystem/CardOne";
 import CardTwo from "../RewardSystem/CardTwo";
 import CardThree from "../RewardSystem/CardThree";
@@ -39,14 +38,13 @@ export function RewardSystemSection() {
       <div className="relative z-50 max-w-7xl mx-auto px-6">
         <div className="text-center mb-10 md:mb-16 px-4">
           <h2
-            className={`text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight dark:text-white flex ${
-              i18n.language === "id" ? "flex-col" : "flex-row"
-            } items-center gap-2 justify-center leading-tight`}
+            className={`text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight dark:text-white flex flex-row items-center gap-2 justify-center leading-tight`}
           >
             {t("rewards_section.title.before")}
+            {t("rewards_section.title.text_center")}
             <PointerHighlight
               rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
-              pointerClassName="text-yellow-400"
+              pointerClassName="text-pink-500"
               containerClassName="inline-block"
             >
               <span className="relative z-10 text-primary/90">
@@ -72,7 +70,7 @@ export function RewardSystemSection() {
             description={t("rewards_section.cards.two.description")}
           />
           <CardThree
-           title={t("rewards_section.cards.three.title")}
+            title={t("rewards_section.cards.three.title")}
             subtitle={t("rewards_section.cards.three.subtitle")}
             description={t("rewards_section.cards.three.description")}
           />

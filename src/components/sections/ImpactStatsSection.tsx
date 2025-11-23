@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { MagicCard } from "@/components/ui/magic-card";
 import { itemsImpact } from "../ImpactSection/itemsImpact";
 import { AnimatedCounter } from "../ui/AnimatedCounter";
+import { PointerHighlight } from "../ui/pointer-highlight";
 
 export function ImpactStatsSection() {
   const { t } = useTranslation();
@@ -14,9 +15,16 @@ export function ImpactStatsSection() {
         <div className="text-center mb-12 md:mb-16 px-4">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight dark:text-white text-neutral-900 leading-tight">
             {t("impact_section.title.before")}{" "}
-            <span className="text-primary">
-              {t("impact_section.title.highlight")}
-            </span>
+            <PointerHighlight
+              rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
+              pointerClassName="text-yellow-400"
+              containerClassName="inline-block"
+            >
+              <span className="text-primary">
+                {t("impact_section.title.text_center")}
+              </span>
+            </PointerHighlight>
+             {t("impact_section.title.highlight")}
           </h2>
 
           <p className="mt-4 text-base sm:text-lg dark:text-white/60 text-neutral-800/70 max-w-xl sm:max-w-2xl md:max-w-3xl mx-auto leading-relaxed">

@@ -173,13 +173,14 @@ export function StepSection() {
       <div className="relative z-20 max-w-7xl mx-auto">
         <div className="text-center lg:mb-20 mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
+            {t("how_it_works_section.how_it_works.before")}
             <PointerHighlight
               rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
               pointerClassName="text-indigo-400"
               containerClassName="inline-block"
             >
               <span className="text-primary dark:text-primary">
-                {t("how_it_works_section.how_it_works.title")}
+                {t("how_it_works_section.how_it_works.highlight")}
               </span>
             </PointerHighlight>
           </h2>
@@ -196,9 +197,11 @@ export function StepSection() {
             return (
               <ProcessCard
                 key={item.step}
-                step={t("how_it_works_section.how_it_works.step")}
-                title={t("how_it_works_section.how_it_works.title")}
-                description={t("how_it_works_section.how_it_works.description")}
+                step={item.step}
+                title={t(`how_it_works_section.steps.${index}.title`)}
+                description={t(
+                  `how_it_works_section.steps.${index}.description`
+                )}
                 icon={Icon}
                 index={index}
                 isLast={index === steps.length - 1}

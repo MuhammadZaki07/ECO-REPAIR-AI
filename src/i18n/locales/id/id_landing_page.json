@@ -86,33 +86,59 @@
 
   "how_it_works_section": {
     "how_it_works": {
-      "title": "Cara Kerjanya",
-      "description": "Proses perbaikan berbasis AI langkah demi langkah. Desain modern, bersih, dan premium."
+      "before": "Cara ",
+      "highlight": "Kerjanya",
+      "description": "Proses perbaikan berbasis AI secara bertahap. Desain modern, bersih, dan premium."
     },
     "steps": [
       {
-        "title": "Langkah 1: Diagnosa",
-        "description": "AI mengidentifikasi masalah dengan cepat."
+        "step": 1,
+        "title": "Unggah",
+        "description": "Ambil foto kerusakan: unggah gambar item yang rusak."
       },
       {
-        "title": "Langkah 2: Panduan",
-        "description": "Ikuti instruksi untuk memperbaiki."
+        "step": 2,
+        "title": "Analisis",
+        "description": "AI memproses gambar untuk mendeteksi item, material, dan tingkat kerusakan."
       },
       {
-        "title": "Langkah 3: Perbaikan",
-        "description": "Perbaiki perangkat menggunakan panduan langkah demi langkah."
+        "step": 3,
+        "title": "Panduan",
+        "description": "Dapatkan panduan perbaikan langkah demi langkah yang dibuat oleh AI."
       },
       {
-        "title": "Langkah 4: Verifikasi",
-        "description": "Pastikan perbaikan berhasil dan perangkat berfungsi."
+        "step": 4,
+        "title": "Verifikasi",
+        "description": "Periksa ulang instruksi perbaikan untuk memastikan akurasi."
+      },
+      {
+        "step": 5,
+        "title": "Dukungan Komunitas",
+        "description": "Bagikan progres atau ajukan pertanyaan di komunitas."
+      },
+      {
+        "step": 6,
+        "title": "Kontribusi Eco",
+        "description": "Pantau dampak lingkungan dan poin yang kamu dapatkan."
+      },
+      {
+        "step": 7,
+        "title": "Keamanan",
+        "description": "Data kamu terlindungi dengan keamanan end-to-end."
+      },
+      {
+        "step": 8,
+        "title": "Wawasan Lanjutan",
+        "description": "Analitik AI memberikan wawasan perbaikan tingkat lanjut."
       }
     ]
   },
 
   "rewards_section": {
     "title": {
-      "before": "Perbaiki Lebih Banyak. Dapatkan Lebih Banyak.",
-      "highlight": "Dampak Segalanya."
+      "before": "Ubah Perbaikan",
+      "text_center": " Menjadi",
+      "highlight": " Hadiah Nyata."
     },
     "description": "Eco-Coin adalah sistem gamifikasi kami yang dirancang untuk memberi penghargaan atas setiap aksi perbaikan yang Anda lakukan, mengubah usaha Anda menjadi hadiah bernilai dan dampak lingkungan yang berarti.",
     "cards": {
@@ -135,8 +161,8 @@
   },
 
   "core_section": {
-    "title_before": "Kemampuan Inti Platform",
-    "title_highlight": "Selangkah Lebih Maju.",
+    "title_before": "Kemampuan Inti Platform ",
+    "title_highlight": " Selangkah Lebih Maju.",
     "description": "Kami menggabungkan kecerdasan AI Multi-Modal, gamifikasi, dan jaringan komunitas terintegrasi untuk mengubah cara Anda memperbaiki barang. Semua yang Anda butuhkan, dalam satu tempat.",
 
     "bento": {
@@ -193,8 +219,9 @@
 
   "impact_section": {
     "title": {
-      "before": "Dampak",
-      "highlight": "Terukur"
+      "before": "",
+      "text_center": "Dampak",
+      "highlight": " Terukur"
     },
     "description": "Kontribusi nyata komunitas Eco-Fixer kami terhadap Ekonomi Sirkular.",
     "stats": {
