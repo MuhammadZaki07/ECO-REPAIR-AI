@@ -9,27 +9,32 @@ import { ModeToggle } from "./theme-switch";
 import { ProfileMenu } from "@/components/ui/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 
-const Header = () => {
+interface HeaderProps {
+  headerAI?: boolean;
+  scrollStkiyNav?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = false }) => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
 
   const menus: MenuItem[] = menuItems;
 
   React.useEffect(() => {
+    if (!scrollStkiyNav) return;
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 4);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [scrollStkiyNav]);
 
   return (
     <header>
       <nav
         data-state={menuState && "active"}
         className={cn(
-          "fixed z-[9999] w-full px-3 md:px-4 transition-colors duration-300",
+          scrollStkiyNav ? "fixed z-[9999] w-full px-3 md:px-4 transition-colors duration-300" : "relative w-full px-3 md:px-4 transition-colors duration-300",
           isScrolled ? "border-transparent" : ""
         )}
       >
@@ -47,12 +52,7 @@ const Header = () => {
                 aria-label="home"
                 className="flex gap-2 items-center"
               >
-                <Logo
-                  variant="full"
-                  height={50}
-                  width={50}
-                  className="h-10 z-10 w-full"
-                />
+                <Logo variant="full" height={50} width={50} className="h-10 z-10 w-full" />
               </a>
 
               <div className="flex gap-2">
@@ -67,25 +67,33 @@ const Header = () => {
               </div>
             </div>
 
-            <div className="absolute inset-0 m-auto hidden lg:block size-fit">
-              <Menus />
-            </div>
-
-            <div className="in-data-[state=active]:block border lg:in-data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-sm p-3 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-              <div className="lg:hidden block p-3">
-                <ul className="space-y-6 text-base">
-                  {menus.map((item, index) => (
-                    <li key={index}>
-                      <a
-                        href={item.href}
-                        className="text-muted-foreground hover:text-primary text-sm block duration-150"
-                      >
-                        {item.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+            {/* Menus utama dihilangkan jika headerAI true */}
+            {!headerAI && (
+              <div className="absolute inset-0 m-auto hidden lg:block size-fit">
+                <Menus />
               </div>
+            )}
+
+            <div className={cn(
+              "in-data-[state=active]:block lg:in-data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-sm p-3 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent"
+            )}>
+              {/* Menu mobile list dihilangkan jika headerAI true */}
+              {!headerAI && (
+                <div className="lg:hidden block p-3">
+                  <ul className="space-y-6 text-base">
+                    {menus.map((item, index) => (
+                      <li key={index}>
+                        <a
+                          href={item.href}
+                          className="text-muted-foreground hover:text-primary text-sm block duration-150"
+                        >
+                          {item.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <div className="flex w-full px-3 py-1 gap-3 items-center space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:gap-2 lg:gap-4">
                 <ModeToggle />
