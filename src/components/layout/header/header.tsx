@@ -67,7 +67,6 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
               </div>
             </div>
 
-            {/* Menus utama dihilangkan jika headerAI true */}
             {!headerAI && (
               <div className="absolute inset-0 m-auto hidden lg:block size-fit">
                 <Menus />
@@ -77,7 +76,8 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
             <div className={cn(
               "in-data-[state=active]:block lg:in-data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-sm p-3 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent"
             )}>
-              {/* Menu mobile list dihilangkan jika headerAI true */}
+     
+
               {!headerAI && (
                 <div className="lg:hidden block p-3">
                   <ul className="space-y-6 text-base">
@@ -98,9 +98,11 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
               <div className="flex w-full px-3 py-1 gap-3 items-center space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:gap-2 lg:gap-4">
                 <ModeToggle />
                 <LocaleSwitcher />
+                {!headerAI && (
                 <div className="ml-auto sm:ml-0">
                   <ProfileMenu />
                 </div>
+                )}
               </div>
             </div>
           </div>

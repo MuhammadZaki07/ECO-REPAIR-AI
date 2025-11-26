@@ -6,6 +6,13 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState, type JSX, type SVGProps } from "react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { loginSchema } from "@/schemas/authSchemas";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase/client";
+import { AuthService } from "@/services/auth/AuthService";
 
 const GoogleIcon = (
   props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
@@ -15,10 +22,41 @@ const GoogleIcon = (
   </svg>
 );
 
-export default function Login() {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+type LoginForm = z.infer<typeof loginSchema>;
 
-  const toggleVisibility = () => setIsVisible((prevState) => !prevState);
+export default function Login() {
+  const [isVisible, setIsVisible] = useState(false);
+  const { toast } = useToast();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const toggleVisibility = () => setIsVisible((prev) => !prev);
+
+  const onSubmit = async (data: LoginForm) => {
+    try {
+      await AuthService.login(data.email, data.password);
+
+      toast({
+        title: "Login Success",
+        description: `Welcome back, ${data.email}`,
+      });
+
+      reset();
+    } catch (err) {
+      toast({
+        title: "Login Failed",
+        description: "Email or password is incorrect",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -32,7 +70,11 @@ export default function Login() {
         </div>
 
         <div className="space-y-5">
-          <Button variant="outline" className="w-full justify-center gap-2 cursor-pointer">
+          <Button
+            variant="outline"
+            className="w-full justify-center gap-2 cursor-pointer"
+             onClick={() => supabase.auth.signInWithOAuth({ provider: "google" })}
+          >
             <GoogleIcon className="h-4 w-4" />
             Sign in with Google
           </Button>
@@ -45,65 +87,87 @@ export default function Login() {
             <Separator className="flex-1" />
           </div>
 
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* EMAIL */}
             <div>
               <Label htmlFor="email">Email</Label>
               <div className="relative mt-2.5">
                 <Input
                   id="email"
-                  className="peer ps-9"
+                  className={`peer ps-9 ${
+                    errors.email ? "border-destructive" : ""
+                  }`}
                   placeholder="ephraim@blocks.so"
                   type="email"
+                  {...register("email")}
                 />
-                <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+                <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3">
                   <Mail size={16} aria-hidden="true" />
                 </div>
               </div>
+              {errors.email && (
+                <p className="mt-1 text-xs text-destructive">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
+            {/* PASSWORD */}
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <a href="#" className="text-sm dark:text-primary text-black hover:underline">
+                <a
+                  href="#"
+                  className="text-sm dark:text-primary text-black hover:underline"
+                >
                   Forgot Password?
                 </a>
               </div>
               <div className="relative mt-2.5">
                 <Input
                   id="password"
-                  className="ps-9 pe-9"
+                  className={`ps-9 pe-9 ${
+                    errors.password ? "border-destructive" : ""
+                  }`}
                   placeholder="Enter your password"
                   type={isVisible ? "text" : "password"}
+                  {...register("password")}
                 />
-                <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+                <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3">
                   <Lock size={16} aria-hidden="true" />
                 </div>
                 <button
-                  className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                  className="text-muted-foreground/80 hover:text-foreground absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition outline-none"
                   type="button"
                   onClick={toggleVisibility}
                   aria-label={isVisible ? "Hide password" : "Show password"}
-                  aria-pressed={isVisible}
-                  aria-controls="password"
                 >
-                  {isVisible ? (
-                    <EyeOff size={16} aria-hidden="true" />
-                  ) : (
-                    <Eye size={16} aria-hidden="true" />
-                  )}
+                  {isVisible ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+              {errors.password && (
+                <p className="mt-1 text-xs text-destructive">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
-          </div>
 
-          <Button className="w-full text-black cursor-pointer dark:hover:text-white">
-            Sign in
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+            <Button
+              type="submit"
+              className="w-full text-black cursor-pointer dark:hover:text-white"
+              disabled={isSubmitting}
+            >
+              Sign in
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </form>
 
           <div className="text-center text-sm">
             No account?{" "}
-            <Link to="/auth/register" className="dark:text-primary text-shadow-black font-medium hover:underline">
+            <Link
+              to="/auth/register"
+              className="dark:text-primary text-shadow-black font-medium hover:underline"
+            >
               Create an account
             </Link>
           </div>

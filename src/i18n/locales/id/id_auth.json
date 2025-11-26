@@ -1,0 +1,5 @@
+{
+    "emailRequired": "Email harus diisi",
+    "invalidEmail": "Email tidak valid",
+    "passwordRequired": "Password harus diisi"
+}
