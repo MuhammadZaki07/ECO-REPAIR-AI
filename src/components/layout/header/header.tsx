@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
       <nav
         data-state={menuState && "active"}
         className={cn(
-          scrollStkiyNav ? "fixed z-[9999] w-full px-3 md:px-4 transition-colors duration-300" : "relative w-full px-3 md:px-4 transition-colors duration-300",
+          scrollStkiyNav ? "fixed z-[999] w-full px-3 md:px-4 transition-colors duration-300" : "relative w-full px-3 md:px-4 transition-colors duration-300",
           isScrolled ? "border-transparent" : ""
         )}
       >
