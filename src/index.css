@@ -3,6 +3,7 @@
 @import "./styles/base.css";
 @import "./styles/theme.css";
 @import "./styles/components.css";
+@import "flag-icons/css/flag-icons.min.css";
 
 @custom-variant dark (&:is(.dark *));
 

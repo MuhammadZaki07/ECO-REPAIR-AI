@@ -1,5 +1,11 @@
 {
-    "emailRequired": "Email is required",
-    "invalidEmail": "Email is invalid",
-    "passwordRequired": "Password is required"
+  "emailRequired": "Email is required",
+  "invalidEmail": "Email is invalid",
+  "passwordRequired": "Password is required",
+
+  "firstNameRequired": "First name is required",
+  "lastNameRequired": "Last name is required",
+  "usernameMin": "Username must be at least 3 characters",
+  "passwordMin": "Password must be at least 6 characters",
+  "termsRequired": "You must agree to the Terms & Conditions"
 }

@@ -17,9 +17,9 @@ export function FinalCTASection() {
       </div>
 
       <FlickeringGrid
-        className="absolute inset-0 z-0 size-full"
+        className="absolute inset-0 z-0 size-full mt-2"
         squareSize={3}
-        gridGap={6}
+        gridGap={8}
         color="#6B7280"
         maxOpacity={0.8}
         flickerChance={0.1}

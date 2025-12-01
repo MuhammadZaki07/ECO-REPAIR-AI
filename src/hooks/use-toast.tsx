@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { Toast, ToastProvider, ToastViewport, ToastTitle, ToastDescription, ToastClose } from "@/components/ui/toaster"
 
@@ -26,7 +24,7 @@ export const ToastProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ 
       <ToastProvider>
         {children}
         {toasts.map((t, i) => (
-          <Toast key={i}>
+          <Toast className="flex flex-col gap-1.5 justify-start items-start" key={i}>
             <ToastTitle>{t.title}</ToastTitle>
             {t.description && <ToastDescription>{t.description}</ToastDescription>}
             <ToastClose />

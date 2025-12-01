@@ -1,43 +1,70 @@
 import { supabase } from "@/lib/supabase/client";
-
-export interface AuthCredentials {
-  email: string;
-  password: string;
-}
+import type {
+  AuthCredentials,
+  AuthResponse,
+  RegisterCredentials,
+} from "@/types/auth";
 
 export class AuthService {
-  // REGISTER
-  static async register({ email, password }: AuthCredentials) {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: "http://localhost:5173/auth/login",
-      },
-    });
+ static async register({
+  email,
+  password,
+  username,
+  firstName,
+  lastName,
+}: RegisterCredentials) {
+  // Sign up user
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-    if (error) throw new Error(error.message);
-    return data;
+  if (error) throw new Error(error.message);
+
+  const user = data.user;
+
+  if (!user) {
+    throw new Error("User registration failed, no user returned from Supabase");
   }
 
-  // LOGIN
-  static async login({ email, password }: AuthCredentials) {
+  // Insert user profile ke tabel 'users'
+  const { error: insertError } = await supabase
+    .from("users")
+    .insert({
+      auth_id: user.id,
+      username,
+      first_name: firstName,
+      last_name: lastName,
+    });
+
+  if (insertError) throw new Error(insertError.message);
+
+  return user;
+}
+
+
+  static async login({
+    email,
+    password,
+  }: AuthCredentials): Promise<AuthResponse> {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) throw new Error(error.message);
-    return data;
+
+    return {
+      user: data.user,
+      session: data.session,
+    };
   }
 
-  // LOGOUT
   static async logout() {
     const { error } = await supabase.auth.signOut();
     if (error) throw new Error(error.message);
   }
 
-  // LOGIN WITH GOOGLE
   static async loginWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -47,13 +74,14 @@ export class AuthService {
     });
 
     if (error) throw new Error(error.message);
+
     return data;
   }
 
-  // GET CURRENT SESSION
   static async getSession() {
     const { data, error } = await supabase.auth.getSession();
     if (error) throw new Error(error.message);
+
     return data.session;
   }
 }

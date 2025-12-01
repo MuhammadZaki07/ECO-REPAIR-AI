@@ -1,7 +1,7 @@
-
-button {
+button:not([data-slot="checkbox"]) {
   @apply px-4 py-2 rounded-md;
 }
+
 
 .card {
   @apply p-4 rounded-lg shadow-md;

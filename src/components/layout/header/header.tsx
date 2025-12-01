@@ -8,15 +8,21 @@ import { Menus } from "./menus";
 import { ModeToggle } from "./theme-switch";
 import { ProfileMenu } from "@/components/ui/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import { LoginButton } from "@/components/LoginButton";
+import { useAuthContext } from "@/context/AuthContext";
 
 interface HeaderProps {
   headerAI?: boolean;
   scrollStkiyNav?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = false }) => {
+const Header: React.FC<HeaderProps> = ({
+  headerAI = false,
+  scrollStkiyNav = false,
+}) => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const { user } = useAuthContext();
 
   const menus: MenuItem[] = menuItems;
 
@@ -34,7 +40,9 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
       <nav
         data-state={menuState && "active"}
         className={cn(
-          scrollStkiyNav ? "fixed z-[999] w-full px-3 md:px-4 transition-colors duration-300" : "relative w-full px-3 md:px-4 transition-colors duration-300",
+          scrollStkiyNav
+            ? "fixed z-[999] w-full px-3 md:px-4 transition-colors duration-300"
+            : "relative w-full px-3 md:px-4 transition-colors duration-300",
           isScrolled ? "border-transparent" : ""
         )}
       >
@@ -47,12 +55,13 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
         >
           <div className="relative flex flex-wrap items-center justify-between gap-3 py-2">
             <div className="flex w-full justify-between lg:w-auto">
-              <a
-                href="#"
-                aria-label="home"
-                className="flex gap-2 items-center"
-              >
-                <Logo variant="full" height={50} width={50} className="h-10 z-10 w-full" />
+              <a href="#" aria-label="home" className="flex gap-2 items-center">
+                <Logo
+                  variant="full"
+                  height={50}
+                  width={50}
+                  className="h-10 z-10 w-full"
+                />
               </a>
 
               <div className="flex gap-2">
@@ -73,11 +82,11 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
               </div>
             )}
 
-            <div className={cn(
-              "in-data-[state=active]:block lg:in-data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-sm p-3 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent"
-            )}>
-     
-
+            <div
+              className={cn(
+                "in-data-[state=active]:block lg:in-data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-sm p-3 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent"
+              )}
+            >
               {!headerAI && (
                 <div className="lg:hidden block p-3">
                   <ul className="space-y-6 text-base">
@@ -99,9 +108,9 @@ const Header: React.FC<HeaderProps> = ({ headerAI = false, scrollStkiyNav = fals
                 <ModeToggle />
                 <LocaleSwitcher />
                 {!headerAI && (
-                <div className="ml-auto sm:ml-0">
-                  <ProfileMenu />
-                </div>
+                  <div className="ml-auto sm:ml-0">
+                    {user ? <ProfileMenu /> : <LoginButton />}
+                  </div>
                 )}
               </div>
             </div>

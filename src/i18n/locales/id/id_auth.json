@@ -1,5 +1,11 @@
 {
-    "emailRequired": "Email harus diisi",
-    "invalidEmail": "Email tidak valid",
-    "passwordRequired": "Password harus diisi"
+  "emailRequired": "Email harus diisi",
+  "invalidEmail": "Email tidak valid",
+  "passwordRequired": "Password harus diisi",
+
+  "firstNameRequired": "Nama depan harus diisi",
+  "lastNameRequired": "Nama belakang harus diisi",
+  "usernameMin": "Username minimal 3 karakter",
+  "passwordMin": "Password minimal 6 karakter",
+  "termsRequired": "Anda harus menyetujui Terms & Conditions"
 }

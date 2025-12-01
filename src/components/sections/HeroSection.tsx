@@ -111,7 +111,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative items-center justify-center pointer-events-none right-17 hidden lg:flex lg:right-0 md:right-0">
+        {/* <div className="relative items-center justify-center pointer-events-none right-17 hidden lg:flex lg:right-0 md:right-0">
           <ParticleCircle
             particleCount={1600}
             shrinkDuration={11}
@@ -122,7 +122,7 @@ export function HeroSection() {
             enableBlendMode={true}
             size={600}
           />
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { AuthService, AuthCredentials } from "@/services/AuthService";
 import { useAuthContext } from "@/context/AuthContext";
+import type { RegisterCredentials } from "@/types/auth";
+import { AuthService } from "@/services/auth/AuthService";
 
 export const useAuth = () => {
   const { setUser } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // LOGIN
-  const login = async (credentials: AuthCredentials) => {
+  const login = async (credentials: { email: string; password: string }) => {
     try {
       setLoading(true);
       setError(null);
 
-      const data = await AuthService.login(credentials);
+      const { user } = await AuthService.login(credentials);
+      setUser(user);
 
-      // Auto-sync ke context
-      setUser(data.user);
+      return user;
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -25,15 +25,15 @@ export const useAuth = () => {
     }
   };
 
-  // REGISTER
-  const register = async (credentials: AuthCredentials) => {
+  const register = async (credentials: RegisterCredentials) => {
     try {
       setLoading(true);
       setError(null);
 
-      const data = await AuthService.register(credentials);
+      const { user } = await AuthService.register(credentials);
+      setUser(user);
 
-      setUser(data.user);
+      return user;
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -42,7 +42,6 @@ export const useAuth = () => {
     }
   };
 
-  // GOOGLE OAUTH
   const loginWithGoogle = async () => {
     try {
       setLoading(true);
@@ -57,7 +56,6 @@ export const useAuth = () => {
     }
   };
 
-  // LOGOUT
   const logout = async () => {
     try {
       setLoading(true);
@@ -82,3 +80,4 @@ export const useAuth = () => {
     error,
   };
 };
+
