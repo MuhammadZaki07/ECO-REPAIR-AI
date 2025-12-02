@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext";
-import type { RegisterCredentials } from "@/types/auth";
 import { AuthService } from "@/services/auth/AuthService";
 
 export const useAuth = () => {
@@ -8,15 +7,12 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async (credentials: { email: string; password: string }) => {
+  const signInWithEmail = async (email: string) => {
     try {
       setLoading(true);
       setError(null);
 
-      const { user } = await AuthService.login(credentials);
-      setUser(user);
-
-      return user;
+      await AuthService.signInWithEmail(email);
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -25,29 +21,12 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (credentials: RegisterCredentials) => {
+  const signInWithGoogle = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const { user } = await AuthService.register(credentials);
-      setUser(user);
-
-      return user;
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loginWithGoogle = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      await AuthService.loginWithGoogle();
+      await AuthService.signInWithGoogle();
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -72,12 +51,10 @@ export const useAuth = () => {
   };
 
   return {
-    login,
-    register,
-    loginWithGoogle,
+    signInWithEmail,
+    signInWithGoogle,
     logout,
     loading,
     error,
   };
 };
-

@@ -1,6 +1,6 @@
 // src/pages/ScanPage.tsx (FINAL VERSION - Integrated)
 
-"use client";
+"";
 
 import React, { useState, useCallback, useRef } from "react";
 import {

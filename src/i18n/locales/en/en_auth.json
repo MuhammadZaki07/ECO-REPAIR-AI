@@ -1,11 +1,19 @@
 {
+  "title": "Sign In",
+  "subtitle": "Access your account using your email or Google.",
+  "emailLabel": "Email",
+  "emailPlaceholder": "Enter Your Email",
   "emailRequired": "Email is required",
   "invalidEmail": "Email is invalid",
-  "passwordRequired": "Password is required",
-
-  "firstNameRequired": "First name is required",
-  "lastNameRequired": "Last name is required",
-  "usernameMin": "Username must be at least 3 characters",
-  "passwordMin": "Password must be at least 6 characters",
-  "termsRequired": "You must agree to the Terms & Conditions"
+  "checkEmailTitle": "Check your email",
+  "checkEmailDesc": "Please check your email for the sign-in link.",
+  "loginFailedTitle": "Failed",
+  "loginFailedDesc": "Email is invalid or there was an error.",
+  "googleButton": "Sign in with Google",
+  "orText": "or",
+  "submitButton": "Login",
+  "welcomeTitle": "Welcome to EcoRepair AI",
+  "welcomeDesc": "The smartest way to repair, recycle, and optimize your products with AI assistance.",
+  "welcomeEffectText": "EcoRepair AI transforms old electronics into sustainable solutions. Reduce waste. Save resources. Repair smarter. Every device has a story. Bring it back to life. Automate diagnostics, predict repairs, maximize efficiency. Your environmental impact matters.",
+  "acknowledgePrivacy": "By continuing, you acknowledge <link>Privacy Policy</link>."
 }

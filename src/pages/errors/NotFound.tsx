@@ -16,7 +16,7 @@ export default function NotFound() {
           Halaman yang kamu cari tidak ditemukan.
         </p>
 
-        <Button onClick={() => window.history.back()} className="cursor-pointer" variant={"outline"}>Kembali</Button>
+        <Button onClick={() => window.location.href="/"} className="cursor-pointer" variant={"outline"}>Kembali</Button>
       </div>
     </div>
   );

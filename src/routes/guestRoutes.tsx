@@ -1,20 +1,14 @@
 import GuestGuard from "@/guards/GuestGuard";
-import AuthLayout from "@/layouts/AuthLayouts";
-import Login from "@/pages/auth/Login";
-import Register from "@/pages/auth/Register";
+import AuthPage from "@/pages/auth";
 import type { RouteObject } from "react-router-dom";
 
 export const guestRoutes: RouteObject[] = [
   {
-    path: "/auth",
+    path: "/login",
     element: (
       <GuestGuard>
-        <AuthLayout />
+        <AuthPage />
       </GuestGuard>
     ),
-    children: [
-      { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> },
-    ],
   },
 ];

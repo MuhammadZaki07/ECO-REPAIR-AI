@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export function LoginButton() {
   return (
-    <Link to="/auth/login">
+    <Link to="/login">
       <Button variant="outline" size="sm" className="cursor-pointer">
         Sign In
       </Button>

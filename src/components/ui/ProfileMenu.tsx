@@ -15,13 +15,13 @@ import { AuthService } from "@/services/auth/AuthService";
 export function ProfileMenu() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
-
+  if (!user) return null;
   const { avatarUrl, initial, bgColor } = getUserAvatar(user);
 
   const handleLogout = async () => {
     try {
       await AuthService.logout();
-      navigate("/auth/login", { replace: true });
+      navigate("/login", { replace: true });
     } catch (err: any) {
       console.error("Logout failed:", err.message);
     }
@@ -31,24 +31,37 @@ export function ProfileMenu() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <div className="cursor-pointer p-0.5">
-          <Avatar style={{ backgroundColor: bgColor }} className="w-8 h-8 rounded-full flex justify-center items-center">
-            <AvatarImage src={avatarUrl || undefined} alt="avatar" />
-            <AvatarFallback
-              className="text-white font-semibold"
-            >
-              {initial}
-            </AvatarFallback>
+          <Avatar
+            style={{ backgroundColor: bgColor }}
+            className="w-8 h-8 rounded-full flex justify-center items-center overflow-hidden"
+          >
+            {avatarUrl ? (
+              <AvatarImage
+                src={avatarUrl || undefined}
+                alt={initial}
+                className="object-cover w-full h-full"
+                onError={(e) => (e.currentTarget.src = "")}
+              />
+            ) : (
+              <AvatarFallback className="text-white font-semibold">
+                {initial}
+              </AvatarFallback>
+            )}
           </Avatar>
         </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-40 mt-3">
         <Link to="/admin/dashboard">
-          <DropdownMenuItem className="cursor-pointer">Dashboard</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            Dashboard
+          </DropdownMenuItem>
         </Link>
 
         <Link to="/admin/profile">
-          <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            Profile
+          </DropdownMenuItem>
         </Link>
 
         <DropdownMenuSeparator />

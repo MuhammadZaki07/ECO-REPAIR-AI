@@ -1,11 +1,19 @@
 {
+  "title": "Masuk",
+  "subtitle": "Gunakan email atau Google.",
+  "emailLabel": "Email",
+  "emailPlaceholder": "Masukan Email Anda",
   "emailRequired": "Email harus diisi",
   "invalidEmail": "Email tidak valid",
-  "passwordRequired": "Password harus diisi",
-
-  "firstNameRequired": "Nama depan harus diisi",
-  "lastNameRequired": "Nama belakang harus diisi",
-  "usernameMin": "Username minimal 3 karakter",
-  "passwordMin": "Password minimal 6 karakter",
-  "termsRequired": "Anda harus menyetujui Terms & Conditions"
+  "checkEmailTitle": "Periksa email",
+ "checkEmailDesc": "Silakan periksa email Anda untuk tautan masuk.",
+  "loginFailedTitle": "Gagal",
+  "loginFailedDesc": "Email tidak valid atau terjadi kesalahan.",
+  "googleButton": "Masuk dengan Google",
+  "orText": "atau",
+  "submitButton": "Masuk",
+  "welcomeTitle": "Selamat Datang di EcoRepair AI",
+  "welcomeDesc": "Cara paling cerdas untuk memperbaiki, mendaur ulang, dan mengoptimalkan produk Anda dengan bantuan AI.",
+  "welcomeEffectText": "EcoRepair AI mengubah elektronik lama menjadi solusi berkelanjutan. Kurangi limbah. Hemat sumber daya. Perbaiki lebih cerdas. Setiap perangkat punya cerita. Hidupkan kembali. Otomatisasi diagnosa, prediksi perbaikan, maksimalisasi efisiensi. Dampak lingkungan Anda penting.",
+  "acknowledgePrivacy": "Dengan melanjutkan, Anda menyetujui <link>Kebijakan Privasi</link>."
 }
