@@ -1,24 +1,74 @@
-import React, { useEffect, useRef } from 'react';
-import { ChatMessage } from './ChatMessage';
-import { TypingLoader } from '../TypingLoader';
+import { DottedGlowBackground } from "@/components/ui/dotted-glow-background";
+import { ChatMessage } from "./ChatMessage";
+import { useEffect, useRef } from "react";
+
+interface Message {
+  id: number;
+  role: "user" | "assistant";
+  content: string;
+}
 
 interface ChatContainerProps {
-  messages: { id: number; role: 'user' | 'assistant'; content: string }[];
+  messages: Message[];
   loading: boolean;
 }
 
-export const ChatContainer: React.FC<ChatContainerProps> = ({ messages, loading }) => {
+export const ChatContainer: React.FC<ChatContainerProps> = ({
+  messages,
+  loading,
+}) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 bg-[var(--background)]">
-      <div className="max-w-3xl mx-auto space-y-6">
-        {messages.map(msg => <ChatMessage key={msg.id} role={msg.role} content={msg.content} />)}
-        {loading && <TypingLoader />}
+    <div
+      className="relative w-full h-screen overflow-hidden 
+  bg-black/5 dark:bg-black"
+    >
+      <DottedGlowBackground
+        className="absolute inset-0 pointer-events-none w-full h-full"
+        opacity={1}
+        gap={10}
+        radius={1.6}
+        colorLightVar="--color-neutral-500"
+        glowColorLightVar="--color-neutral-600"
+        colorDarkVar="--color-neutral-500"
+        glowColorDarkVar="--color-sky-800"
+        backgroundOpacity={0}
+        speedMin={0.3}
+        speedMax={1.6}
+        speedScale={1}
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none
+  bg-gradient-to-b
+    from-neutral-100 via-neutral-100/0 to-neutral-100
+  dark:from-black/80 dark:via-black/0 dark:to-black/80"
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none
+  bg-gradient-to-r
+    from-neutral-100 via-neutral-100/0 to-neutral-100
+  dark:from-black/80 dark:via-black/0 dark:to-black/80"
+      />
+
+      <span
+        className="absolute inset-0 flex items-center justify-center 
+    text-[clamp(4rem,15vw,8rem)] font-bold text-white/10 select-none pointer-events-none text-center"
+      >
+        Eco Repair Ai
+      </span>
+
+      <div className="relative z-10 h-full w-full max-w-4xl mx-auto flex flex-col px-6 pt-18 pb-5 overflow-y-auto space-y-3">
+        {messages.map((msg) => (
+          <ChatMessage role={msg.role} key={msg.id} {...msg} />
+        ))}
+        {loading && <div className="text-white">Typing...</div>}
         <div ref={messagesEndRef} />
       </div>
     </div>

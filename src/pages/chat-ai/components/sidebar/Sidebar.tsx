@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import {
   Plus,
-  Search,
-  BookOpen,
-  FolderKanban,
-  Sparkles,
   ChevronDown,
   Coins,
   SidebarClose,
@@ -18,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"; // pakai ShadCN UI
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { User, Settings, HelpCircle, LogOut } from "lucide-react";
 import Logo from "@/components/Logo";
@@ -41,10 +37,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
   return (
     <div
       className={`${
-        mini ? "w-16 border-r" : "w-64"
-      } bg-[var(--sidebar)] text-[var(--sidebar-foreground)] flex flex-col overflow-hidden transition-all duration-300`}
+        mini ? "w-16" : "w-64"
+      } dark:bg-black bg-neutral-200 border text-[var(--sidebar-foreground)] rounded-2xl mr-2 flex flex-col overflow-hidden transition-all duration-300`}
     >
-      {/* Logo + mini toggle */}
       <div
         className={`p-4 flex items-center ${
           mini ? "justify-center" : "justify-between"
@@ -60,7 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
           {mini && (
             <SidebarOpen
               size={18}
-              className="absolute text-[var(--primary-foreground)] opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              className="absolute dark:text-[var(--primary-foreground)] opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
               onClick={() => setMini(false)}
             />
           )}
@@ -83,7 +78,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
         )}
       </div>
 
-      {/* Sidebar Menu */}
       <div className="p-2">
         <SidebarItem
           icon={<Plus size={18} />}
@@ -96,17 +90,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
 
       {!mini && (
         <div className="p-2">
-          <button
+          <span
             onClick={() => setGptExpanded(!gptExpanded)}
-            className="px-3 py-2 flex justify-between text-gray-400 hover:text-white w-full"
+            className="px-3 py-2 flex justify-between cursor-pointer text-gray-400 dark:hover:text-neutral-500 hover:text-black w-full"
           >
-            <span className="text-sm text-muted">Your Chats</span>
+            <span className="text-sm dark:text-muted text-neutral-700">Your Chats</span>
             <ChevronDown
               className={`transition-transform ${
                 gptExpanded ? "rotate-0" : "-rotate-90"
               }`}
             />
-          </button>
+          </span>
 
           {gptExpanded && (
             <div className="mt-1 space-y-1">
@@ -131,7 +125,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
 
       <div className="flex-1"></div>
 
-      {/* Profile Dropdown ShadCN UI */}
       <div className={`${mini ? "py-2" : "px-2 py-3"} border-t border-white/10`}>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>

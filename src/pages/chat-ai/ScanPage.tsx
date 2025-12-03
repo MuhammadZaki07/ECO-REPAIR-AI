@@ -271,11 +271,9 @@ export function ScanPage() {
   const handleSendAction = handleSubmit;
 
   return (
-    // Menggunakan dark background untuk tampilan Next.js modern
     <div className="relative w-full h-full">
       <Header headerAI/>
       <div className="max-w-7xl mx-auto mt-10 px-6 py-8 grid grid-cols-1 lg:grid-cols-5 gap-8">
-        {/* KOLOM KIRI (VISUAL INPUT & CONTEXT - 40%) */}
         <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
           {/* JUDUL DAN TOMBOL NEW DIAGNOSIS */}
           <div className="flex justify-between items-center mb-4">
@@ -378,10 +376,8 @@ export function ScanPage() {
           </div>
         </div>
 
-        {/* KOLOM KANAN (AI CHAT INTERFACE - 60%) */}
         <div className="lg:col-span-3 order-1 lg:order-2">
           <Card className="bg-neutral-950 h-[85vh] flex flex-col border border-white/10 rounded-xl">
-            {/* Chat History Area - Menggunakan ScrollArea */}
             <ScrollArea className="flex-1 p-6 space-y-6 overflow-y-hidden">
               {chatHistory.map((msg) => (
                 <ChatBubble key={msg.id} message={msg} />
@@ -389,7 +385,6 @@ export function ScanPage() {
               <div ref={chatEndRef} />
             </ScrollArea>
 
-            {/* Chat Input Area (Kode Anda diintegrasikan di sini) */}
             <div className="p-4 border-t border-white/10">
               <div className="bg-black border border-border rounded-xl overflow-hidden shadow-2xl">
                 <input

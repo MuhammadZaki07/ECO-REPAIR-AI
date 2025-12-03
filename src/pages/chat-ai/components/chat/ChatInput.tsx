@@ -19,9 +19,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({ input, setInput, handleSen
   };
 
   return (
-    <div className="bg-[var(--card)] border-t border-[var(--border)] px-4 py-4">
+    <div className="px-4 py-4">
       <div className="max-w-3xl mx-auto">
-        <div className="flex items-end gap-3 bg-[var(--input)] rounded-2xl px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-3 dark:bg-black bg-neutral-200 border rounded-2xl px-4 py-3 shadow-sm">
           <textarea
             ref={textareaRef}
             value={input}
