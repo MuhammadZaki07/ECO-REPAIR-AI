@@ -30,13 +30,13 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     >
       <DottedGlowBackground
         className="absolute inset-0 pointer-events-none w-full h-full"
-        opacity={1}
+        opacity={0.8}
         gap={10}
         radius={1.6}
-        colorLightVar="--color-neutral-500"
-        glowColorLightVar="--color-neutral-600"
-        colorDarkVar="--color-neutral-500"
-        glowColorDarkVar="--color-sky-800"
+        colorLightVar="--primary"
+        glowColorLightVar="--primary-glow"
+        colorDarkVar="--primary"
+        glowColorDarkVar="--primary-glow"
         backgroundOpacity={0}
         speedMin={0.3}
         speedMax={1.6}
@@ -64,7 +64,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         Eco Repair Ai
       </span>
 
-      <div className="relative z-10 h-full w-full max-w-4xl mx-auto flex flex-col px-6 pt-18 pb-5 overflow-y-auto space-y-3">
+      <div className="relative z-10 h-full w-full max-w-7xl custom-scroll mx-auto flex flex-col px-40 pt-18 pb-5 overflow-y-auto space-y-3">
         {messages.map((msg) => (
           <ChatMessage role={msg.role} key={msg.id} {...msg} />
         ))}

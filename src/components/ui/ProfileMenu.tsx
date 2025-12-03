@@ -14,8 +14,9 @@ import { AuthService } from "@/services/auth/AuthService";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
-  const { user } = useAuthContext();
-  if (!user) return null;
+  const { user, userData } = useAuthContext();
+  if (!userData) return null;
+
   const { avatarUrl, initial, bgColor } = getUserAvatar(user);
 
   const handleLogout = async () => {
@@ -40,7 +41,6 @@ export function ProfileMenu() {
                 src={avatarUrl || undefined}
                 alt={initial}
                 className="object-cover w-full h-full"
-                onError={(e) => (e.currentTarget.src = "")}
               />
             ) : (
               <AvatarFallback className="text-white font-semibold">
@@ -52,13 +52,17 @@ export function ProfileMenu() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-40 mt-3">
-        <Link to="/admin/dashboard">
+        <Link
+          to={userData?.role == "user" ? "/user/dashboard" : "/admin/dashboard"}
+        >
           <DropdownMenuItem className="cursor-pointer">
             Dashboard
           </DropdownMenuItem>
         </Link>
 
-        <Link to="/admin/profile">
+        <Link
+          to={'/'}
+        >
           <DropdownMenuItem className="cursor-pointer">
             Profile
           </DropdownMenuItem>

@@ -1,10 +1,11 @@
 import AuthGuard from "@/guards/AuthGuard";
 import { AdminLayout } from "@/layouts";
+import UserLayout from "@/layouts/UserLayout";
 import Dashboard from "@/pages/admin/Dashboard";
 import AuthCallback from "@/pages/auth/callback";
-import ChatGPTClone from "@/pages/chat-ai/ChatGPTClone";
-import { ScanPage } from "@/pages/chat-ai/ScanPage";
+import ScanPage from "../pages/user/chat-ai/ScanPage";
 import type { RouteObject } from "react-router-dom";
+import MainDahsboard from "@/pages/user/Dashboard";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -15,22 +16,21 @@ export const protectedRoutes: RouteObject[] = [
       </AuthGuard>
     ),
   },
+
   {
-    path: "/scan",
+    path: "/user",
     element: (
       <AuthGuard>
-        <ScanPage />
+        <UserLayout />
       </AuthGuard>
     ),
+    children: [
+      { index: true, element: <MainDahsboard /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "scan", element: <ScanPage /> },
+    ],
   },
-  {
-    path: "/scan-2",
-    element: (
-      <AuthGuard>
-        <ChatGPTClone />
-      </AuthGuard>
-    ),
-  },
+
   {
     path: "/admin",
     element: (

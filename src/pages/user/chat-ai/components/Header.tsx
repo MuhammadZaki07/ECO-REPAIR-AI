@@ -4,24 +4,11 @@ import { Archive, Download, Share } from "lucide-react";
 
 export const Header = () => {
   return (
-    <header className="px-4 py-3 flex justify-between items-center">
-      
-      <div className="flex flex-col gap-1">
-        <BreadcrumbComponent />
-        <div className="text-2xl uppercase font-semibold text-[var(--foreground)]">
-          Eco Repair AI
-        </div>
-      </div>
-
-      <div className="flex items-center">
+    <header className="px-4 pb-5 flex justify-end items-center">
+      <div className="flex items-center gap-3">
         <button className="flex items-center font-normal cursor-pointer gap-2 hover:text-[var(--primary)] transition-colors">
           <Share size={18} />
           <span>Share</span>
-        </button>
-
-        <button className="flex items-center font-normal cursor-pointer gap-2 hover:text-[var(--primary)] transition-colors">
-          <Archive size={18} />
-          <span>Archive</span>
         </button>
 
         <button className="flex items-center font-normal cursor-pointer gap-2 hover:text-[var(--primary)] transition-colors">

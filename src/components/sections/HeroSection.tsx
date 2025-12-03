@@ -82,7 +82,7 @@ export function HeroSection() {
           </p>
 
           <div className="mt-12 flex gap-4 flex-row">
-            <Link to="/dashboard">
+            <Link to="/scan">
               <Button
                 size="lg"
                 className="cursor-pointer text-black hover:text-white hover:bg-primary/50 bg-[#aaff00]"
@@ -91,7 +91,7 @@ export function HeroSection() {
               </Button>
             </Link>
 
-            <Link to="" target="_blank">
+            <Link to="/sparepart">
               <Button
                 variant="outline"
                 size="lg"
@@ -111,7 +111,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* <div className="relative items-center justify-center pointer-events-none right-17 hidden lg:flex lg:right-0 md:right-0">
+        <div className="relative items-center justify-center pointer-events-none right-17 hidden lg:flex lg:right-0 md:right-0">
           <ParticleCircle
             particleCount={1600}
             shrinkDuration={11}
@@ -122,7 +122,7 @@ export function HeroSection() {
             enableBlendMode={true}
             size={600}
           />
-        </div> */}
+        </div>
       </div>
     </section>
   );

@@ -20,11 +20,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ role, content }) => {
       )}
 
       <div
-        className={`max-w-[80%] text-black dark:text-white px-4 py-3 backdrop-blur-xl rounded-lg dark:bg-white/5 bg-black/5 shadow-lg border dark:border-white/50
+        className={`max-w-[80%] text-black dark:text-white px-4 py-3 backdrop-blur-lg rounded-lg dark:bg-white/20 bg-black/5 shadow-lg border
     ${
       role === "user"
-        ? "flex items-center justify-end"
-        : "flex items-center justify-start"
+        ? "flex items-center justify-end dark:border-white/50"
+        : "flex items-center justify-start dark:border-primary/50"
     }`}
       >
         <p className="text-sm leading-relaxed whitespace-pre-wrap">{content}</p>
