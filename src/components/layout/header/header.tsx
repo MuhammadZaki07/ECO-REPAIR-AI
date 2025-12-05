@@ -1,7 +1,7 @@
 import { Equal, X } from "@aliimam/icons";
 import React from "react";
 import { cn } from "@/lib/utils";
-import menuItems from "@/data/ListMenuItems.json";
+import menuItems from "@/data/MenuItemsNavbar.json";
 import type { MenuItem } from "@/types/menu";
 import Logo from "@/components/Logo";
 import { Menus } from "./menus";
@@ -10,6 +10,7 @@ import { ProfileMenu } from "@/components/ui/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { LoginButton } from "@/components/LoginButton";
 import { useAuthContext } from "@/context/AuthContext";
+import GitHubButton from "@/components/GitHubButton";
 
 interface HeaderProps {
   headerAI?: boolean;
@@ -107,6 +108,7 @@ const Header: React.FC<HeaderProps> = ({
               <div className="flex w-full px-3 py-1 gap-3 items-center space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:gap-2 lg:gap-4">
                 <ModeToggle />
                 <LocaleSwitcher />
+                <GitHubButton />
                 {!headerAI && (
                   <div className="ml-auto sm:ml-0">
                     {user ? <ProfileMenu /> : <LoginButton />}

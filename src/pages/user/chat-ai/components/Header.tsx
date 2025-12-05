@@ -1,6 +1,5 @@
-import { BreadcrumbComponent } from "@/components/breadcrumb/BreadcrumbComponent";
 import { ModeToggle } from "@/components/layout/header/theme-switch";
-import { Archive, Download, Share } from "lucide-react";
+import { Download, ListRestart, Share } from "lucide-react";
 
 export const Header = () => {
   return (
@@ -9,6 +8,10 @@ export const Header = () => {
         <button className="flex items-center font-normal cursor-pointer gap-2 hover:text-[var(--primary)] transition-colors">
           <Share size={18} />
           <span>Share</span>
+        </button>
+        <button className="flex items-center font-normal cursor-pointer gap-2 hover:text-[var(--primary)] transition-colors">
+          <ListRestart size={18} />
+          <span>Reset</span>
         </button>
 
         <button className="flex items-center font-normal cursor-pointer gap-2 hover:text-[var(--primary)] transition-colors">

@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { FlickeringGrid } from "../flickering-grid";
 
 const SpotlightCard = ({
   children,

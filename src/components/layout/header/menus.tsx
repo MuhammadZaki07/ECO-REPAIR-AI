@@ -9,7 +9,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/layout/header/navigation-menu";
 import { cn } from "@/lib/utils";
-import menuItems from "@/data/ListMenuItems.json";
+import menuItems from "@/data/MenuItemsNavbar.json";
 import type { MenuItem } from "@/types/menu";
 import { useTranslation } from "react-i18next";
 

@@ -1,0 +1,42 @@
+[
+  {
+    "label": "Main Dashboard",
+    "icon": "home",
+    "path": "/user/dashboard"
+  },
+  {
+    "label": "Start Diagnosis",
+    "icon": "IconBolt",
+    "path": "/user/scan"
+  },
+  {
+    "label": "SparePart Hub",
+    "icon": "sparkle",
+    "path": "/user/sparepart"
+  },
+  {
+    "label": "Repair Kits & Tools",
+    "icon": "shoppingBag",
+    "path": "/user/shop"
+  },
+  {
+    "label": "EcoFix Hub Locator",
+    "icon": "map",
+    "path": "/user/maps"
+  },
+  {
+    "label": "Riwayat Perbaikan",
+    "icon": "replace",
+    "path": "/user/riwayat"
+  },
+  {
+    "label": "Eco Coin",
+    "icon": "coins",
+    "path": "/user/ecocoin"
+  },
+  {
+    "label": "Settings",
+    "icon": "settings",
+    "path": "/user/settings"
+  }
+]

@@ -1,6 +1,6 @@
 function MainDahsboard() {
   return (
-    <div>Dashboard User</div>
+     <div className="text-[10rem] text-center text-white w-full h-full">Dashboard</div>
   )
 }
 

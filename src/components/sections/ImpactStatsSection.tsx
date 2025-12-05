@@ -3,12 +3,15 @@ import { MagicCard } from "@/components/ui/magic-card";
 import { itemsImpact } from "../ImpactSection/itemsImpact";
 import { AnimatedCounter } from "../ui/AnimatedCounter";
 import { PointerHighlight } from "../ui/pointer-highlight";
+import {
+  SpotLightItem,
+  Spotlight,
+} from "@/components/ui/SpotlightCard/Spotlight-new";
 
 export function ImpactStatsSection() {
   const { t } = useTranslation();
 
   const data = itemsImpact(t);
-
   return (
     <section id="impact" className="py-24 md:py-32 dark:bg-black">
       <div className="max-w-7xl mx-auto px-6">
@@ -24,7 +27,7 @@ export function ImpactStatsSection() {
                 {t("impact_section.title.text_center")}
               </span>
             </PointerHighlight>
-             {t("impact_section.title.highlight")}
+            {t("impact_section.title.highlight")}
           </h2>
 
           <p className="mt-4 text-base sm:text-lg dark:text-white/60 text-neutral-800/70 max-w-xl sm:max-w-2xl md:max-w-3xl mx-auto leading-relaxed">
@@ -32,49 +35,39 @@ export function ImpactStatsSection() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {data.slice(0, 3).map((item, idx) => (
-              <MagicCard
-                key={idx}
-                className="p-8 flex flex-col items-center justify-center"
-              >
-                {item.icon}
-                <div className="text-5xl font-bold tracking-tight dark:text-white text-neutral-900">
-                  <AnimatedCounter
-                    end={item.value}
-                    duration={3}
-                    suffix={item.suffix}
-                  />
+        <Spotlight
+          className="
+    grid gap-3 
+    grid-rows-2 
+    grid-cols-3 
+    auto-rows-fr
+  "
+        >
+          {data?.map((box, index) => (
+            <SpotLightItem
+              key={index}
+              className={`
+        ${index === 3 ? "col-start-1 col-end-3" : ""}
+        ${index === 4 ? "col-start-3 col-end-4" : ""}
+      `}
+            >
+              <div className="relative z-10 rounded-lg bg-linear-to-b dark:from-[#0c0c0c] dark:to-[#252525] bg-neutral-300 w-full h-full">
+                <div className="rounded-lg grid place-content-center h-full 2xl:p-3 p-0 w-full">
+                  <div className="absolute rounded-lg top-0 left-0 h-full w-full -z-10 bg-center bg-cover" />
+                  <div className="mx-auto">
+                  {box.icon}
+                  </div>
+                  <h1 className="text-center xl:text-2xl lg:text-xl text-2xl font-semibold">
+                    {box?.value} {box?.suffix}
+                  </h1>
+                  <p className="text-center lg:text-base text-xs">
+                    {box?.label}
+                  </p>
                 </div>
-                <p className="mt-5 text-sm dark:text-white/60 text-neutral-800 text-center">
-                  {item.label}
-                </p>
-              </MagicCard>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
-            {data.slice(3).map((item, idx) => (
-              <MagicCard
-                key={idx}
-                className="p-8 flex flex-col items-center justify-center"
-              >
-                {item.icon}
-                <div className="text-5xl font-bold tracking-tight dark:text-white text-neutral-900">
-                  <AnimatedCounter
-                    end={item.value}
-                    duration={3}
-                    suffix={item.suffix}
-                  />
-                </div>
-                <p className="mt-5 text-sm dark:text-white/60 text-neutral-800 text-center">
-                  {item.label}
-                </p>
-              </MagicCard>
-            ))}
-          </div>
-        </div>
+              </div>
+            </SpotLightItem>
+          ))}
+        </Spotlight>
       </div>
     </section>
   );

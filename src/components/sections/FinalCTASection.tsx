@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FlickeringGrid } from "../ui/flickering-grid";
 import { Ripple } from "../ui/ripple";
+import { LiquidButton } from "../liquid-glass-button";
 
 export function FinalCTASection() {
   const { t } = useTranslation();
@@ -44,23 +45,11 @@ export function FinalCTASection() {
 
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 w-full">
               <Link to={"/scan"} className="w-full sm:w-auto">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="w-full cursor-pointer sm:w-auto text-white border-white/30 dark:hover:bg-white/10 bg-neutral-600 font-semibold text-lg py-3 px-8 transition-colors duration-300"
-                >
-                  {t("final_cta.cta_scan")}
-                </Button>
+                <LiquidButton className="dark:text-white text-black cursor-pointer" size={'lg'}>{t("final_cta.cta_scan")}</LiquidButton>
               </Link>
 
               <Link to={"/dashboard/hubs"} className="w-full sm:w-auto">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full cursor-pointer sm:w-auto text-white border-white/30 dark:hover:bg-white/10 bg-neutral-600 font-semibold text-lg py-3 px-8 transition-colors duration-300"
-                >
-                  {t("final_cta.cta_reward")}
-                </Button>
+                <LiquidButton className="dark:text-white text-black cursor-pointer" size={'lg'}>{t("final_cta.cta_reward")}</LiquidButton>
               </Link>
             </div>
           </div>

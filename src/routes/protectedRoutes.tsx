@@ -18,7 +18,7 @@ export const protectedRoutes: RouteObject[] = [
   },
 
   {
-    path: "/user",
+    path: `${import.meta.env.VITE_URL_USER}`,
     element: (
       <AuthGuard>
         <UserLayout />
@@ -26,13 +26,13 @@ export const protectedRoutes: RouteObject[] = [
     ),
     children: [
       { index: true, element: <MainDahsboard /> },
-      { path: "dashboard", element: <Dashboard /> },
+      { path: "dashboard", element: <MainDahsboard /> },
       { path: "scan", element: <ScanPage /> },
     ],
   },
 
   {
-    path: "/admin",
+    path: `${import.meta.env.VITE_URL_ADMIN}`,
     element: (
       <AuthGuard>
         <AdminLayout />

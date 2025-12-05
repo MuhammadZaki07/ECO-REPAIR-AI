@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { User, Settings, HelpCircle, LogOut } from "lucide-react";
+import { User, HelpCircle, LogOut } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useAuthContext } from "@/context/AuthContext";
 import { getUserAvatar } from "@/utils/getUserAvatar";
@@ -28,10 +28,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { AuthService } from "@/services/auth/AuthService";
 import { useNavigate } from "react-router-dom";
 import { SidebarItem } from "./SidebarItem";
+import menuJson from "@/data/user/MenuItemsSidebar.json";
+import { IconBolt } from "@tabler/icons-react";
 
 interface SidebarProps {
   onNewChat: () => void;
 }
+
+const iconMap: any = {
+  home: Home,
+  user2: User2,
+  sparkle: Sparkle,
+  shoppingBag: ShoppingBag,
+  map: Map,
+  replace: Replace,
+  coins: Coins,
+  settings: SettingsIcon,
+  IconBolt: IconBolt,
+};
 
 export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
   const navigate = useNavigate();
@@ -43,7 +57,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
   ]);
 
   const { user } = useAuthContext();
-  // if (!user) return null;
   const { avatarUrl, initial, bgColor } = getUserAvatar(user);
 
   const handleLogout = async () => {
@@ -59,12 +72,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
     <div
       className={`${
         mini ? "w-18" : "w-64"
-      } dark:bg-black bg-neutral-200 border text-[var(--sidebar-foreground)] rounded-2xl mr-2 flex flex-col overflow-hidden transition-all duration-300`}
+      } dark:bg-black shadow shadow-sidebar-accent-foreground bg-neutral-200  text-[var(--sidebar-foreground)] rounded-2xl mr-2 flex flex-col overflow-hidden transition-all duration-300`}
     >
       <div
         className={`p-4 flex items-center ${
           mini ? "justify-center" : "justify-between"
-        } relative group cursor-pointer`}
+        } relative group`}
       >
         <div className="w-8 h-8 rounded-full flex items-center justify-center relative">
           {mini && (
@@ -98,50 +111,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
       </div>
 
       <div className="p-2 flex flex-col gap-2.5">
-        <SidebarItem
-          icon={<Home size={20} />}
-          label="Main Dashboard"
-          active
-          onClick={() => navigate("/user/dashboard")}
-          mini={mini}
-        />
-        <SidebarItem
-          icon={<User2 size={20} />}
-          label="Eco Repair AI"
-          onClick={() => navigate("/user/scan")}
-          mini={mini}
-        />
-        <SidebarItem
-          icon={<Sparkle size={20} />}
-          label="SparePart Hub"
-          onClick={onNewChat}
-          mini={mini}
-        />
-        <SidebarItem
-          icon={<ShoppingBag size={20} />}
-          label="Shop"
-          onClick={onNewChat}
-          mini={mini}
-        />
-        <SidebarItem
-          icon={<Map size={20} />}
-          label="Maps"
-          onClick={onNewChat}
-          mini={mini}
-        />
-        <SidebarItem
-          icon={<Replace size={20} />}
-          label="Riwayat"
-          onClick={onNewChat}
-          mini={mini}
-        />
-        <SidebarItem icon={<Coins size={20} />} label="Eco coin" mini={mini} />
-        <SidebarItem
-          icon={<SettingsIcon size={20} />}
-          label="Setiings"
-          onClick={onNewChat}
-          mini={mini}
-        />
+        {menuJson.map((item, i) => {
+          const Icon = iconMap[item.icon];
+
+          return (
+            <SidebarItem
+              key={i}
+              icon={<Icon size={20} />}
+              label={item.label}
+              active={location.pathname.startsWith(item.path)}
+              onClick={() => navigate(item.path)}
+              mini={mini}
+            />
+          );
+        })}
       </div>
 
       <div className="flex-1"></div>

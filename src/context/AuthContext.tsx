@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { data } = await supabase.auth.getSession();
       setSession(data.session || null);
       setUser(data.session?.user ?? null);
+      setLoading(false);
     };
 
     loadSession();
@@ -57,21 +58,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const fetchUserData = async () => {
       if (!user) {
         setUserData(null);
-        setLoading(false);
         return;
       }
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("users")
         .select("*")
         .eq("auth_id", user.id)
         .single();
 
-      if (!error) {
-        setUserData(data);
-      }
-
-      setLoading(false);
+      setUserData(data ?? null);
     };
 
     fetchUserData();

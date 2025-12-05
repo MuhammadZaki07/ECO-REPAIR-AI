@@ -7,12 +7,36 @@ interface Props {
 }
 
 export default function AuthGuard({ children }: Props) {
-  const { user, loading } = useAuthContext();
+  const { user, userData, loading } = useAuthContext();
   const location = useLocation();
 
   if (loading) return null;
 
-  return user
-    ? children
-    : <Navigate to="/auth/login" replace state={{ from: location }} />;
+  if (!user) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  if (!userData) return null;
+
+  const role = userData.role;
+
+  const ADMIN_BASE = import.meta.env.VITE_URL_ADMIN;
+  const USER_BASE = import.meta.env.VITE_URL_USER;
+
+  const isAdminRoute = location.pathname.startsWith(ADMIN_BASE);
+  const isUserRoute = location.pathname.startsWith(USER_BASE);
+
+  if (isUserRoute && role !== "user") {
+    if (location.pathname !== ADMIN_BASE) {
+      return <Navigate to={ADMIN_BASE} replace />;
+    }
+  }
+
+  if (isAdminRoute && role !== "admin") {
+    if (location.pathname !== USER_BASE) {
+      return <Navigate to={USER_BASE} replace />;
+    }
+  }
+
+  return children;
 }

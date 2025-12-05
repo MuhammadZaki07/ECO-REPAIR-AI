@@ -8,6 +8,7 @@ import { Cover } from "../ui/cover";
 import { Leaf } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
+import { LiquidButton } from "../liquid-glass-button";
 
 /**
  * HeroSection – Responsive, Clean, AI-themed
@@ -56,7 +57,13 @@ export function HeroSection() {
         xOffset={80}
       />
 
-      <div className={`relative ${i18n.language == "id" ? "lg:mt-0 top-25 lg:top-0 md:top-0" : "lg:mt-[30px] top-25 lg:-top-8 md:top-0"} z-20 lg:grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]`}>
+      <div
+        className={`relative ${
+          i18n.language == "id"
+            ? "lg:mt-0 top-25 lg:top-0 md:top-0"
+            : "lg:mt-[30px] top-25 lg:-top-8 md:top-0"
+        } z-20 lg:grid min-h-screen items-center gap-12 md:grid-cols-[1.2fr_0.8fr]`}
+      >
         <div className="flex flex-col items-start max-w-2xl text-left lg:mt-20 md:mt-0">
           <div className="flex items-center gap-3 mb-5 lg:mb-0">
             <div className="h-1.5 w-20 rounded-full bg-[#aaff00] opacity-80 blur-[1px]" />
@@ -74,7 +81,15 @@ export function HeroSection() {
                 -AI
               </span>
             </span>
-            <span className={`block ${i18n.language == "id" ? "sm:text-5xl md:text-6xl lg:text-[4rem] mt-4" : ""}`}>{t("hero.title_main")}</span>
+            <span
+              className={`block ${
+                i18n.language == "id"
+                  ? "sm:text-5xl md:text-6xl lg:text-[4rem] mt-4"
+                  : ""
+              }`}
+            >
+              {t("hero.title_main")}
+            </span>
           </h1>
 
           <p className="mt-6 lg:max-w-lg max-w-xs dark:text-neutral-300/80 text-neutral-900 text-base sm:text-lg md:text-xl leading-relaxed">
@@ -82,31 +97,16 @@ export function HeroSection() {
           </p>
 
           <div className="mt-12 flex gap-4 flex-row">
-            <Link to="/scan">
-              <Button
-                size="lg"
-                className="cursor-pointer text-black hover:text-white hover:bg-primary/50 bg-[#aaff00]"
-              >
+            <Link to="/user/scan">
+              <LiquidButton size="xl" className="cursor-pointer dark:text-white text-black">
                 {t("hero.button_start")}
-              </Button>
+              </LiquidButton>
             </Link>
 
             <Link to="/sparepart">
-              <Button
-                variant="outline"
-                size="lg"
-                className="
-                cursor-pointer
-                  border-neutral-500/50 dark:text-white text-black
-                  backdrop-blur-sm
-                  hover:bg-white/5
-                  hover:border-neutral-300/80
-                  transition-all duration-300
-                  !hover:text-white
-                "
-              >
+              <LiquidButton size="xl" className="cursor-pointer dark:text-white text-black">
                 {t("hero.button_sparepart")}
-              </Button>
+              </LiquidButton>
             </Link>
           </div>
         </div>
