@@ -1,14 +1,9 @@
-// src/app/user/scan/page.tsx
-
-"use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { Header } from "./components/Header";
 import { ChatContainer } from "./components/chat/ChatContainer";
 import { ChatInput } from "./components/chat/ChatInput";
-import type { ChatMessageProps } from "@/types/chat-ai"; // Import interface
+import type { ChatMessageProps } from "@/types/chat-ai";
 
-// --- DUMMY DATA UNTUK DEMONSTRASI UI ---
 const DUMMY_MESSAGES_INITIAL: ChatMessageProps[] = [
     {
         id: 1,
@@ -43,45 +38,36 @@ const DUMMY_MESSAGES_INITIAL: ChatMessageProps[] = [
         ],
     },
 ];
-// --- AKHIR DUMMY DATA ---
 
 export default function ScanPage() {
-    // Chat & Input States
     const [messages, setMessages] = useState<ChatMessageProps[]>(DUMMY_MESSAGES_INITIAL);
     const [input, setInput] = useState("");
     const [files, setFiles] = useState<File[]>([]);
     
-    // UI/Flow States
     const [isAILoading, setIsAILoading] = useState(false);
-    const [diagnosisStage, setDiagnosisStage] = useState(1); // 1 = Diagnosis Selesai
+    const [diagnosisStage, setDiagnosisStage] = useState(1);
     const [ecoCoinReward, setEcoCoinReward] = useState<number | null>(500);
     const [isClaimed, setIsClaimed] = useState(false);
 
-    // DUMMY LOGIC
     const handleSend = () => {
         if (!input.trim() && files.length === 0) return;
 
-        // 1. Simulasikan pengiriman pesan pengguna
         const userMessage: ChatMessageProps = {
             id: Date.now(),
             type: "user",
-            text: input, // Di sini nanti akan ada foto Base64
+            text: input,
         };
         setMessages(prev => [...prev, userMessage]);
         setInput("");
         setFiles([]);
 
-        // 2. Reset status klaim dan naikkan ID
         setDiagnosisStage(0); 
         setIsClaimed(false);
         
-        // 3. Simulasikan Loading
         setIsAILoading(true);
         
-        // 4. Setelah 3 detik, simulasikan respons (Anda akan ganti ini dengan API Call)
         setTimeout(() => {
             setIsAILoading(false);
-            // Simulasikan AI mengirim respons baru
             const aiMessage: ChatMessageProps = {
                 id: Date.now() + 1,
                 type: "ai",
@@ -93,7 +79,7 @@ export default function ScanPage() {
                 }],
             };
             setMessages(prev => [...prev, aiMessage]);
-            setDiagnosisStage(1); // Kembali ke tahap konfirmasi
+            setDiagnosisStage(1);
         }, 3000); 
     };
 
@@ -101,11 +87,10 @@ export default function ScanPage() {
         alert(`Sukses! ${ecoCoinReward} Eco Coins ditambahkan ke saldo Anda.`);
         setIsClaimed(true);
     };
-
-
+    
     return (
         <div className="flex h-screen p-3 pt-20 dark:bg-black bg-neutral-100">
-            <div className="flex-1 flex flex-col h-full rounded-xl overflow-hidden bg-neutral-950/20 backdrop-blur-md border border-neutral-700/50">
+            <div className="flex-1 flex flex-col h-full">
                 <Header />
                 <ChatContainer 
                     messages={messages} 

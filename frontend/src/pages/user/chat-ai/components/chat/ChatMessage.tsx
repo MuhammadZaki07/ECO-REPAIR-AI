@@ -1,11 +1,8 @@
-// src/app/user/scan/components/chat/ChatMessage.tsx
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, User, ShieldAlert, Wrench, Cog, Cpu, type JSX } from "lucide-react";
-import React from "react";
-import type { RepairStep, ChatMessageProps } from "@/types/chat-ai"; // Import interfaces
-
+import { Sparkles, User, ShieldAlert, Wrench, Cog, Cpu } from "lucide-react";
+import React, { type JSX } from "react";
+import type { RepairStep, ChatMessageProps } from "@/types/chat-ai";
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   type,
   text,

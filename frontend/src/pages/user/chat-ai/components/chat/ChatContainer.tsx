@@ -1,5 +1,3 @@
-// src/app/user/scan/components/chat/ChatContainer.tsx
-
 import { useEffect, useRef } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { EcoCoinRewardCard } from "./EcoCoinRewardCard";
@@ -8,7 +6,7 @@ import type { ChatMessageProps } from "@/types/chat-ai";
 interface ChatContainerProps {
   messages: ChatMessageProps[];
   isAILoading: boolean;
-  diagnosisStage: number; // 1 = Diagnosis Selesai, 0 = Input
+  diagnosisStage: number;
   ecoCoinReward: number | null;
   isClaimed: boolean;
   onClaim: () => void;
@@ -43,12 +41,10 @@ export const ChatContainer = ({
         </div>
       )}
 
-      {/* TAMPILKAN KARTU REWARD ECO COIN SECARA KONDISIONAL */}
       {diagnosisStage === 1 && ecoCoinReward && !isClaimed && (
         <EcoCoinRewardCard reward={ecoCoinReward} onClaim={onClaim} />
       )}
       
-      {/* Pesan Selesai Klaim */}
       {isClaimed && (
         <div className="flex justify-center mt-6">
             <p className="text-neutral-400 italic text-sm">✅ Koin berhasil diklaim. Cek saldo Anda di halaman Eco Coin!</p>
