@@ -8,102 +8,66 @@ export default function ScanPage() {
   const [input, setInput] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [isAILoading, setIsAILoading] = useState(false);
-  const [diagnosisStage, setDiagnosisStage] = useState(1);
-
-  // const handleSend = async () => {
-  //   if (!input.trim() && files.length === 0) return;
-
-  //   const userMessage: ChatMessageProps = {
-  //     id: Date.now(),
-  //     type: "user",
-  //     text: input,
-  //   };
-  //   setMessages((prev) => [...prev, userMessage]);
-
-  //   setInput("");
-  //   setFiles([]);
-  //   setDiagnosisStage(0);
-  //   setIsAILoading(true);
-
-  //   let imageBase64: string | null = null;
-  //   if (files.length > 0) {
-  //     const file = files[0];
-  //     const reader = new FileReader();
-  //     imageBase64 = await new Promise((resolve) => {
-  //       reader.onloadend = () =>
-  //         resolve(reader.result?.toString().split(",")[1] || "");
-  //       reader.readAsDataURL(file);
-  //     });
-  //   }
-
-  //   try {
-  //     const res = await fetch("http://localhost:3001/api/diagnose", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         description: input,
-  //         imageBase64,
-  //       }),
-  //     });
-
-  //     const data = await res.json();
-
-  //     const aiMessage: ChatMessageProps = {
-  //       id: Date.now() + 1,
-  //       type: "ai",
-  //       text: data.aiResponse || "AI tidak memberikan respons.",
-  //       steps: [],
-  //     };
-
-  //     setMessages((prev) => [...prev, aiMessage]);
-  //     setDiagnosisStage(1);
-  //   } catch (error) {
-  //     setMessages((prev) => [
-  //       ...prev,
-  //       {
-  //         id: Date.now() + 1,
-  //         type: "ai",
-  //         text: "Terjadi error saat memproses AI.",
-  //       },
-  //     ]);
-  //   }
-
-  //   setIsAILoading(false);
-  // };
 
   const handleSend = async () => {
     if (!input.trim() && files.length === 0) return;
-
-    let preview = null;
-
-    if (files.length > 0) {
-      preview = URL.createObjectURL(files[0]);
-    }
 
     const userMessage: ChatMessageProps = {
       id: Date.now(),
       type: "user",
       text: input,
-      image: preview,
     };
-
     setMessages((prev) => [...prev, userMessage]);
 
     setInput("");
     setFiles([]);
     setIsAILoading(true);
 
-    await new Promise((r) => setTimeout(r, 800));
+    let imageBase64: string | null = null;
+    if (files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      imageBase64 = await new Promise((resolve) => {
+        reader.onloadend = () =>
+          resolve(reader.result?.toString().split(",")[1] || "");
+        reader.readAsDataURL(file);
+      });
+    }
 
-    const aiMessage: ChatMessageProps = {
-      id: Date.now() + 1,
-      type: "ai",
-      text: "Ini jawaban dummy buat testing UI.",
-    };
+    try {
+      const res = await fetch("http://localhost:3001/api/diagnose", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          description: input,
+          imageBase64,
+        }),
+      });
 
-    setMessages((prev) => [...prev, aiMessage]);
+      const data = await res.json();
+
+      const aiMessage: ChatMessageProps = {
+        id: Date.now() + 1,
+        type: "ai",
+        text: data.aiResponse || "AI tidak memberikan respons.",
+        steps: [],
+      };
+
+      setMessages((prev) => [...prev, aiMessage]);
+      setDiagnosisStage(1);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          type: "ai",
+          text: "Terjadi error saat memproses AI.",
+        },
+      ]);
+    }
+
     setIsAILoading(false);
   };
 
