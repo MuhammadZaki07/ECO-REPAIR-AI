@@ -1,57 +1,90 @@
-import { useEffect, useRef } from "react";
+import { DottedGlowBackground } from "@/components/ui/dotted-glow-background";
 import { ChatMessage } from "./ChatMessage";
-import { EcoCoinRewardCard } from "./EcoCoinRewardCard";
-import type { ChatMessageProps } from "@/types/chat-ai";
+import { useEffect, useRef } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface ChatMessageProps {
+  id: number;
+  type: "user" | "ai";
+  text: string;
+  image?: string | null;
+  steps?: any;
+}
 
 interface ChatContainerProps {
   messages: ChatMessageProps[];
-  isAILoading: boolean;
-  diagnosisStage: number;
-  ecoCoinReward: number | null;
-  isClaimed: boolean;
-  onClaim: () => void;
+  loading: boolean;
 }
 
-export const ChatContainer = ({
+export const ChatContainer: React.FC<ChatContainerProps> = ({
   messages,
-  isAILoading,
-  diagnosisStage,
-  ecoCoinReward,
-  isClaimed,
-  onClaim,
-}: ChatContainerProps) => {
-  const bottomRef = useRef<HTMLDivElement>(null);
+  loading,
+}) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isAILoading]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  const isEmpty = messages.length === 0;
 
   return (
-    <div className="relative h-full w-full overflow-y-auto custom-scroll px-10 py-6 space-y-4 dark:bg-black">
-      
-      {messages.map((msg) => (
-        <ChatMessage key={msg.id} {...msg} />
-      ))}
+    <div className="relative w-full h-screen overflow-hidden bg-black/5 dark:bg-black">
+      {!isEmpty && (
+        <>
+          <DottedGlowBackground
+            className="absolute inset-0 pointer-events-none"
+            opacity={0.8}
+            gap={10}
+            radius={1.6}
+            colorLightVar="--primary"
+            glowColorLightVar="--primary-glow"
+            colorDarkVar="--primary"
+            glowColorDarkVar="--primary-glow"
+            backgroundOpacity={0}
+            speedMin={0.3}
+            speedMax={1.6}
+            speedScale={1}
+          />
 
-      {isAILoading && (
-        <div className="flex justify-start">
-             <div className="w-fit max-w-xs p-3 rounded-lg bg-neutral-900/60 backdrop-blur-xl border-neutral-700 ml-12 animate-pulse">
-                <span className="text-emerald-400 font-medium">EcoRepair AI sedang menganalisis...</span>
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-black/80 dark:via-black/0 dark:to-black/80" />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-black/80 dark:via-black/0 dark:to-black/80" />
+
+          <span className="absolute inset-0 flex items-center justify-center text-[clamp(4rem,15vw,8rem)] font-bold text-primary/15 select-none pointer-events-none text-center">
+            Eco Repair Ai
+          </span>
+        </>
+      )}
+
+      <div className="relative z-10 h-full w-full max-w-7xl custom-scroll mx-auto flex flex-col px-40 pt-18 pb-5 overflow-y-auto space-y-3">
+        {isEmpty && (
+          <div className="text-center font-bold text-5xl mt-25 text-neutral-500 dark:text-white">
+            Butuh bantuan nge-diagnosa kerusakan?
+          </div>
+        )}
+
+        {messages.map((msg) => (
+          <ChatMessage
+            key={msg.id}
+            type={msg.type}
+            text={msg.text}
+            image={msg.image}
+            steps={msg.steps}
+          />
+        ))}
+
+        {loading && (
+          <div className="flex justify-start">
+            <div className="mr-3 w-10 h-10 rounded-full bg-neutral-900/80 border border-neutral-700 flex items-center justify-center" />
+            <div className="space-y-2 py-2">
+              <Skeleton className="h-4 w-48 bg-neutral-800" />
+              <Skeleton className="h-4 w-32 bg-neutral-800" />
             </div>
-        </div>
-      )}
+          </div>
+        )}
 
-      {diagnosisStage === 1 && ecoCoinReward && !isClaimed && (
-        <EcoCoinRewardCard reward={ecoCoinReward} onClaim={onClaim} />
-      )}
-      
-      {isClaimed && (
-        <div className="flex justify-center mt-6">
-            <p className="text-neutral-400 italic text-sm">✅ Koin berhasil diklaim. Cek saldo Anda di halaman Eco Coin!</p>
-        </div>
-      )}
-
-      <div ref={bottomRef} />
+        <div ref={messagesEndRef} />
+      </div>
     </div>
   );
 };

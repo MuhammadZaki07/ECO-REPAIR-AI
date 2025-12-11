@@ -47,7 +47,15 @@ const iconMap: any = {
   IconBolt: IconBolt,
 };
 
-export const Sidebar: React.FC<SidebarProps> = ({ onNewChat }) => {
+interface SidebarProps {
+  mini: boolean;
+  setMini: (v: boolean) => void;
+  open: boolean;
+  setOpen: (v: boolean) => void;
+}
+
+
+export const Sidebar: React.FC<SidebarProps> = () => {
   const navigate = useNavigate();
   const [mini, setMini] = useState(false);
   const [chats, setChats] = useState([

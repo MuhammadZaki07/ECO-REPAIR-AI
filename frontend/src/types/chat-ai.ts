@@ -9,4 +9,5 @@ export interface ChatMessageProps {
   type: "user" | "ai";
   text: string;
   steps?: RepairStep[];
+  image?: string;
 }
