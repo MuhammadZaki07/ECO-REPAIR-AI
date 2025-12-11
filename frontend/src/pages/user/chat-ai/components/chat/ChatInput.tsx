@@ -166,9 +166,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             }`}
           >
             <div
-              className={`flex items-center gap-2 transition-all ${
-                showButtonsBelow() ? "order-2 w-full justify-start pt-2" : ""
-              }`}
+              className={`flex items-center gap-2 transition-all`}
             >
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -215,7 +213,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               disabled={(input.trim() === "" && files.length === 0) || loading}
               className={`p-2 px-3 rounded-xl transition-all ${
                 !loading && (input.trim() || files.length > 0)
-                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow"
+                  ? "text-white bg-sidebar shadow"
                   : "bg-[var(--muted)] text-[var(--muted-foreground)] cursor-not-allowed"
               }`}
             >

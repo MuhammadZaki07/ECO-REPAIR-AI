@@ -16,6 +16,7 @@ export default function ScanPage() {
       id: Date.now(),
       type: "user",
       text: input,
+      image: files.length > 0 ? URL.createObjectURL(files[0]) : null,
     };
     setMessages((prev) => [...prev, userMessage]);
 
@@ -56,7 +57,6 @@ export default function ScanPage() {
       };
 
       setMessages((prev) => [...prev, aiMessage]);
-      setDiagnosisStage(1);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
