@@ -6,6 +6,7 @@ import AuthCallback from "@/pages/auth/callback";
 import ScanPage from "../pages/user/chat-ai/ScanPage";
 import type { RouteObject } from "react-router-dom";
 import MainDahsboard from "@/pages/user/Dashboard";
+import ProfilePage from "@/pages/user/Profile";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -27,6 +28,7 @@ export const protectedRoutes: RouteObject[] = [
     children: [
       { index: true, element: <MainDahsboard /> },
       { path: "dashboard", element: <MainDahsboard /> },
+      { path: "profile", element: <ProfilePage /> },
       { path: "scan", element: <ScanPage /> },
     ],
   },

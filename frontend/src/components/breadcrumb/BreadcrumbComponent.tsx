@@ -22,7 +22,7 @@ export function BreadcrumbComponent() {
   }));
 
   return (
-    <Breadcrumb>
+    <Breadcrumb className="pb-5">
       <BreadcrumbList>
         {paths.map((item, index) => (
           <React.Fragment key={index}>

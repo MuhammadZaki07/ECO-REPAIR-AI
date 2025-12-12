@@ -25,18 +25,13 @@
     "path": "/user/maps"
   },
   {
-    "label": "Riwayat Perbaikan",
-    "icon": "replace",
-    "path": "/user/riwayat"
-  },
-  {
     "label": "Eco Coin",
     "icon": "coins",
     "path": "/user/ecocoin"
   },
   {
-    "label": "Settings",
-    "icon": "settings",
-    "path": "/user/settings"
+    "label": "Profile",
+    "icon": "user2",
+    "path": "/user/profile"
   }
 ]
