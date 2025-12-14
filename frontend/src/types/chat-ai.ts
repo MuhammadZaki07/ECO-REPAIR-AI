@@ -1,13 +1,29 @@
-export interface RepairStep {
+export interface AISectionItem {
+  title: string;
+  description: string;
+}
+
+export interface AISection {
+  type: "analysis" | "impact" | "application" | "risk" | "next";
   label: string;
-  detail: string;
-  tag: "RISK!" | "TOOLS" | "STEPS" | "PARTS";
+  items: AISectionItem[];
+}
+
+export interface AIResponse {
+  title: string;
+  summary: string;
+  sections: AISection[];
 }
 
 export interface ChatMessageProps {
   id: number;
   type: "user" | "ai";
-  text: string;
-  steps?: RepairStep[];
-  image?: string;
+  text?: string;
+  image?: string | null;
+  data?: AIResponse;
+}
+
+export interface ChatContainerProps {
+  messages: ChatMessageProps[];
+  loading: boolean;
 }

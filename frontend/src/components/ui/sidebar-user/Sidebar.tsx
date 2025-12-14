@@ -11,6 +11,7 @@ import {
   Map,
   Replace,
   ShoppingBag,
+  Users,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -29,7 +30,7 @@ import { AuthService } from "@/services/auth/AuthService";
 import { useNavigate } from "react-router-dom";
 import { SidebarItem } from "./SidebarItem";
 import menuJson from "@/data/user/MenuItemsSidebar.json";
-import { IconBolt } from "@tabler/icons-react";
+import { IconBolt, IconTools } from "@tabler/icons-react";
 
 interface SidebarProps {
   onNewChat: () => void;
@@ -37,14 +38,17 @@ interface SidebarProps {
 
 const iconMap: any = {
   home: Home,
+  IconBolt: IconBolt,
+  tool: IconTools,
+  users: Users,
+  coins: Coins,
   user2: User2,
   sparkle: Sparkle,
   shoppingBag: ShoppingBag,
   map: Map,
+  tools: IconTools,
   replace: Replace,
-  coins: Coins,
   settings: SettingsIcon,
-  IconBolt: IconBolt,
 };
 
 interface SidebarProps {
@@ -58,12 +62,6 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = () => {
   const navigate = useNavigate();
   const [mini, setMini] = useState(false);
-  const [chats, setChats] = useState([
-    { id: 1, title: "Chat with Alice", active: true },
-    { id: 2, title: "Project discussion", active: false },
-    { id: 3, title: "Eco AI ideas", active: false },
-  ]);
-
   const { user } = useAuthContext();
   const { avatarUrl, initial, bgColor } = getUserAvatar(user);
 

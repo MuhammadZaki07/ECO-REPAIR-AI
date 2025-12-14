@@ -18,8 +18,8 @@ export default function ScanPage() {
       text: input,
       image: files.length > 0 ? URL.createObjectURL(files[0]) : null,
     };
-    setMessages((prev) => [...prev, userMessage]);
 
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setFiles([]);
     setIsAILoading(true);
@@ -38,22 +38,19 @@ export default function ScanPage() {
     try {
       const res = await fetch("http://localhost:3001/api/diagnose", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           description: input,
           imageBase64,
         }),
       });
 
-      const data = await res.json();
+      const result = await res.json();
 
       const aiMessage: ChatMessageProps = {
         id: Date.now() + 1,
         type: "ai",
-        text: data.aiResponse || "AI tidak memberikan respons.",
-        steps: [],
+        data: result.data,
       };
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -63,7 +60,11 @@ export default function ScanPage() {
         {
           id: Date.now() + 1,
           type: "ai",
-          text: "Terjadi error saat memproses AI.",
+          data: {
+            title: "Terjadi Kesalahan",
+            summary: "AI gagal memproses permintaan.",
+            sections: [],
+          },
         },
       ]);
     }

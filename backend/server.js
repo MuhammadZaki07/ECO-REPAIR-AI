@@ -36,31 +36,37 @@ app.post("/api/diagnose", async (req, res) => {
     }
 
     const systemInstruction = `
-Kamu adalah Eco Repair AI.
-Fokusmu hanya pada:
-- analisis kerusakan perangkat elektronik
-- troubleshooting teknis
-- rekomendasi perbaikan langkah demi langkah
+      Kamu adalah Environmental Science AI Assistant.
 
-Format jawaban:
-- Berikan deskripsi singkat masalah di "text"
-- Jika ada langkah perbaikan, buat array "steps" dengan field: tag, label, detail
-- Contoh JSON:
-{
-  "text": "Layar retak terdeteksi...",
-  "steps": [
-    { "tag": "RISK!", "label": "Hati-hati", "detail": "Jangan menyentuh layar retak" },
-    { "tag": "STEPS", "label": "Ganti layar", "detail": "Langkah 1: ... Langkah 2: ..." }
-  ]
-}
+      ATURAN KERAS:
+      - Output WAJIB JSON VALID
+      - TIDAK BOLEH ADA TEKS DI LUAR JSON
+      - Jika ragu, isi string kosong atau array kosong
 
-Jika user bertanya di luar konteks, jawab dengan sopan bahwa kamu hanya bisa memberikan bantuan terkait perbaikan perangkat.
-`;
+      SCHEMA WAJIB:
+      {
+        "title": "string",
+        "summary": "string",
+        "sections": [
+          {
+            "type": "analysis | impact | application | risk | next",
+            "label": "string",
+            "items": [
+              {
+                "title": "string",
+                "description": "string"
+              }
+            ]
+          }
+        ]
+      }
+      `;
 
     const prompt = `
     ${systemInstruction}
 
-    Pertanyaan user: ${description || "-"}
+    Pertanyaan user:
+    ${description || "-"}
     `;
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -79,10 +85,28 @@ Jika user bertanya di luar konteks, jawab dengan sopan bahwa kamu hanya bisa mem
       contents: [{ role: "user", parts }],
     });
 
-    const text = result.response.text();
-    res.json({ success: true, aiResponse: text });
+    let aiData;
+    try {
+      aiData = JSON.parse(result.response.text());
+    } catch {
+      aiData = {
+        title: "Response tidak valid",
+        summary: "AI gagal menghasilkan format data yang benar.",
+        sections: [],
+      };
+    }
+
+    aiData.title ??= "";
+    aiData.summary ??= "";
+    aiData.sections = Array.isArray(aiData.sections) ? aiData.sections : [];
+
+    res.json({
+      success: true,
+      data: aiData,
+    });
   } catch (err) {
     res.status(500).json({
+      success: false,
       error: "AI gagal memproses permintaan",
       detail: err?.message || err,
     });

@@ -5,8 +5,11 @@ import Dashboard from "@/pages/admin/Dashboard";
 import AuthCallback from "@/pages/auth/callback";
 import ScanPage from "../pages/user/chat-ai/ScanPage";
 import type { RouteObject } from "react-router-dom";
-import MainDahsboard from "@/pages/user/Dashboard";
 import ProfilePage from "@/pages/user/Profile";
+import DashboardUser from "@/pages/user/dashboard";
+import ResourcesCenter from "@/pages/user/resources-center";
+import CommunityForums from "@/pages/user/comunity";
+import EcoCoints from "@/pages/user/Eco-coints";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -26,10 +29,13 @@ export const protectedRoutes: RouteObject[] = [
       </AuthGuard>
     ),
     children: [
-      { index: true, element: <MainDahsboard /> },
-      { path: "dashboard", element: <MainDahsboard /> },
-      { path: "profile", element: <ProfilePage /> },
+      { index: true, element: <DashboardUser /> },
+      { path: "dashboard", element: <DashboardUser /> },
       { path: "scan", element: <ScanPage /> },
+      { path: "resources", element: <ResourcesCenter /> },
+      { path: "community", element: <CommunityForums /> },
+      { path: "ecocoin", element: <EcoCoints /> },
+      { path: "profile", element: <ProfilePage /> },
     ],
   },
 

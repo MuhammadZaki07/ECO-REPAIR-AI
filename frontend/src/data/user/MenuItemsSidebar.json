@@ -10,19 +10,14 @@
     "path": "/user/scan"
   },
   {
-    "label": "SparePart Hub",
-    "icon": "sparkle",
-    "path": "/user/sparepart"
+    "label": "Repair Resource Center",
+    "icon": "tools",
+    "path": "/user/resources"
   },
   {
-    "label": "Repair Kits & Tools",
-    "icon": "shoppingBag",
-    "path": "/user/shop"
-  },
-  {
-    "label": "EcoFix Hub Locator",
-    "icon": "map",
-    "path": "/user/maps"
+    "label": "Komunitas & Forum",
+    "icon": "users",
+    "path": "/user/community"
   },
   {
     "label": "Eco Coin",

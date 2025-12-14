@@ -2,19 +2,7 @@ import { DottedGlowBackground } from "@/components/ui/dotted-glow-background";
 import { ChatMessage } from "./ChatMessage";
 import { useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-
-interface ChatMessageProps {
-  id: number;
-  type: "user" | "ai";
-  text: string;
-  image?: string | null;
-  steps?: any;
-}
-
-interface ChatContainerProps {
-  messages: ChatMessageProps[];
-  loading: boolean;
-}
+import type { ChatContainerProps } from "@/types/chat-ai";
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({
   messages,
@@ -66,10 +54,11 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         {messages.map((msg) => (
           <ChatMessage
             key={msg.id}
+            id={msg.id}
             type={msg.type}
             text={msg.text}
             image={msg.image}
-            steps={msg.steps}
+            data={msg.data}
           />
         ))}
 
