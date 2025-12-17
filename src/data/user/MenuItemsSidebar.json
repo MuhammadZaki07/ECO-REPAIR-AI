@@ -1,0 +1,32 @@
+[
+  {
+    "label": "Main Dashboard",
+    "icon": "home",
+    "path": "/user/dashboard"
+  },
+  {
+    "label": "Start Diagnosis",
+    "icon": "IconBolt",
+    "path": "/user/scan"
+  },
+  {
+    "label": "Riwayat Diagnosis",
+    "icon": "clipboard",
+    "path": "/user/history"
+  },
+  {
+    "label": "Komunitas & Forum",
+    "icon": "users",
+    "path": "/user/community"
+  },
+  {
+    "label": "Eco Coin",
+    "icon": "coins",
+    "path": "/user/ecocoin"
+  },
+  {
+    "label": "Profile",
+    "icon": "user2",
+    "path": "/user/profile"
+  }
+]
