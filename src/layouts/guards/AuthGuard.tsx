@@ -28,13 +28,13 @@ export default function AuthGuard({ children }: Props) {
 
   if (isUserRoute && role !== "user") {
     if (location.pathname !== ADMIN_BASE) {
-      return <Navigate to={ADMIN_BASE} replace />;
+      return <Navigate to={"/403"} replace />;
     }
   }
 
   if (isAdminRoute && role !== "admin") {
     if (location.pathname !== USER_BASE) {
-      return <Navigate to={USER_BASE} replace />;
+      return <Navigate to={"/403"} replace />;
     }
   }
 

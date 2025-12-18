@@ -16,6 +16,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { DynamicSkeleton } from "@/components/skeletons";
+import { EmptyState } from "@/components/state/EmptyState";
+import { ErrorState } from "@/components/state/ErrorState";
 
 const DiagnosisHistoryPage: React.FC = () => {
   const { toast } = useToast();
@@ -68,10 +70,12 @@ const DiagnosisHistoryPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-6 max-w-xl mx-auto text-center border rounded-2xl bg-red-50 text-red-700">
-        <AlertTriangle className="h-6 w-6 mx-auto mb-3" />
-        <p>{error}</p>
-      </div>
+      <ErrorState
+        title="Terjadi Kesalahan"
+        description={error}
+        actionLabel="Coba Lagi"
+        onAction={refetch}
+      />
     );
   }
 
@@ -105,7 +109,7 @@ const DiagnosisHistoryPage: React.FC = () => {
             count={PAGE_SIZE}
           />
         )}
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {!isLoading &&
             paginatedRecords.map((record) => (
@@ -143,21 +147,21 @@ const DiagnosisHistoryPage: React.FC = () => {
             ))}
 
           {!isLoading && data.length === 0 && (
-            <div className="col-span-full text-center p-10 border rounded-2xl bg-secondary/30">
-              <h1 className="text-2xl font-bold">Belum ada data</h1>
-              <p className="text-muted-foreground mt-2">
-                Kamu belum pernah melakukan diagnosis.
-              </p>
+            <div className="col-span-full">
+              <EmptyState
+                title="Belum ada data"
+                description="Kamu belum pernah melakukan diagnosis."
+              />
             </div>
           )}
 
           {!isLoading && data.length > 0 && paginatedRecords.length === 0 && (
-            <div className="col-span-full text-center p-10 border rounded-2xl bg-secondary/30">
-              <Search className="w-6 h-6 mx-auto mb-3" />
-              <h1 className="text-2xl font-bold">Data tidak ditemukan</h1>
-              <p className="text-muted-foreground mt-2">
-                Coba ubah kata kunci pencarian.
-              </p>
+            <div className="col-span-full">
+              <EmptyState
+                icon={<Search className="w-6 h-6" />}
+                title="Data tidak ditemukan"
+                description="Coba ubah kata kunci pencarian."
+              />
             </div>
           )}
         </div>

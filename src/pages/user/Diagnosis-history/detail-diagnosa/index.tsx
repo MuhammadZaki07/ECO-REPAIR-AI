@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDiagnosis } from "@/hooks/useDiagnosis";
 import { useGuides } from "@/hooks/useGuides";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -23,6 +22,8 @@ import { YouTubeService } from "@/services/youtubeService";
 import { formatDateID } from "@/utils/date";
 import { DynamicSkeleton } from "@/components/skeletons";
 import LoadingState from "@/components/state/LoadingState";
+import { ErrorState } from "@/components/state/ErrorState";
+import { EmptyState } from "@/components/state/EmptyState";
 
 const getTagStyle = (tag: string) => {
   if (tag === "PARTS") return "bg-blue-100 text-blue-800 border-blue-200";
@@ -61,20 +62,30 @@ const DiagnosisDetailPage: React.FC = () => {
   }, [diagnosis?.ai_response_json?.title]);
 
   if (isLoading) {
-    <LoadingState>
-      <DynamicSkeleton preset="LIST" />
-    </LoadingState>;
+    return (
+      <LoadingState>
+        <DynamicSkeleton preset="LIST" />
+      </LoadingState>
+    );
   }
 
-  if (error || !diagnosis?.ai_response_json) {
+  if (error) {
     return (
-      <Card className="p-6 text-center text-red-700">
-        <AlertTriangle className="mx-auto mb-3" />
-        <p>Gagal memuat detail diagnosis</p>
-        <Button onClick={() => navigate("/user/history")} className="mt-4">
-          <ChevronLeft className="w-4 h-4 mr-2" /> Kembali
-        </Button>
-      </Card>
+      <ErrorState
+        title="Terjadi Kesalahan"
+        description={error}
+        actionLabel="Kembali"
+        onAction={() => navigate("/user/history")}
+      />
+    );
+  }
+
+  if (!diagnosis?.ai_response_json) {
+    return (
+      <EmptyState
+        title="Data tidak tersedia"
+        description="Detail diagnosis belum tersedia."
+      />
     );
   }
 
@@ -169,9 +180,10 @@ const DiagnosisDetailPage: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-center text-muted-foreground">
-                  Tidak ada data alat/bahan.
-                </p>
+                <EmptyState
+                  title="Belum ada data"
+                  description="Tidak ada data alat/bahan."
+                />
               )}
             </CardContent>
           </Card>
@@ -186,13 +198,12 @@ const DiagnosisDetailPage: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* SECTION 1: INTERNAL GUIDES */}
               <div className="space-y-3">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Panduan Terkait "{searchKeyword}"
                 </h4>
                 {isGuidesLoading ? (
-                  <Skeleton className="h-20 w-full" />
+                  <DynamicSkeleton className="w-full" preset="LIST" count={3} />
                 ) : guides.length > 0 ? (
                   guides.map((g) => (
                     <div
@@ -212,15 +223,13 @@ const DiagnosisDetailPage: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="border border-dashed rounded-lg p-4 text-center">
-                    <p className="text-xs text-muted-foreground">
-                      Tidak ada panduan internal untuk "{searchKeyword}".
-                    </p>
-                  </div>
+                  <EmptyState
+                    title="Tidak ada data"
+                    description={`Tidak ada panduan internal untuk ${searchKeyword}.`}
+                  />
                 )}
               </div>
 
-              {/* SECTION 2: YOUTUBE */}
               <div className="space-y-3 border-t pt-6">
                 <h4 className="flex items-center text-sm font-semibold text-red-600">
                   <div className="bg-red-600 text-white p-1 rounded mr-2">
@@ -229,10 +238,11 @@ const DiagnosisDetailPage: React.FC = () => {
                   Video Tutorial
                 </h4>
                 {isYoutubeLoading ? (
-                  <div className="grid grid-cols-2 gap-3">
-                    <Skeleton className="aspect-video w-full" />
-                    <Skeleton className="aspect-video w-full" />
-                  </div>
+                  <DynamicSkeleton
+                    className="grid grid-cols-3 gap-3"
+                    preset="CARD_GRID"
+                    count={3}
+                  />
                 ) : youtubeVideos.length > 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {youtubeVideos.map((video) => (
@@ -258,18 +268,14 @@ const DiagnosisDetailPage: React.FC = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground italic">
-                    Video tidak ditemukan.
-                  </p>
+                  <EmptyState description=" Video tidak ditemukan." />
                 )}
               </div>
 
-              {/* SECTION 3: WEB SEARCH */}
-              <div className="space-y-3 border-t pt-6">
+              <div className="flex justify-center space-y-3 border-t pt-6">
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="w-full justify-start text-xs"
+                  size="lg"
                   onClick={() =>
                     window.open(
                       `https://www.google.com/search?q=repair+guide+${encodeURIComponent(
