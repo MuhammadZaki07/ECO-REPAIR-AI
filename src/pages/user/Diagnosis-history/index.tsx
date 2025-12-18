@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from "react";
-import { useDiagnosisHistory } from "@/hooks/useDiagnosis";
+import { useDeleteDiagnosis, useDiagnosisHistory } from "@/hooks/useDiagnosis";
 import { AlertTriangle, Clock, FolderOpen, Search, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
+const PAGE_SIZE = import.meta.env.VITE_PAGE_SIZE;
 import {
   Dialog,
   DialogContent,
@@ -15,23 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { deleteDiagnosis } from "@/services/diagnosis/diagnosisService";
-
-const PAGE_SIZE = 6;
-
-const SkeletonCard = () => (
-  <Card className="rounded-2xl">
-    <CardHeader className="space-y-2">
-      <Skeleton className="h-6 w-3/4" />
-      <Skeleton className="h-4 w-1/2" />
-    </CardHeader>
-    <CardContent className="space-y-3">
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-5/6" />
-      <Skeleton className="h-4 w-2/3" />
-    </CardContent>
-  </Card>
-);
+import { DynamicSkeleton } from "@/components/skeletons";
 
 const DiagnosisHistoryPage: React.FC = () => {
   const { toast } = useToast();
@@ -41,8 +25,8 @@ const DiagnosisHistoryPage: React.FC = () => {
   const [page, setPage] = useState(1);
 
   const [open, setOpen] = useState(false);
-  const [targetId, setTargetId] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
+  const [targetId, setTargetId] = useState<string | null | number>(null);
+  const { remove, isDeleting } = useDeleteDiagnosis();
 
   const filteredRecords = useMemo(() => {
     const q = searchTerm.toLowerCase();
@@ -64,8 +48,7 @@ const DiagnosisHistoryPage: React.FC = () => {
     if (!targetId) return;
 
     try {
-      setDeleting(true);
-      await deleteDiagnosis(targetId);
+      await remove(targetId);
       await refetch();
 
       toast({
@@ -78,7 +61,6 @@ const DiagnosisHistoryPage: React.FC = () => {
         title: "Gagal menghapus",
       });
     } finally {
-      setDeleting(false);
       setOpen(false);
       setTargetId(null);
     }
@@ -107,7 +89,7 @@ const DiagnosisHistoryPage: React.FC = () => {
         </div>
 
         <Input
-          className="max-w-xs"
+          className="max-w-xs bg-background"
           placeholder="Cari diagnosis..."
           value={searchTerm}
           onChange={(e) => {
@@ -116,19 +98,22 @@ const DiagnosisHistoryPage: React.FC = () => {
           }}
         />
 
+        {isLoading && (
+          <DynamicSkeleton
+            className="grid grid-cols-3 gap-3"
+            preset="CARD_GRID"
+            count={PAGE_SIZE}
+          />
+        )}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading &&
-            Array.from({ length: PAGE_SIZE }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
-
           {!isLoading &&
             paginatedRecords.map((record) => (
               <Card key={record.id} className="relative rounded-2xl">
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="absolute right-2 top-2 z-10 hover:text-destructive"
+                  className="absolute right-2 top-3.5 z-10 hover:text-destructive"
                   onClick={() => {
                     setTargetId(record.id);
                     setOpen(true);
@@ -137,11 +122,12 @@ const DiagnosisHistoryPage: React.FC = () => {
                   <Trash2 className="w-4 h-4" />
                 </Button>
 
-                <Link to={`/user/history/${record.id}?question=${record.user_input}`} className="block">
-                  <CardHeader>
-                    <CardTitle className="pr-6">
-                      {record.title}
-                    </CardTitle>
+                <Link
+                  to={`/user/history/${record.id}?question=${record.user_input}`}
+                  className="block"
+                >
+                  <CardHeader className="mb-3">
+                    <CardTitle className="pr-6">{record.title}</CardTitle>
                     <div className="flex items-center text-xs text-muted-foreground gap-1">
                       <Clock className="w-3 h-3" />
                       {new Date(record.date).toLocaleDateString("id-ID")}
@@ -213,7 +199,7 @@ const DiagnosisHistoryPage: React.FC = () => {
             </Button>
             <Button
               variant="destructive"
-              disabled={deleting}
+              disabled={isDeleting}
               onClick={confirmDelete}
             >
               Hapus

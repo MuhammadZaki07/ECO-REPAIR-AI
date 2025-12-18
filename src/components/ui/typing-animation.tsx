@@ -78,7 +78,7 @@ export function TypingAnimation({
         : pauseDelay;
 
     const timeout = setTimeout(() => {
-      const currentWord = wordsToAnimate[currentWordIndex] || "";
+      const currentWord = wordsToAnimate[currentWordIndex] ||  "";
       const graphemes = Array.from(currentWord);
 
       switch (phase) {

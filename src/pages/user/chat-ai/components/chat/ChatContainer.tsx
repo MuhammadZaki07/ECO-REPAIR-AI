@@ -18,7 +18,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black/5 dark:bg-black">
+    <div className="relative w-full h-screen overflow-hidden">
       {!isEmpty && (
         <>
           <DottedGlowBackground
@@ -36,8 +36,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             speedScale={1}
           />
 
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-black/80 dark:via-black/0 dark:to-black/80" />
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-black/80 dark:via-black/0 dark:to-black/80" />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-background/80 dark:via-background/0 dark:to-background/80" />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-background/80 dark:via-background/0 dark:to-background/80" />
 
           <span className="absolute inset-0 flex items-center justify-center text-[clamp(4rem,15vw,8rem)] font-bold text-primary/15 select-none pointer-events-none text-center">
             Eco Repair Ai
@@ -48,7 +48,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       <div className="relative z-10 h-full w-full max-w-7xl custom-scroll mx-auto flex flex-col px-40 pt-18 pb-5 overflow-y-auto space-y-3">
         {isEmpty && (
           <TypingAnimation
-            className="text-center font-bold text-5xl text-neutral-500 dark:text-white"
+            className="text-center font-bold text-5xl text-neutral-700 dark:text-white"
             duration={30}
             showCursor
             blinkCursor

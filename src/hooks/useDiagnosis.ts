@@ -1,22 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  fetchDiagnosisById,
-  fetchDiagnosisSummaries,
-  createDiagnosis,
-  deleteDiagnosis,
-} from "@/services/diagnosis/diagnosisService";
-
+import type { DiagnosisRecord, HistorySummary } from "@/types/diagnosis";
 import type {
-  DiagnosisRecord,
-  HistorySummary,
-} from "@/services/diagnosis/diagnosisService";
-
-
-interface DiagnosisHookResult {
-  data: DiagnosisRecord | null;
-  isLoading: boolean;
-  error: string | null;
-}
+  CreateDiagnosisHookResult,
+  DiagnosisHookResult,
+  HistoryHookResult,
+} from "@/types/diagnosis";
+import { DiagnosisService } from "@/services/diagnosisService";
 
 export const useDiagnosis = (diagnosisId?: string): DiagnosisHookResult => {
   const [data, setData] = useState<DiagnosisRecord | null>(null);
@@ -33,7 +22,7 @@ export const useDiagnosis = (diagnosisId?: string): DiagnosisHookResult => {
       setIsLoading(true);
       setError(null);
       try {
-        const record = await fetchDiagnosisById(diagnosisId);
+        const record = await DiagnosisService.fetchById(diagnosisId);
         setData(record);
       } catch (err) {
         setError(
@@ -50,13 +39,6 @@ export const useDiagnosis = (diagnosisId?: string): DiagnosisHookResult => {
   return { data, isLoading, error };
 };
 
-interface HistoryHookResult {
-  data: HistorySummary[];
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-}
-
 export const useDiagnosisHistory = (): HistoryHookResult => {
   const [data, setData] = useState<HistorySummary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +49,7 @@ export const useDiagnosisHistory = (): HistoryHookResult => {
     setError(null);
 
     try {
-      const records = await fetchDiagnosisSummaries();
+      const records = await DiagnosisService.fetchSummaries();
       setData(records);
     } catch (err) {
       setError(
@@ -82,23 +64,8 @@ export const useDiagnosisHistory = (): HistoryHookResult => {
     loadHistory();
   }, [loadHistory]);
 
-  return {
-    data,
-    isLoading,
-    error,
-    refetch: loadHistory,
-  };
+  return { data, isLoading, error, refetch: loadHistory };
 };
-
-interface CreateDiagnosisHookResult {
-  isSubmitting: boolean;
-  error: string | null;
-  create: (
-    userId: string,
-    description: string,
-    aiResponse: any
-  ) => Promise<number | undefined>;
-}
 
 function isValidDiagnosis(aiData: any): boolean {
   if (!aiData?.sections) return false;
@@ -125,7 +92,7 @@ export const useCreateDiagnosis = (): CreateDiagnosisHookResult => {
       setError(null);
 
       try {
-        return await createDiagnosis(userId, description, aiResponse);
+        return await DiagnosisService.create(userId, description, aiResponse);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Gagal membuat diagnosis."
@@ -142,13 +109,13 @@ export const useCreateDiagnosis = (): CreateDiagnosisHookResult => {
 
 export const useDeleteDiagnosis = () => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | number | null>(null);
 
-  const remove = useCallback(async (id: string) => {
+  const remove = useCallback(async (id: string | number) => {
     setIsDeleting(true);
     setError(null);
     try {
-      await deleteDiagnosis(id);
+      await DiagnosisService.delete(id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal menghapus.");
       throw err;

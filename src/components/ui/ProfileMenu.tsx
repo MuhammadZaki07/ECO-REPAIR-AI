@@ -10,7 +10,7 @@ import { Avatar } from "./Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserAvatar } from "@/utils/getUserAvatar";
 import { useAuthContext } from "@/context/AuthContext";
-import { AuthService } from "@/services/auth/AuthService";
+import { AuthService } from "@/services/AuthService";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export function ProfileMenu() {
         </Link>
 
         <Link
-          to={'/'}
+          to={'/user/profile'}
         >
           <DropdownMenuItem className="cursor-pointer">
             Profile

@@ -27,3 +27,13 @@ export interface ChatContainerProps {
   messages: ChatMessageProps[];
   loading: boolean;
 }
+
+export interface ChatInputProps {
+  input: string;
+  setInput: (val: string) => void;
+  handleSend: () => void;
+  loading: boolean;
+  files: File[];
+  setFiles: (val: File[]) => void;
+  hasMessages: boolean;
+}

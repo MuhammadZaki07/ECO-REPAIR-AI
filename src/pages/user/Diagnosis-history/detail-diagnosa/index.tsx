@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDiagnosis } from "@/hooks/useDiagnosis";
 import { useGuides } from "@/hooks/useGuides";
-import { searchRepairVideos } from "@/services/guides/youtubeService";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -20,6 +19,10 @@ import {
   ExternalLink,
   Search,
 } from "lucide-react";
+import { YouTubeService } from "@/services/youtubeService";
+import { formatDateID } from "@/utils/date";
+import { DynamicSkeleton } from "@/components/skeletons";
+import LoadingState from "@/components/state/LoadingState";
 
 const getTagStyle = (tag: string) => {
   if (tag === "PARTS") return "bg-blue-100 text-blue-800 border-blue-200";
@@ -27,55 +30,40 @@ const getTagStyle = (tag: string) => {
   return "bg-gray-100 text-gray-800 border-gray-200";
 };
 
-const formatDate = (date: string) =>
-  new Date(date).toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
 const DiagnosisDetailPage: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [activeTab, setActiveTab] = useState("parts");
+  const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
+  const [isYoutubeLoading, setIsYoutubeLoading] = useState(false);
   const { data: diagnosis, isLoading, error } = useDiagnosis(id);
-  
-  // Ambil kata kunci pertama dari judul untuk pencarian guide (misal: "Laptop" dari "Laptop Screen Crack")
-  const searchKeyword = diagnosis?.ai_response_json?.title?.split(" ")[0] || "";
+  const searchKeyword = diagnosis?.ai_response_json?.title?.split(" ")[0];
 
-  // SEKARANG MASUKKAN searchKeyword ke dalam useGuides
   const {
     data: guides = [],
     isLoading: isGuidesLoading,
     error: guidesError,
   } = useGuides(searchKeyword);
 
-  const [activeTab, setActiveTab] = useState("parts");
-  const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
-  const [isYoutubeLoading, setIsYoutubeLoading] = useState(false);
-
   useEffect(() => {
-    if (diagnosis?.ai_response_json?.title) {
-      const fetchVideos = async () => {
-        setIsYoutubeLoading(true);
-        const videos = await searchRepairVideos(diagnosis.ai_response_json.title);
-        setYoutubeVideos(videos);
-        setIsYoutubeLoading(false);
-      };
-      fetchVideos();
-    }
+    if (!diagnosis?.ai_response_json?.title) return;
+
+    const fetchVideos = async () => {
+      setIsYoutubeLoading(true);
+      const videos = await YouTubeService.searchRepairVideos(
+        diagnosis.ai_response_json.title
+      );
+      setYoutubeVideos(videos);
+      setIsYoutubeLoading(false);
+    };
+
+    fetchVideos();
   }, [diagnosis?.ai_response_json?.title]);
 
   if (isLoading) {
-    return (
-      <div className="p-5 space-y-4">
-        <Skeleton className="h-6 w-40" />
-        <Skeleton className="h-10 w-3/4" />
-        <Skeleton className="h-4 w-48" />
-        <Skeleton className="h-40 w-full rounded-xl" />
-        <Skeleton className="h-64 w-full rounded-xl" />
-      </div>
-    );
+    <LoadingState>
+      <DynamicSkeleton preset="LIST" />
+    </LoadingState>;
   }
 
   if (error || !diagnosis?.ai_response_json) {
@@ -104,11 +92,11 @@ const DiagnosisDetailPage: React.FC = () => {
         <ChevronLeft className="w-4 h-4 mr-2" /> Kembali
       </Button>
 
-      <h1 className="text-3xl font-bold break-words">{aiData.title}</h1>
+      <h1 className="text-3xl font-bold">{aiData.title}</h1>
 
       <div className="flex items-center text-sm text-muted-foreground">
         <Calendar className="w-4 h-4 mr-2" />
-        {formatDate(diagnosis.created_at)}
+        {formatDateID(diagnosis.created_at)}
       </div>
 
       <Card>
@@ -163,17 +151,28 @@ const DiagnosisDetailPage: React.FC = () => {
         <TabsContent value="parts">
           <Card>
             <CardContent className="pt-6 space-y-3">
-              {partsAndTools.length > 0 ? partsAndTools.map((item, i) => (
-                <div key={i} className="border p-3 rounded-lg flex items-center gap-3">
-                  <Badge variant="outline" className={getTagStyle(item.tag)}>
-                    {item.tag}
-                  </Badge>
-                  <div>
-                    <p className="font-medium text-sm">{item.title}</p>
-                    <p className="text-xs text-muted-foreground">{item.description}</p>
+              {partsAndTools.length > 0 ? (
+                partsAndTools.map((item, i) => (
+                  <div
+                    key={i}
+                    className="border p-3 rounded-lg flex items-center gap-3"
+                  >
+                    <Badge variant="outline" className={getTagStyle(item.tag)}>
+                      {item.tag}
+                    </Badge>
+                    <div>
+                      <p className="font-medium text-sm">{item.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )) : <p className="text-xs text-center text-muted-foreground">Tidak ada data alat/bahan.</p>}
+                ))
+              ) : (
+                <p className="text-xs text-center text-muted-foreground">
+                  Tidak ada data alat/bahan.
+                </p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -182,7 +181,8 @@ const DiagnosisDetailPage: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-lg">
-                <BookOpen className="w-5 h-5 mr-2 text-primary" /> Panduan Perbaikan
+                <BookOpen className="w-5 h-5 mr-2 text-primary" /> Panduan
+                Perbaikan
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -206,7 +206,9 @@ const DiagnosisDetailPage: React.FC = () => {
                           {g.category}
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground line-clamp-1">{g.description}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">
+                        {g.description}
+                      </p>
                     </div>
                   ))
                 ) : (
@@ -240,16 +242,26 @@ const DiagnosisDetailPage: React.FC = () => {
                         onClick={() => window.open(video.url, "_blank")}
                       >
                         <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
-                          <img src={video.thumbnail} className="w-full h-full object-cover" alt="thumb" />
+                          <img
+                            src={video.thumbnail}
+                            className="w-full h-full object-cover"
+                            alt="thumb"
+                          />
                           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 flex items-center justify-center transition">
                             <ExternalLink className="w-4 h-4 text-white" />
                           </div>
                         </div>
-                        <p className="mt-2 text-[10px] font-medium line-clamp-2">{video.title}</p>
+                        <p className="mt-2 text-[10px] font-medium line-clamp-2">
+                          {video.title}
+                        </p>
                       </div>
                     ))}
                   </div>
-                ) : <p className="text-xs text-muted-foreground italic">Video tidak ditemukan.</p>}
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">
+                    Video tidak ditemukan.
+                  </p>
+                )}
               </div>
 
               {/* SECTION 3: WEB SEARCH */}
@@ -258,9 +270,17 @@ const DiagnosisDetailPage: React.FC = () => {
                   variant="outline"
                   size="sm"
                   className="w-full justify-start text-xs"
-                  onClick={() => window.open(`https://www.google.com/search?q=repair+guide+${encodeURIComponent(aiData.title)}`, "_blank")}
+                  onClick={() =>
+                    window.open(
+                      `https://www.google.com/search?q=repair+guide+${encodeURIComponent(
+                        aiData.title
+                      )}`,
+                      "_blank"
+                    )
+                  }
                 >
-                  <Search className="w-3 h-3 mr-2" /> Cari Lebih Lengkap di Google
+                  <Search className="w-3 h-3 mr-2" /> Cari Lebih Lengkap di
+                  Google
                 </Button>
               </div>
             </CardContent>

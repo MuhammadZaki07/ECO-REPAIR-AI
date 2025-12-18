@@ -1,12 +1,6 @@
 import { useState } from "react";
-
-interface LogoProps {
-  size?: number;
-  height?: number;
-  width?: number;
-  className?: string;
-  variant?: "mark" | "full";
-}
+import LOGO_ECO_REPAIR_AI from "@/assets/svg/Logo.svg";
+import type { LogoProps } from "@/types/logo";
 
 const Logo = ({
   size,
@@ -19,15 +13,13 @@ const Logo = ({
   const handleError = () => setError(true);
   const computedWidth = width ?? size ?? 40;
   const computedHeight = height ?? size ?? 40;
-
-  const lightSrc =
-    variant === "full" ? "/Logo.svg" : "/Logo.svg";
-  const darkSrc = variant === "full" ? "/Logo.svg" : "/Logo.svg";
+  const lightSrc = variant === "full" ? LOGO_ECO_REPAIR_AI : LOGO_ECO_REPAIR_AI;
+  const darkSrc = variant === "full" ? LOGO_ECO_REPAIR_AI : LOGO_ECO_REPAIR_AI;
   return (
     <picture>
       <source srcSet={darkSrc} media="(prefers-color-scheme: dark)" />
       <img
-        src={error ? "/Logo.svg" : lightSrc}
+        src={error ? LOGO_ECO_REPAIR_AI : lightSrc}
         alt="Eco Repair"
         height={computedHeight}
         width={computedWidth}

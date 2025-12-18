@@ -17,11 +17,8 @@ export default function AuthPage() {
   const { toast } = useToast();
   const { t } = useTranslation("auth");
   const words = t("welcomeEffectText");
-
   const location = useLocation();
-
   const from = location.state?.from?.pathname || "/";
-
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const {

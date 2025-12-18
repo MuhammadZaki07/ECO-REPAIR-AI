@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   Users,
   Clipboard,
+  FileQuestion,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,10 +28,10 @@ import Logo from "@/components/Logo";
 import { useAuthContext } from "@/context/AuthContext";
 import { getUserAvatar } from "@/utils/getUserAvatar";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { AuthService } from "@/services/auth/AuthService";
+import { AuthService } from "@/services/AuthService";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SidebarItem } from "./SidebarItem";
-import menuJson from "@/data/user/MenuItemsSidebar.json";
+import menuJson from "@/data/menu-items/MenuItemsSidebar.json";
 import { IconBolt, IconTools } from "@tabler/icons-react";
 
 const iconMap: Record<string, any> = {
@@ -47,6 +48,7 @@ const iconMap: Record<string, any> = {
   replace: Replace,
   settings: SettingsIcon,
   clipboard: Clipboard,
+  Questions: FileQuestion,
 };
 
 export const Sidebar: React.FC = () => {
@@ -70,7 +72,7 @@ export const Sidebar: React.FC = () => {
     <aside
       className={`${
         mini ? "w-18" : "w-64"
-      } mr-2 flex flex-col justify-between transition-all duration-300 bg-neutral-100 dark:bg-black text-white h-full border border-white/10 rounded-2xl shadow-lg`}
+      } mr-2 flex flex-col justify-between transition-all duration-300 bg-background text-white h-full border dark:border-white/10 border-neutral-200 rounded-2xl`}
     >
       <div
         className={`p-4 flex items-center ${
@@ -83,7 +85,7 @@ export const Sidebar: React.FC = () => {
               <Logo className="group-hover:opacity-0 transition-opacity" />
               <SidebarOpen
                 size={18}
-                className="absolute opacity-0 group-hover:opacity-100 cursor-pointer"
+                className="absolute opacity-0 group-hover:opacity-100 cursor-pointer dark:text-white text-neutral-900"
                 onClick={() => setMini(false)}
               />
             </>
@@ -97,7 +99,7 @@ export const Sidebar: React.FC = () => {
             onClick={() => setMini(true)}
             className="p-1 rounded-lg hover:bg-white/10 transition"
           >
-            <SidebarClose size={20} />
+            <SidebarClose size={20} className="dark:text-white text-neutral-900"/>
           </button>
         )}
       </div>
@@ -138,7 +140,7 @@ export const Sidebar: React.FC = () => {
                 {avatarUrl ? (
                   <AvatarImage src={avatarUrl} alt={initial} />
                 ) : (
-                  <AvatarFallback className="text-white font-semibold">
+                  <AvatarFallback className="dark:text-white text-neutral-900 font-semibold">
                     {initial}
                   </AvatarFallback>
                 )}
@@ -147,7 +149,7 @@ export const Sidebar: React.FC = () => {
               {!mini && (
                 <>
                   <div className="flex-1 text-left">
-                    <div className="text-sm font-medium">
+                    <div className="text-sm font-medium  dark:text-white text-neutral-900">
                       {user?.user_metadata?.name || initial}
                     </div>
                     <div className="text-xs text-gray-400">Free</div>

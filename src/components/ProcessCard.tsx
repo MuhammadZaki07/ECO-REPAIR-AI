@@ -1,19 +1,3 @@
-/**
- * IND:
- * Komponen ini menampilkan card proses (step-by-step) dalam sebuah alur kerja.
- * Pada mobile & tablet, seluruh step otomatis dianggap aktif penuh tanpa animasi,
- * sehingga tampil vertikal, rapi, dan konsisten.
- * Pada desktop, komponen tetap menggunakan layout zigzag 4 kolom dengan garis
- * konektor dinamis dan animasi progress.
- *
- * ENG:
- * This component displays step-by-step process cards inside a workflow.
- * On mobile & tablet, all steps are automatically treated as fully active with
- * no animations, resulting in a clean vertical flow.
- * On desktop, it keeps the 4-column zigzag layout with dynamic connector lines
- * and animated progress logic.
- */
-
 import { useEffect, useState } from "react";
 import type { ProcessCardProps } from "@/types/Step";
 

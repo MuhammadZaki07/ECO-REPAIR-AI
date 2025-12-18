@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const TypingLoader = () => (
   <div className="flex justify-start">
     <div className="bg-[var(--card)] text-[var(--card-foreground)] px-4 py-3 rounded-2xl rounded-tl-md shadow-sm flex items-center gap-2">

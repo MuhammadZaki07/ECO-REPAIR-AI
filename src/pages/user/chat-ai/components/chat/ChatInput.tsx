@@ -17,16 +17,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-
-interface ChatInputProps {
-  input: string;
-  setInput: (val: string) => void;
-  handleSend: () => void;
-  loading: boolean;
-  files: File[];
-  setFiles: (val: File[]) => void;
-  hasMessages: boolean;
-}
+import type { ChatInputProps } from "@/types/chat-ai";
 
 const getFileIcon = (type: string) => {
   if (type.includes("pdf")) return <IconPdf />;
@@ -165,9 +156,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               showButtonsBelow() ? "flex-row" : "flex-row"
             }`}
           >
-            <div
-              className={`flex items-center gap-2 transition-all`}
-            >
+            <div className={`flex items-center gap-2 transition-all`}>
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={loading}

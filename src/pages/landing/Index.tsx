@@ -1,15 +1,12 @@
-import { CoreCapabilitiesSection } from "@/components/sections/CoreCapabilitiesSection";
-import { FeaturesSection } from "@/components/sections/FeaturesSection";
-import { FinalCTASection } from "@/components/sections/FinalCTASection";
-import { HeroSection } from "@/components/sections/HeroSection";
-import { ImpactStatsSection } from "@/components/sections/ImpactStatsSection";
-import { RewardSystemSection } from "@/components/sections/RewardSystemSection";
-import { StepSection } from "@/components/sections/StepSection";
-// import { useAuthContext } from "@/context/AuthContext";
+import { CoreCapabilitiesSection } from "@/pages/landing/section/CoreCapabilitiesSection";
+import { FeaturesSection } from "@/pages/landing/section/FeaturesSection";
+import { FinalCTASection } from "@/pages/landing/section/FinalCTASection";
+import { HeroSection } from "@/pages/landing/section/HeroSection";
+import { ImpactStatsSection } from "@/pages/landing/section/ImpactStatsSection";
+import { RewardSystemSection } from "@/pages/landing/section/RewardSystemSection";
+import { StepSection } from "@/pages/landing/section/StepSection";
 
 function LandingPage() {
-  // const {user} = useAuthContext()
-  // console.log(user);
   return (
     <section className="h-full w-full">
       <HeroSection />

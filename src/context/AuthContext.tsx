@@ -2,30 +2,11 @@ import {
   createContext,
   useContext,
   useEffect,
-  useState,
-  type ReactNode,
+  useState
 } from "react";
 import { supabase } from "@/lib/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
-
-interface UserData {
-  id: string;
-  full_name?: string;
-  avatar_url?: string;
-  role?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  userData: UserData | null;
-  loading: boolean;
-}
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
+import type { AuthContextType, AuthProviderProps, UserData } from "@/types/auth";
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {

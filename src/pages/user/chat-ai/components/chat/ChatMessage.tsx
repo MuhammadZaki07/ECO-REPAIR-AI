@@ -1,19 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { TypingAnimation } from "@/components/ui/typing-animation";
-import {
-  Sparkles,
-  User,
-  ShieldAlert,
-  Wrench,
-  Cog,
-  Cpu,
-} from "lucide-react";
+import { Sparkles, User, ShieldAlert, Wrench, Cog, Cpu } from "lucide-react";
 import React, { useState, type JSX } from "react";
-import type {
-  ChatMessageProps,
-  AIStepSection,
-} from "@/types/chat-ai";
+import type { ChatMessageProps, AIStepSection } from "@/types/chat-ai";
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   type,
@@ -21,7 +11,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   image,
   data,
 }) => {
-const [typingDone, setTypingDone] = useState(false);
+  const [typingDone, setTypingDone] = useState(false);
 
   const tagStyle: Record<AIStepSection["tag"], string> = {
     "RISK!": "border-red-400 text-red-400 bg-red-500/30",
@@ -42,18 +32,19 @@ const [typingDone, setTypingDone] = useState(false);
 
     return content.split("\n").map((line, i) => (
       <p key={i} className="leading-relaxed">
-        {line.split(/(\*\*[^*]+\*\*)/g).map((part, j) =>
-          part.startsWith("**") && part.endsWith("**") ? (
-            <strong key={j}>{part.slice(2, -2)}</strong>
-          ) : (
-            <span key={j}>{part}</span>
-          )
-        )}
+        {line
+          .split(/(\*\*[^*]+\*\*)/g)
+          .map((part, j) =>
+            part.startsWith("**") && part.endsWith("**") ? (
+              <strong key={j}>{part.slice(2, -2)}</strong>
+            ) : (
+              <span key={j}>{part}</span>
+            )
+          )}
       </p>
     ));
   };
 
-  // ================= USER =================
   if (type === "user") {
     return (
       <div className="flex justify-end gap-2 mb-6">
@@ -82,7 +73,6 @@ const [typingDone, setTypingDone] = useState(false);
     );
   }
 
-  // ================= AI =================
   return (
     <div className="flex justify-start gap-3 mb-8">
       <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center text-white">
@@ -93,9 +83,7 @@ const [typingDone, setTypingDone] = useState(false);
         <CardContent className="p- space-y-4 text-neutral-100">
           {/* TITLE */}
           {data?.title && (
-            <h3 className="text-lg font-bold text-white">
-              {data.title}
-            </h3>
+            <h3 className="text-lg font-bold text-white">{data.title}</h3>
           )}
 
           {/* SUMMARY — TYPING */}
@@ -111,9 +99,7 @@ const [typingDone, setTypingDone] = useState(false);
               {data?.summary ?? ""}
             </TypingAnimation>
           ) : (
-            <div className="space-y-2">
-              {renderParsedText(data?.summary)}
-            </div>
+            <div className="space-y-2">{renderParsedText(data?.summary)}</div>
           )}
 
           {/* SECTIONS */}
@@ -124,7 +110,9 @@ const [typingDone, setTypingDone] = useState(false);
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className={`flex items-center gap-1 px-2 py-0.5 ${tagStyle[section.tag]}`}
+                      className={`flex items-center gap-1 px-2 py-0.5 ${
+                        tagStyle[section.tag]
+                      }`}
                     >
                       {tagIcon[section.tag]}
                       {section.tag}

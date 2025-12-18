@@ -1,7 +1,7 @@
 import { Equal, X } from "@aliimam/icons";
 import React from "react";
 import { cn } from "@/lib/utils";
-import menuItems from "@/data/MenuItemsNavbar.json";
+import menuItems from "@/data/menu-items/MenuItemsNavbar.json";
 import type { MenuItem } from "@/types/menu";
 import Logo from "@/components/Logo";
 import { Menus } from "./menus";

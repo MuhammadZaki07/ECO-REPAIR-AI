@@ -1,4 +1,4 @@
-import GuestGuard from "@/guards/GuestGuard";
+import GuestGuard from "@/layouts/guards/GuestGuard";
 import AuthPage from "@/pages/auth";
 import type { RouteObject } from "react-router-dom";
 

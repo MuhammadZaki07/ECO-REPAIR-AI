@@ -1,7 +1,6 @@
-'use client';
 import React, { useState } from 'react';
 import { Github } from 'lucide-react';
-import { Liquid, type Colors } from './liquid-gradient';
+import { Liquid, type Colors } from './effects/liquid-gradient';
 
 const COLORS: Colors = {
   color1: '#FFFFFF',

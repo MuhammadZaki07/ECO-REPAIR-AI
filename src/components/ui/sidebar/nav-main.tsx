@@ -1,5 +1,3 @@
-"";
-
 import {
   Collapsible,
   CollapsibleContent,

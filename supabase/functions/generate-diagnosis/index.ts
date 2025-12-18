@@ -90,7 +90,7 @@ KONTEKS:
 Topik: ${context.topic || "-"}
 Gejala: ${context.symptoms?.join(", ") || "-"}
 `
-      : "";
+      :  
 
     const prompt = `
 ${systemInstruction}

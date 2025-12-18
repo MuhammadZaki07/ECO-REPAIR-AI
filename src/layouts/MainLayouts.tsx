@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer/Footer";
 import type { ReactNode } from "react";
 
 interface MainLayoutProps {
-  children?: ReactNodeb;
+  children?: ReactNode;
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
