@@ -13,29 +13,26 @@ export class YouTubeService {
   static async searchRepairVideos(query: string): Promise<YouTubeVideo[]> {
     this.ensureApiKey();
 
-    try {
-      const searchQuery = encodeURIComponent(`cara memperbaiki ${query}`);
-      const response = await fetch(
-        `${BASE_URL}/search?part=snippet&maxResults=6&q=${searchQuery}&type=video&key=${API_KEY}`
+    const searchQuery = encodeURIComponent(`cara memperbaiki ${query}`);
+    const response = await fetch(
+      `${BASE_URL}/search?part=snippet&maxResults=6&q=${searchQuery}&type=video&key=${API_KEY}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("[YouTubeService]", data?.error);
+      throw new Error(
+        data?.error?.message || "Gagal mengambil video dari YouTube"
       );
-
-      const data = await response.json();
-
-      if (data.error) {
-        console.error("[YouTubeService]", data.error.message);
-        return [];
-      }
-
-      return (data.items ?? []).map((item: any) => ({
-        id: item.id.videoId,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails.medium.url,
-        channelTitle: item.snippet.channelTitle,
-        url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
-      }));
-    } catch (error) {
-      console.error("[YouTubeService.searchRepairVideos]", error);
-      return [];
     }
+
+    return (data.items ?? []).map((item: any) => ({
+      id: item.id.videoId,
+      title: item.snippet.title,
+      thumbnail: item.snippet.thumbnails.medium.url,
+      channelTitle: item.snippet.channelTitle,
+      url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+    }));
   }
 }

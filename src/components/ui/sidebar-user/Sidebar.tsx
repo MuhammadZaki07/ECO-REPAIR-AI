@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { User, HelpCircle, LogOut } from "lucide-react";
 import Logo from "@/components/Logo";
-import { useAuthContext } from "@/context/AuthContext";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 import { getUserAvatar } from "@/utils/getUserAvatar";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { AuthService } from "@/services/AuthService";
@@ -138,7 +138,7 @@ export const Sidebar: React.FC = () => {
                 className="w-8 h-8 rounded-full overflow-hidden"
               >
                 {avatarUrl ? (
-                  <AvatarImage src={avatarUrl} alt={initial} />
+                  <AvatarImage loading="lazy" src={avatarUrl} alt={initial} />
                 ) : (
                   <AvatarFallback className="dark:text-white text-neutral-900 font-semibold">
                     {initial}

@@ -9,7 +9,7 @@ import { ModeToggle } from "./theme-switch";
 import { ProfileMenu } from "@/components/ui/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { LoginButton } from "@/components/LoginButton";
-import { useAuthContext } from "@/context/AuthContext";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 import GitHubButton from "@/components/GitHubButton";
 
 interface HeaderProps {

@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 
 import {
   Wrench,
@@ -24,6 +23,7 @@ import { DynamicSkeleton } from "@/components/skeletons";
 import LoadingState from "@/components/state/LoadingState";
 import { ErrorState } from "@/components/state/ErrorState";
 import { EmptyState } from "@/components/state/EmptyState";
+import { useToast } from "@/hooks/use-toast";
 
 const getTagStyle = (tag: string) => {
   if (tag === "PARTS") return "bg-blue-100 text-blue-800 border-blue-200";
@@ -38,7 +38,9 @@ const DiagnosisDetailPage: React.FC = () => {
   const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
   const [isYoutubeLoading, setIsYoutubeLoading] = useState(false);
   const { data: diagnosis, isLoading, error } = useDiagnosis(id);
-  const searchKeyword = diagnosis?.ai_response_json?.title?.split(" ")[0];
+  const searchKeyword = diagnosis?.ai_response_json?.title?.split(" ")[0] ?? "";
+
+  const { toast } = useToast();
 
   const {
     data: guides = [],
@@ -51,11 +53,20 @@ const DiagnosisDetailPage: React.FC = () => {
 
     const fetchVideos = async () => {
       setIsYoutubeLoading(true);
-      const videos = await YouTubeService.searchRepairVideos(
-        diagnosis.ai_response_json.title
-      );
-      setYoutubeVideos(videos);
-      setIsYoutubeLoading(false);
+      try {
+        const videos = await YouTubeService.searchRepairVideos(
+          diagnosis.ai_response_json.title
+        );
+        setYoutubeVideos(videos);
+      } catch (err: any) {
+        toast({
+          title: "Gagal ambil video",
+          description: err.message,
+          variant: "destructive",
+        });
+      } finally {
+        setIsYoutubeLoading(false);
+      }
     };
 
     fetchVideos();
@@ -73,7 +84,7 @@ const DiagnosisDetailPage: React.FC = () => {
     return (
       <ErrorState
         title="Terjadi Kesalahan"
-        description={error}
+        description={error?.message}
         actionLabel="Kembali"
         onAction={() => navigate("/user/history")}
       />

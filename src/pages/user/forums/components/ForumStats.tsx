@@ -3,8 +3,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/Card"
-import type { ForumStatsProps } from "@/types/forum"
+} from "@/components/ui/Card";
+import type { ForumStatsProps } from "@/types/forum";
 
 function ForumStats({ stats }: ForumStatsProps) {
   return (
@@ -18,9 +18,7 @@ function ForumStats({ stats }: ForumStatsProps) {
               <item.icon className="w-8 h-8" />
             </div>
             <div>
-              <CardTitle className="text-xl font-bold">
-                {item.value}
-              </CardTitle>
+              <CardTitle className="text-xl font-bold">{item.value}</CardTitle>
               <CardDescription className="text-[10px] uppercase font-semibold">
                 {item.label}
               </CardDescription>
@@ -29,7 +27,7 @@ function ForumStats({ stats }: ForumStatsProps) {
         </Card>
       ))}
     </div>
-  )
+  );
 }
 
-export default ForumStats
+export default ForumStats;

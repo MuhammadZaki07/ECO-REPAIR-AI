@@ -3,7 +3,7 @@ import { ChatContainer } from "./components/chat/ChatContainer";
 import { ChatInput } from "./components/chat/ChatInput";
 import type { ChatMessageProps } from "@/types/chat-ai";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthContext } from "@/context/AuthContext";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useCreateDiagnosis } from "@/hooks/useDiagnosis";
 import { supabase } from "@/lib/supabase/client";
 

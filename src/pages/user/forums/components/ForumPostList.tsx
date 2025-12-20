@@ -1,0 +1,365 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Leaf } from "lucide-react";
+import { Button } from "@/components/liquid-glass-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  CheckCircle2,
+  MessageSquare,
+  MoreHorizontal,
+  TrendingUp,
+  Search,
+} from "lucide-react";
+import { useForums } from "@/hooks/useForums";
+import { AuthService } from "@/services/AuthService";
+import { DynamicSkeleton } from "@/components/skeletons";
+import { ErrorState } from "@/components/state/ErrorState";
+import { EmptyState } from "@/components/state/EmptyState";
+import { lexicalToHtml } from "@/helpers/lexicalToHtml";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import ModalForums from "./ModalForums";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import type { ForumPostListProps } from "@/types/forum";
+import { useToast } from "@/hooks/use-toast";
+import { getAuthorName } from "@/helpers/getAuthorName";
+import { getAuthorInitial } from "@/helpers/getAuthorInitial";
+
+const PAGE_SIZE = import.meta.env.VITE_PAGE_SIZE;
+
+function ForumPostList({ onReady }: ForumPostListProps) {
+  const [activeTab, setActiveTab] = useState("my");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingForum, setEditingForum] = useState<any>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const profile = await AuthService.ensureUserProfile();
+      if (profile) setUserId(profile.id);
+    };
+    fetchUser();
+  }, []);
+
+  const forumsHook = useForums(
+    activeTab,
+    activeTab === "my" ? userId : undefined
+  );
+
+  useEffect(() => {
+    onReady?.(forumsHook.refetch);
+  }, [forumsHook.refetch]);
+
+  const filteredPosts = (forumsHook.forums ?? []).filter(
+    (post) =>
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (lexicalToHtml(post.content) ?? "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredPosts.length / PAGE_SIZE);
+  const paginatedPosts = filteredPosts.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE
+  );
+
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab, searchTerm]);
+
+  const openEditModal = (forum: any) => {
+    setEditingForum(forum);
+    setModalOpen(true);
+  };
+
+  const openDeleteDialog = (forum: any) => {
+    setDeleteDialogOpen((prev) => ({ ...prev, [forum.id]: true }));
+  };
+
+  const handleDelete = async () => {
+    if (!editingForum) return;
+
+    try {
+      await forumsHook.deleteForum(editingForum.id);
+      setDeleteDialogOpen((prev) => ({
+        ...prev,
+        [editingForum.id]: false,
+      }));
+
+      setEditingForum(null);
+      toast({ title: "Forum berhasil dihapus" });
+      forumsHook.refetch();
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="lg:col-span-3 space-y-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full sm:w-auto"
+          >
+            <TabsList className="grid grid-cols-4 lg:w-full w-[400px]">
+              <TabsTrigger value="my">Pertanyaan Saya</TabsTrigger>
+              <TabsTrigger value="all">Semua</TabsTrigger>
+              <TabsTrigger value="trending">Populer</TabsTrigger>
+              <TabsTrigger value="solved">Selesai</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          <div className="flex gap-2 items-center">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                className="pl-10 rounded-full bg-background"
+                placeholder="Cari diskusi..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {forumsHook.loading ? (
+          <DynamicSkeleton
+            preset="LIST"
+            count={PAGE_SIZE}
+            className="w-full space-y-4"
+          />
+        ) : forumsHook.error ? (
+          <ErrorState
+            title="Terjadi Kesalahan"
+            description={forumsHook.error.message}
+            actionLabel="Coba Lagi"
+            onAction={forumsHook.refetch}
+          />
+        ) : paginatedPosts.length === 0 ? (
+          <EmptyState
+            title="Belum ada diskusi"
+            description="Coba ubah kata kunci pencarian atau pilih tab lain."
+          />
+        ) : (
+          <div className="flex flex-col gap-3">
+            {paginatedPosts.map((forum) => (
+              <Card key={forum.id} className="border shadow-none">
+                <CardContent className="p-5">
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="flex gap-2">
+                      <Badge
+                        variant="outline"
+                        className="rounded-md font-medium"
+                      >
+                        {forum.category?.name ?? "Unknown"}
+                      </Badge>
+                      {forum.status === "solved" ? (
+                        <Badge className="bg-emerald-100 text-emerald-700 border-none flex gap-1 items-center">
+                          <CheckCircle2 className="w-3 h-3" /> Solved
+                        </Badge>
+                      ) : (
+                        <Badge className="flex gap-1 items-center">Open</Badge>
+                      )}
+                    </div>
+
+                    {activeTab === "my" && forum.user_id === userId && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="p-1">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => openEditModal(forum)}
+                          >
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setEditingForum(forum);
+                              openDeleteDialog(forum);
+                            }}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
+
+                  <Link to={`/user/forums/${forum.id}`}>
+                    <h3 className="text-lg font-bold hover:underline mb-2 leading-tight">
+                      {forum.title}
+                    </h3>
+                    <p
+                      className="text-sm text-muted-foreground line-clamp-2 mb-4"
+                      dangerouslySetInnerHTML={{
+                        __html: lexicalToHtml(forum.content),
+                      }}
+                    />
+                  </Link>
+
+                  <div className="flex items-center justify-between pt-4 border-t">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="w-6 h-6">
+                        {forum?.author?.avatar_url ? (
+                          <AvatarImage
+                            src={forum.author.avatar_url}
+                            alt={getAuthorName(forum.author)}
+                            className="object-cover w-full h-full"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <AvatarFallback className="text-[10px] font-semibold bg-muted">
+                            {getAuthorInitial(forum.author)}
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+
+                      <span className="text-xs font-semibold">
+                        {getAuthorName(forum.author)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-muted-foreground">
+                      <div className="flex items-center gap-1 text-xs">
+                        <MessageSquare className="w-4 h-4" />{" "}
+                        {forum.replies_count ?? 0}
+                      </div>
+                      <div className="flex items-center gap-1 text-xs">
+                        <TrendingUp className="w-4 h-4" />{" "}
+                        {forum.likes_count ?? 0}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {totalPages > 1 && (
+              <div className="flex justify-end gap-5 items-center mt-4">
+                <Button
+                  variant="outline"
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  Prev
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {page} / {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-6">
+        <Card className="shadow-none">
+          <CardHeader>
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-emerald-500" /> Top
+              Contributors
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button
+              variant="ghost"
+              className="w-full text-xs text-emerald-600 mt-2"
+            >
+              Lihat Leaderboard
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-emerald-600 text-white overflow-hidden relative">
+          <CardContent className="p-6">
+            <Leaf className="absolute -right-4 -bottom-4 w-24 h-24 opacity-20 rotate-12" />
+            <h4 className="font-bold mb-2">Tips Hari Ini</h4>
+            <p className="text-xs text-emerald-50 leading-relaxed">
+              Membersihkan debu pada kipas laptop secara rutin dapat
+              memperpanjang umur komponen hingga 2 tahun!
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <ModalForums
+        isOpen={modalOpen}
+        setIsOpen={setModalOpen}
+        forumId={editingForum?.id}
+        initialTitle={editingForum?.title}
+        initialDescription={editingForum?.content}
+        initialCategoryId={editingForum?.category?.id}
+        onSuccess={() => {
+          setModalOpen(false);
+          setEditingForum(null);
+          forumsHook.refetch();
+        }}
+      />
+
+      <AlertDialog
+        open={!!editingForum && !!deleteDialogOpen[editingForum.id]}
+        onOpenChange={(open) =>
+          editingForum &&
+          setDeleteDialogOpen((prev) => ({ ...prev, [editingForum.id]: open }))
+        }
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Forum?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this forum? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-500 text-white hover:bg-red-300"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
+export default ForumPostList;

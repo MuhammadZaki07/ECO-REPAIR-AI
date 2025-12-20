@@ -10,8 +10,7 @@ export class DiagnosisService {
       .single();
 
     if (error) {
-      console.error("[DiagnosisService.fetchById]", error.message);
-      throw new Error("Gagal mengambil detail diagnosis.");
+      throw new Error(error.message);
     }
 
     return data as DiagnosisRecord;
@@ -24,8 +23,7 @@ export class DiagnosisService {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("[DiagnosisService.fetchSummaries]", error.message);
-      throw new Error("Gagal mengambil riwayat diagnosis.");
+      throw new Error(error.message);
     }
 
     return (data ?? []).map((record) => ({
@@ -57,8 +55,7 @@ export class DiagnosisService {
       .single();
 
     if (error) {
-      console.error("[DiagnosisService.create]", error.message);
-      throw new Error("Gagal menyimpan diagnosis baru.");
+      throw new Error(error.message);
     }
 
     return data.id;
@@ -68,8 +65,7 @@ export class DiagnosisService {
     const { error } = await supabase.from("diagnoses").delete().eq("id", id);
 
     if (error) {
-      console.error("[DiagnosisService.delete]", error.message);
-      throw new Error("Gagal menghapus diagnosis.");
+      throw new Error(error.message);
     }
   }
 }

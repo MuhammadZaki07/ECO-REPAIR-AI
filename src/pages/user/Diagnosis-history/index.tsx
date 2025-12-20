@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useDeleteDiagnosis, useDiagnosisHistory } from "@/hooks/useDiagnosis";
-import { AlertTriangle, Clock, FolderOpen, Search, Trash2 } from "lucide-react";
+import { Clock, FolderOpen, Search, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -57,10 +57,11 @@ const DiagnosisHistoryPage: React.FC = () => {
         title: "Riwayat dihapus",
         description: "Data berhasil dihapus",
       });
-    } catch {
+    } catch (err) {
       toast({
         variant: "destructive",
         title: "Gagal menghapus",
+        description: err instanceof Error ? err.message : String(err),
       });
     } finally {
       setOpen(false);

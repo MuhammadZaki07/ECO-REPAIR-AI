@@ -9,7 +9,7 @@ import {
 import { Avatar } from "./Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { getUserAvatar } from "@/utils/getUserAvatar";
-import { useAuthContext } from "@/context/AuthContext";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 import { AuthService } from "@/services/AuthService";
 
 export function ProfileMenu() {
