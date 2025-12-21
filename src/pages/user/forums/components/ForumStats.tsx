@@ -19,28 +19,28 @@ function ForumStats() {
   const { userData } = useAuthContext();
   const { stats, loadingStats } = useForumDetailRealtime("my", userData?.id);
   const { userXP, loadingUserXP } = useLeaderboard(userData?.id);
-  
+
   const statItems = [
     {
-      label: "Reputasi",
+      label: "Reputation",
       value: loadingUserXP ? "..." : `${userXP} XP`,
       icon: Trophy,
       colorClass: "text-emerald-600",
     },
     {
-      label: "Jawaban Anda",
+      label: "Your Answers",
       value: loadingStats ? "..." : stats.totalReplies,
       icon: MessageSquare,
       colorClass: "text-purple-600",
     },
     {
-      label: "Solusi Berhasil",
+      label: "Accepted Solutions",
       value: loadingStats ? "..." : stats.totalSolutions,
       icon: CheckCircle2,
       colorClass: "text-blue-600",
     },
     {
-      label: "Pertanyaan Anda Belum Terjawab",
+      label: "Unanswered Questions",
       value: loadingStats ? "..." : stats.openQuestions,
       icon: BadgeQuestionMark,
       colorClass: "text-orange-600",

@@ -10,7 +10,7 @@ import {
   Info,
   Clock,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Globe } from "@/components/ui/globe";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -22,7 +22,7 @@ const EcoCoints = () => {
   const [balance] = useState(12.375);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8 bg-background min-h-screen">
+    <div className="p-4 space-y-8 bg-background h-screen">
       {/* 1. HEADER & WALLET SECTION (PREMIUM DESIGN) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2 relative text-white shadow-2xl overflow-hidden group bg-background">

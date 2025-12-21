@@ -14,6 +14,7 @@ import {
   Users,
   Clipboard,
   FileQuestion,
+  SkipBack,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,12 +28,13 @@ import { User, HelpCircle, LogOut } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { getUserAvatar } from "@/utils/getUserAvatar";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { AuthService } from "@/services/AuthService";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { SidebarItem } from "./SidebarItem";
 import menuJson from "@/data/menu-items/MenuItemsSidebar.json";
 import { IconBolt, IconTools } from "@tabler/icons-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../Avatar";
+import { Badge } from "../badge";
 
 const iconMap: Record<string, any> = {
   home: Home,
@@ -68,6 +70,9 @@ export const Sidebar: React.FC = () => {
     }
   };
 
+  const isVerified =
+    user?.identities?.[0]?.identity_data?.email_verified === true;
+
   return (
     <aside
       className={`${
@@ -99,7 +104,10 @@ export const Sidebar: React.FC = () => {
             onClick={() => setMini(true)}
             className="p-1 rounded-lg hover:bg-white/10 transition"
           >
-            <SidebarClose size={20} className="dark:text-white text-neutral-900"/>
+            <SidebarClose
+              size={20}
+              className="dark:text-white text-neutral-900"
+            />
           </button>
         )}
       </div>
@@ -114,6 +122,7 @@ export const Sidebar: React.FC = () => {
               key={i}
               icon={<Icon size={20} />}
               label={item.label}
+              badge={item.badge}
               active={location.pathname.startsWith(item.path)}
               onClick={() => navigate(item.path)}
               mini={mini}
@@ -152,7 +161,9 @@ export const Sidebar: React.FC = () => {
                     <div className="text-sm font-medium  dark:text-white text-neutral-900">
                       {user?.user_metadata?.name || initial}
                     </div>
-                    <div className="text-xs text-gray-400">Free</div>
+                    <div className="text-xs text-gray-400">
+                      {isVerified ? "Active" : "Not verified"}
+                    </div>
                   </div>
                   <ChevronDown size={16} />
                 </>
@@ -166,13 +177,17 @@ export const Sidebar: React.FC = () => {
             sideOffset={8}
             className="w-64"
           >
+              <Link to={"/"}>
             <DropdownMenuItem>
-              <User size={18} /> Upgrade plan
+              <SkipBack size={18} /> Go to Landing Page
             </DropdownMenuItem>
+              </Link>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <HelpCircle size={18} /> Help
-            </DropdownMenuItem>
+            <Link to={"/help-page"}>
+              <DropdownMenuItem>
+                <HelpCircle size={18} /> Help
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut size={18} /> Log out
             </DropdownMenuItem>

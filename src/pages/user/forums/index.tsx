@@ -11,19 +11,19 @@ const DashboardForums = () => {
   const [refetchForums, setRefetchForums] = useState<null | (() => void)>(null);
 
   return (
-    <div className="p-6 mx-auto space-y-8 h-screen">
+    <div className="p-4 space-y-8 h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Forum Komunitas</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Community Forum</h1>
           <p className="text-muted-foreground mt-1">
-            Berbagi ilmu perbaikan dan selamatkan bumi dari limbah elektronik.
+            Share repair knowledge and help save the planet from electronic waste.
           </p>
         </div>
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="rounded-full shadow-lg px-6 flex items-center">
-              <Plus className="w-4 h-4 mr-2" /> Tanya Masalah
+              <Plus className="w-4 h-4 mr-2" /> Ask a Question
             </Button>
           </DialogTrigger>
 
@@ -38,7 +38,7 @@ const DashboardForums = () => {
         </Dialog>
       </div>
 
-      <ForumStats/>
+      <ForumStats />
       <ForumPostList onReady={(refetch) => setRefetchForums(() => refetch)} />
     </div>
   );

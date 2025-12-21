@@ -54,7 +54,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             blinkCursor
             cursorStyle="line"
           >
-            Butuh bantuan nge-diagnosa kerusakan?
+            Welcome to Eco Repair AI
           </TypingAnimation>
         )}
 

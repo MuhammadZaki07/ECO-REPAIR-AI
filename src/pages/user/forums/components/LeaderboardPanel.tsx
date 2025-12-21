@@ -47,7 +47,7 @@ export default function LeaderboardPanel() {
             variant="ghost"
             className="w-full text-xs text-emerald-600 mt-2"
           >
-            Lihat Leaderboard
+            View Leaderboard
           </Button>
         </CardContent>
       </Card>
@@ -55,9 +55,9 @@ export default function LeaderboardPanel() {
       <Card className="bg-emerald-600 text-white overflow-hidden relative">
         <CardContent className="p-6">
           <Leaf className="absolute -right-4 -bottom-4 w-24 h-24 opacity-20 rotate-12" />
-          <h4 className="font-bold mb-2">Tips Hari Ini</h4>
+          <h4 className="font-bold mb-2">Tip of the Day</h4>
           <p className="text-xs text-emerald-50 leading-relaxed">
-            {dailyTip?.content || "Belum ada tips hari ini."}
+            {dailyTip?.content || "No tips available today."}
           </p>
         </CardContent>
       </Card>

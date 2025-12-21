@@ -1,22 +1,6 @@
 import React, { useRef, useLayoutEffect } from "react";
-import {
-  Send,
-  Paperclip,
-  X,
-  Loader2,
-  FileText,
-  Share,
-  Download,
-  ListRestart,
-  MoreHorizontal,
-} from "lucide-react";
+import { Send, Paperclip, X, Loader2, FileText } from "lucide-react";
 import { IconFileTypeXls, IconFileWord, IconPdf } from "@tabler/icons-react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import type { ChatInputProps } from "@/types/chat-ai";
 
 const getFileIcon = (type: string) => {
@@ -144,7 +128,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={loading}
-            placeholder="Ketik pesan Anda..."
+            placeholder="Type your message..."
             rows={1}
             className={`w-full bg-transparent border-none outline-none resize-none text-sm max-h-40 ${
               loading ? "opacity-50 cursor-not-allowed" : ""
@@ -168,33 +152,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               >
                 <Paperclip size={20} />
               </button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    disabled={!hasMessages || loading}
-                    className={`p-2 rounded-lg transition ${
-                      hasMessages && !loading
-                        ? "hover:bg-neutral-300 dark:hover:bg-neutral-800"
-                        : "opacity-40 cursor-not-allowed"
-                    }`}
-                  >
-                    <MoreHorizontal size={20} />
-                  </button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent className="w-40">
-                  <DropdownMenuItem disabled={!hasMessages}>
-                    <Share size={16} className="mr-2" /> Share
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled={!hasMessages}>
-                    <ListRestart size={16} className="mr-2" /> Reset
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled={!hasMessages}>
-                    <Download size={16} className="mr-2" /> Export
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
 
             <button
@@ -225,7 +182,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </div>
 
         <p className="text-xs text-[var(--muted-foreground)] text-center">
-          Tekan Enter untuk kirim, Shift + Enter untuk baris baru
+          Press Enter to send, Shift + Enter for new line
         </p>
       </div>
     </div>

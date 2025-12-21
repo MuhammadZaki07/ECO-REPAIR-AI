@@ -81,12 +81,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
       <Card className="max-w-[85%] bg-transparent border-none p-0 pb-5">
         <CardContent className="p- space-y-4 text-neutral-100">
-          {/* TITLE */}
           {data?.title && (
             <h3 className="text-lg font-bold text-white">{data.title}</h3>
           )}
 
-          {/* SUMMARY — TYPING */}
           {!typingDone ? (
             <TypingAnimation
               className="leading-relaxed text-neutral-100"
@@ -102,7 +100,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             <div className="space-y-2">{renderParsedText(data?.summary)}</div>
           )}
 
-          {/* SECTIONS */}
           {typingDone && data?.sections?.length ? (
             <div className="space-y-4 pt-3 border-t border-neutral-700/50">
               {data.sections.map((section, i) => (

@@ -1,16 +1,17 @@
 [
   {
-    "label": "Main Dashboard",
+    "label": "Dashboard",
     "icon": "home",
     "path": "/user/dashboard"
   },
   {
-    "label": "Start Diagnosis",
+    "label": "ECO REPAIR AI",
     "icon": "IconBolt",
-    "path": "/user/scan"
+    "path": "/user/scan",
+    "badge": "BETA"
   },
   {
-    "label": "Riwayat Diagnosis",
+    "label": "Diagnosis History",
     "icon": "clipboard",
     "path": "/user/history"
   },

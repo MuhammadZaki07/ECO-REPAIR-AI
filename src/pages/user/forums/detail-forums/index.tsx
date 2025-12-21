@@ -35,7 +35,7 @@ import { z } from "zod";
 import { IconHeartFilled, IconThumbUpFilled } from "@tabler/icons-react";
 
 const ONE_HOUR = 60 * 60 * 1000;
-const replySchema = z.string().min(1, "Reply tidak boleh kosong");
+const replySchema = z.string().min(1, "Reply cannot be empty");
 
 const ForumDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -68,7 +68,8 @@ const ForumDetailPage = () => {
         count={10}
       />
     );
-  if (!forum) return <div className="p-5">Forum tidak ditemukan</div>;
+
+  if (!forum) return <div className="p-5">Forum not found</div>;
 
   const authorName =
     forum.author.first_name || forum.author.username || "Anonymous";
@@ -112,7 +113,7 @@ const ForumDetailPage = () => {
     <div className="p-5 space-y-6">
       <Button variant="ghost" onClick={() => navigate(-1)}>
         <ChevronLeft className="w-4 h-4 mr-2" />
-        Kembali ke Forum
+        Back to Forum
       </Button>
 
       <Card className="border-none shadow-sm">
@@ -153,6 +154,7 @@ const ForumDetailPage = () => {
             </p>
           </div>
         </CardHeader>
+
         <CardContent className="space-y-4">
           <h1 className="text-2xl font-bold">{forum.title}</h1>
           <p
@@ -164,7 +166,7 @@ const ForumDetailPage = () => {
 
       <div className="space-y-4">
         <h3 className="font-bold flex items-center gap-2">
-          <MessageSquare className="w-4 h-4" /> Jawaban ({replies.length})
+          <MessageSquare className="w-4 h-4" /> Replies ({replies.length})
         </h3>
 
         {replies.map((r) => {
@@ -189,12 +191,14 @@ const ForumDetailPage = () => {
                     </Avatar>
                     <span className="text-sm font-semibold">{authorName}</span>
                   </div>
+
                   <div className="flex items-center gap-2">
                     {r.is_solution && (
                       <Badge className="bg-emerald-600 text-white text-[10px]">
-                        <CheckCircle2 className="w-3 h-3 mr-1" /> Solusi
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> Solution
                       </Badge>
                     )}
+
                     {canEditDelete(r) && (
                       <>
                         <Button
@@ -207,6 +211,7 @@ const ForumDetailPage = () => {
                         >
                           <Edit2 className="w-3 h-3" />
                         </Button>
+
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button size="sm" variant="ghost">
@@ -216,14 +221,14 @@ const ForumDetailPage = () => {
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>
-                                Hapus Jawaban?
+                                Delete Reply?
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Jawaban yang dihapus tidak bisa dikembalikan.
+                                This reply cannot be restored once deleted.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <div className="flex justify-end gap-2 mt-4">
-                              <AlertDialogCancel>Batal</AlertDialogCancel>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 className="bg-red-500 text-white hover:bg-red-300"
                                 onClick={async () => {
@@ -231,13 +236,14 @@ const ForumDetailPage = () => {
                                   await refetch();
                                 }}
                               >
-                                Hapus
+                                Delete
                               </AlertDialogAction>
                             </div>
                           </AlertDialogContent>
                         </AlertDialog>
                       </>
                     )}
+
                     <Button
                       variant="ghost"
                       size="sm"
@@ -253,6 +259,7 @@ const ForumDetailPage = () => {
                     </Button>
                   </div>
                 </div>
+
                 {editReplyId === r.id ? (
                   <div>
                     <Textarea
@@ -269,11 +276,13 @@ const ForumDetailPage = () => {
                       className={replyError ? "border-red-500" : ""}
                     />
                     {replyError && (
-                      <p className="text-red-500 text-sm mt-1">{replyError}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {replyError}
+                      </p>
                     )}
                     <div className="flex justify-end mt-2 gap-2">
                       <Button onClick={() => handleEditSubmit(r.id)}>
-                        Simpan
+                        Save
                       </Button>
                       <Button
                         variant="ghost"
@@ -282,7 +291,7 @@ const ForumDetailPage = () => {
                           setEditReplyContent("");
                         }}
                       >
-                        Batal
+                        Cancel
                       </Button>
                     </div>
                   </div>
@@ -301,7 +310,7 @@ const ForumDetailPage = () => {
         }`}
       >
         <Textarea
-          placeholder="Tulis saran perbaikanmu..."
+          placeholder="Write your repair suggestion..."
           value={reply}
           onChange={(e) => {
             setReply(e.target.value);
@@ -318,7 +327,7 @@ const ForumDetailPage = () => {
         )}
         <div className="flex justify-end mt-2">
           <Button disabled={!reply.trim()} onClick={handleSubmit}>
-            <Send className="w-4 h-4 mr-2" /> Kirim Jawaban
+             Send Reply
           </Button>
         </div>
       </Card>
