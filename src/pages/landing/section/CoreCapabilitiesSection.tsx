@@ -7,14 +7,14 @@ import { PointerHighlight } from "../../../components/ui/pointer-highlight";
 export function CoreCapabilitiesSection() {
   const { t } = useTranslation();
   return (
-    <section className="py-24 md:py-32">
+    <section className="py-24 md:py-32 dark:bg-black bg-neutral-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12 md:mb-16 px-4">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight dark:text-white text-neutral-800 leading-tight">
             {t("core_section.title_before")}
             <PointerHighlight
               rectangleClassName="bg-primary/20 dark:bg-neutral-700/30 border-neutral-300/30 dark:border-neutral-600"
-              pointerClassName="text-white"
+              pointerClassName="text-green-500"
               containerClassName="inline-block"
             >
               <span className="text-primary">

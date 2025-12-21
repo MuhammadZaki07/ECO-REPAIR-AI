@@ -8,7 +8,7 @@ import CardThree from "../../../components/RewardSystem/CardThree";
 export function RewardSystemSection() {
   const { t } = useTranslation();
   return (
-    <section id="rewards" className="py-24 md:py-32 bg-black relative">
+    <section id="rewards" className="py-24 md:py-32 dark:bg-black bg-neutral-50 relative">
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <DotBackground />
 

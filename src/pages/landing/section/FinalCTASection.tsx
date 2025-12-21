@@ -13,7 +13,7 @@ export function FinalCTASection() {
       className="py-24 md:py-20 relative overflow-hidden w-full h-full"
     >
       <div className="absolute inset-0 w-full h-full pointer-events-none z-5">
-        <div className="absolute inset-0 bg-gradient-to-b via-transparent to-transparent dark:from-black/90" />
+        <div className="absolute inset-0 bg-gradient-to-b via-transparent to-transparent from-neutral-50 dark:from-black/90" />
       </div>
 
       <FlickeringGrid
@@ -26,7 +26,7 @@ export function FinalCTASection() {
       />
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="relative p-12 md:p-20 dark:bg-black bg-neutral-100 text-center rounded-3xl border border-white/10 shadow-2xl ">
+        <div className="relative p-12 md:p-20 dark:bg-black bg-neutral-50 text-center rounded-3xl border border-white/10 shadow-2xl ">
           <Ripple
             className="absolute inset-0 z-0 w-full h-full top-0"
             mainCircleOpacity={0.4}

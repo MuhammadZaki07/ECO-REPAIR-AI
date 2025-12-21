@@ -11,7 +11,7 @@ export function ImpactStatsSection() {
 
   const data = itemsImpact(t);
   return (
-    <section id="impact" className="py-24 md:py-32 dark:bg-black">
+    <section id="impact" className="py-24 md:py-32 dark:bg-black bg-neutral-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12 md:mb-16 px-4">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight dark:text-white text-neutral-900 leading-tight">

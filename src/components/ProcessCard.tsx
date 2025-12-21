@@ -45,7 +45,7 @@ export const ProcessCard = ({
       </div>
 
       <div
-        className="bg-white dark:bg-black w-[350px] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-neutral-800 hover:border-primary lg:w-full h-full dark:group-hover:scale-105"
+        className="bg-white dark:bg-black w-[350px] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-neutral-800 lg:w-full h-full dark:group-hover:scale-105"
         style={{
           opacity: mobileActive || mobileCompleted ? 1 : 0.5,
           filter: mobileActive || mobileCompleted ? "none" : "blur(1.5px)",

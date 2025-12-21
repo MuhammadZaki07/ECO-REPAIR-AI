@@ -58,26 +58,14 @@ export function StepSection() {
     return () => observer.disconnect();
   }, [alreadyPlayedOnce]);
 
-  /* ----------------------------------------------------------------------
-    2) Interval animasi → Progress bar & perpindahan step
-    ----------------------------------------------------------------------
-    - Eksekusi hanya jika animasi sudah dimulai.
-    - Progress berjalan dari 0 → 100 setiap 50ms.
-    - Step berpindah setiap INTERVAL_DURATION (1500ms).
-    - Ketika mencapai step terakhir → set isComplete = true.
-    ---------------------------------------------------------------------- */
   useEffect(() => {
     if (!hasStarted || isComplete) return;
-
-    // progress 0–100
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) return 100;
         return prev + 100 / (INTERVAL_DURATION / 50);
       });
     }, 50);
-
-    // perpindahan step
     const stepInterval = setInterval(() => {
       setActiveStep((prev) => {
         if (prev >= steps.length - 1) {
@@ -95,9 +83,6 @@ export function StepSection() {
     };
   }, [hasStarted, isComplete]);
 
-  /* ----------------------------------------------------------------------
-    4) Visual Order Zigzag
-    ---------------------------------------------------------------------- */
   const visualOrder = [
     steps[0],
     steps[1],
@@ -113,26 +98,22 @@ export function StepSection() {
     <section
       id="how-it-works"
       ref={sectionRef}
-      className="relative py-24 md:py-32 px-4 overflow-hidden dark:bg-black bg-neutral-100"
+      className="relative py-24 md:py-32 px-4 overflow-hidden dark:bg-black bg-neutral-50"
     >
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <DotBackground />
 
-        {/* Gradient dari bawah ke atas */}
         <div
           className="absolute inset-0 
                   bg-gradient-to-t  via-transparent to-transparent 
                   dark:from-black/80 dark:via-transparent dark:to-transparent"
         ></div>
-
-        {/* Gradient dari atas ke bawah */}
         <div
           className="absolute inset-0 
                   bg-gradient-to-b via-transparent to-transparent 
                   dark:from-black/80 dark:via-transparent dark:to-transparent"
         ></div>
 
-        {/* Gradient dari kanan ke kiri */}
         <div
           className="absolute inset-0 
                   bg-gradient-to-l via-transparent to-transparent 
