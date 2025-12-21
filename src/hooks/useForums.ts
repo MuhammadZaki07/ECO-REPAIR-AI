@@ -11,34 +11,39 @@ export const useForums = (
   const [forums, setForums] = useState<Forum[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [search, setSearch] = useState("");
+  const [total, setTotal] = useState(0);
 
   const fetchForums = useCallback(async () => {
     if (tab === "my" && !userId) return;
     setLoading(true);
     try {
-      let data: Forum[] = [];
+      let result: { data: Forum[]; total: number };
       switch (tab) {
         case "all":
-          data = await ForumService.getForums();
+          result = await ForumService.getForums({ page, pageSize, search });
           break;
         case "my":
-          data = await ForumService.getForumsByUser(userId!);
+          result = await ForumService.getForumsByUser(userId!, { page, pageSize, search });
           break;
         case "trending":
-          data = await ForumService.getTrendingForums();
+          result = await ForumService.getTrendingForums({ page, pageSize });
           break;
         case "solved":
-          data = await ForumService.getSolvedForums();
+          result = await ForumService.getSolvedForums({ page, pageSize });
           break;
       }
-      setForums(data);
+      setForums(result.data);
+      setTotal(result.total);
       setError(null);
     } catch (err: any) {
       setError(err);
     } finally {
       setLoading(false);
     }
-  }, [tab, userId]);
+  }, [tab, userId, page, pageSize, search]);
 
   const createForum = useCallback(
     async (
@@ -130,6 +135,12 @@ export const useForums = (
     forums,
     loading,
     error,
+    page,
+    pageSize,
+    total,
+    search,
+    setPage,
+    setSearch,
     refetch: fetchForums,
     createForum,
     updateForum,

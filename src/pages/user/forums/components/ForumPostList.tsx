@@ -1,31 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Leaf } from "lucide-react";
 import { Button } from "@/components/liquid-glass-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  CheckCircle2,
-  MessageSquare,
-  MoreHorizontal,
-  TrendingUp,
-  Search,
-} from "lucide-react";
+import { CheckCircle2, MessageSquare, MoreHorizontal, TrendingUp, Search } from "lucide-react";
 import { useForums } from "@/hooks/useForums";
 import { AuthService } from "@/services/AuthService";
 import { DynamicSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/state/ErrorState";
 import { EmptyState } from "@/components/state/EmptyState";
 import { lexicalToHtml } from "@/helpers/lexicalToHtml";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import ModalForums from "./ModalForums";
 import {
   AlertDialog,
@@ -37,23 +25,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { ForumPostListProps } from "@/types/forum";
 import { useToast } from "@/hooks/use-toast";
 import { getAuthorName } from "@/helpers/getAuthorName";
 import { getAuthorInitial } from "@/helpers/getAuthorInitial";
+import LeaderboardPanel from "./LeaderboardPanel";
 
-const PAGE_SIZE = import.meta.env.VITE_PAGE_SIZE;
+const PAGE_SIZE = Number(import.meta.env.VITE_PAGE_SIZE) || 10;
 
-function ForumPostList({ onReady }: ForumPostListProps) {
+function ForumPostList({ onReady }: { onReady?: (refetch: () => void) => void }) {
   const [activeTab, setActiveTab] = useState("my");
   const [searchTerm, setSearchTerm] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingForum, setEditingForum] = useState<any>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<{ [key: string]: boolean }>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -64,32 +50,22 @@ function ForumPostList({ onReady }: ForumPostListProps) {
     fetchUser();
   }, []);
 
-  const forumsHook = useForums(
-    activeTab,
-    activeTab === "my" ? userId : undefined
-  );
+  const forumsHook = useForums(activeTab, activeTab === "my" ? userId ?? undefined : undefined);
+
+  useEffect(() => {
+    forumsHook.setPage(page);
+  }, [page]);
+
+  useEffect(() => {
+    forumsHook.setSearch(searchTerm);
+  }, [searchTerm]);
 
   useEffect(() => {
     onReady?.(forumsHook.refetch);
-  }, [forumsHook.refetch]);
-
-  const filteredPosts = (forumsHook.forums ?? []).filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (lexicalToHtml(post.content) ?? "")
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(filteredPosts.length / PAGE_SIZE);
-  const paginatedPosts = filteredPosts.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
-
-  useEffect(() => {
     setPage(1);
-  }, [activeTab, searchTerm]);
+  }, [forumsHook.refetch, activeTab, searchTerm]);
+
+  const totalPages = Math.ceil(forumsHook.total / PAGE_SIZE);
 
   const openEditModal = (forum: any) => {
     setEditingForum(forum);
@@ -102,14 +78,9 @@ function ForumPostList({ onReady }: ForumPostListProps) {
 
   const handleDelete = async () => {
     if (!editingForum) return;
-
     try {
       await forumsHook.deleteForum(editingForum.id);
-      setDeleteDialogOpen((prev) => ({
-        ...prev,
-        [editingForum.id]: false,
-      }));
-
+      setDeleteDialogOpen((prev) => ({ ...prev, [editingForum.id]: false }));
       setEditingForum(null);
       toast({ title: "Forum berhasil dihapus" });
       forumsHook.refetch();
@@ -122,11 +93,7 @@ function ForumPostList({ onReady }: ForumPostListProps) {
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
       <div className="lg:col-span-3 space-y-6">
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full sm:w-auto"
-          >
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
             <TabsList className="grid grid-cols-4 lg:w-full w-[400px]">
               <TabsTrigger value="my">Pertanyaan Saya</TabsTrigger>
               <TabsTrigger value="all">Semua</TabsTrigger>
@@ -149,11 +116,7 @@ function ForumPostList({ onReady }: ForumPostListProps) {
         </div>
 
         {forumsHook.loading ? (
-          <DynamicSkeleton
-            preset="LIST"
-            count={PAGE_SIZE}
-            className="w-full space-y-4"
-          />
+          <DynamicSkeleton preset="LIST" count={PAGE_SIZE} className="w-full space-y-4" />
         ) : forumsHook.error ? (
           <ErrorState
             title="Terjadi Kesalahan"
@@ -161,22 +124,16 @@ function ForumPostList({ onReady }: ForumPostListProps) {
             actionLabel="Coba Lagi"
             onAction={forumsHook.refetch}
           />
-        ) : paginatedPosts.length === 0 ? (
-          <EmptyState
-            title="Belum ada diskusi"
-            description="Coba ubah kata kunci pencarian atau pilih tab lain."
-          />
+        ) : forumsHook.forums.length === 0 ? (
+          <EmptyState title="Belum ada diskusi" description="Coba ubah kata kunci pencarian atau pilih tab lain." />
         ) : (
           <div className="flex flex-col gap-3">
-            {paginatedPosts.map((forum) => (
+            {forumsHook.forums.map((forum) => (
               <Card key={forum.id} className="border shadow-none">
                 <CardContent className="p-5">
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex gap-2">
-                      <Badge
-                        variant="outline"
-                        className="rounded-md font-medium"
-                      >
+                      <Badge variant="outline" className="rounded-md font-medium">
                         {forum.category?.name ?? "Unknown"}
                       </Badge>
                       {forum.status === "solved" ? (
@@ -196,33 +153,18 @@ function ForumPostList({ onReady }: ForumPostListProps) {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => openEditModal(forum)}
-                          >
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => {
-                              setEditingForum(forum);
-                              openDeleteDialog(forum);
-                            }}
-                          >
-                            Delete
-                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEditModal(forum)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openDeleteDialog(forum)}>Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     )}
                   </div>
 
                   <Link to={`/user/forums/${forum.id}`}>
-                    <h3 className="text-lg font-bold hover:underline mb-2 leading-tight">
-                      {forum.title}
-                    </h3>
+                    <h3 className="text-lg font-bold hover:underline mb-2 leading-tight">{forum.title}</h3>
                     <p
                       className="text-sm text-muted-foreground line-clamp-2 mb-4"
-                      dangerouslySetInnerHTML={{
-                        __html: lexicalToHtml(forum.content),
-                      }}
+                      dangerouslySetInnerHTML={{ __html: lexicalToHtml(forum.content) }}
                     />
                   </Link>
 
@@ -230,32 +172,20 @@ function ForumPostList({ onReady }: ForumPostListProps) {
                     <div className="flex items-center gap-2">
                       <Avatar className="w-6 h-6">
                         {forum?.author?.avatar_url ? (
-                          <AvatarImage
-                            src={forum.author.avatar_url}
-                            alt={getAuthorName(forum.author)}
-                            className="object-cover w-full h-full"
-                            loading="lazy"
-                          />
+                          <AvatarImage src={forum.author.avatar_url} alt={getAuthorName(forum.author)} className="object-cover w-full h-full" loading="lazy" />
                         ) : (
-                          <AvatarFallback className="text-[10px] font-semibold bg-muted">
-                            {getAuthorInitial(forum.author)}
-                          </AvatarFallback>
+                          <AvatarFallback className="text-[10px] font-semibold bg-muted">{getAuthorInitial(forum.author)}</AvatarFallback>
                         )}
                       </Avatar>
-
-                      <span className="text-xs font-semibold">
-                        {getAuthorName(forum.author)}
-                      </span>
+                      <span className="text-xs font-semibold">{getAuthorName(forum.author)}</span>
                     </div>
 
                     <div className="flex items-center gap-4 text-muted-foreground">
                       <div className="flex items-center gap-1 text-xs">
-                        <MessageSquare className="w-4 h-4" />{" "}
-                        {forum.replies_count ?? 0}
+                        <MessageSquare className="w-4 h-4" /> {forum.replies_count ?? 0}
                       </div>
                       <div className="flex items-center gap-1 text-xs">
-                        <TrendingUp className="w-4 h-4" />{" "}
-                        {forum.likes_count ?? 0}
+                        <TrendingUp className="w-4 h-4" /> {forum.likes_count ?? 0}
                       </div>
                     </div>
                   </div>
@@ -265,21 +195,13 @@ function ForumPostList({ onReady }: ForumPostListProps) {
 
             {totalPages > 1 && (
               <div className="flex justify-end gap-5 items-center mt-4">
-                <Button
-                  variant="outline"
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => p - 1)}
-                >
+                <Button variant="outline" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
                   Prev
                 </Button>
                 <span className="text-sm text-muted-foreground">
                   {page} / {totalPages}
                 </span>
-                <Button
-                  variant="outline"
-                  disabled={page === totalPages}
-                  onClick={() => setPage((p) => p + 1)}
-                >
+                <Button variant="outline" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
                   Next
                 </Button>
               </div>
@@ -288,35 +210,7 @@ function ForumPostList({ onReady }: ForumPostListProps) {
         )}
       </div>
 
-      <div className="space-y-6">
-        <Card className="shadow-none">
-          <CardHeader>
-            <CardTitle className="text-sm font-bold flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-emerald-500" /> Top
-              Contributors
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button
-              variant="ghost"
-              className="w-full text-xs text-emerald-600 mt-2"
-            >
-              Lihat Leaderboard
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-emerald-600 text-white overflow-hidden relative">
-          <CardContent className="p-6">
-            <Leaf className="absolute -right-4 -bottom-4 w-24 h-24 opacity-20 rotate-12" />
-            <h4 className="font-bold mb-2">Tips Hari Ini</h4>
-            <p className="text-xs text-emerald-50 leading-relaxed">
-              Membersihkan debu pada kipas laptop secara rutin dapat
-              memperpanjang umur komponen hingga 2 tahun!
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <LeaderboardPanel />
 
       <ModalForums
         isOpen={modalOpen}
@@ -335,24 +229,19 @@ function ForumPostList({ onReady }: ForumPostListProps) {
       <AlertDialog
         open={!!editingForum && !!deleteDialogOpen[editingForum.id]}
         onOpenChange={(open) =>
-          editingForum &&
-          setDeleteDialogOpen((prev) => ({ ...prev, [editingForum.id]: open }))
+          editingForum && setDeleteDialogOpen((prev) => ({ ...prev, [editingForum.id]: open }))
         }
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Forum?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this forum? This action cannot be
-              undone.
+              Are you sure you want to delete this forum? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-red-500 text-white hover:bg-red-300"
-            >
+            <AlertDialogAction onClick={handleDelete} className="bg-red-500 text-white hover:bg-red-300">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

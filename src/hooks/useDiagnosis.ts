@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import type { DiagnosisRecord, HistorySummary } from "@/types/diagnosis";
 import type {
-  CreateDiagnosisHookResult,
+  DiagnosisRecord,
+  HistorySummary,
   DiagnosisHookResult,
   HistoryHookResult,
+  CreateDiagnosisHookResult,
+  UseDiagnosisHistoryParams,
 } from "@/types/diagnosis";
 import { DiagnosisService } from "@/services/diagnosisService";
 
@@ -18,60 +20,97 @@ export const useDiagnosis = (diagnosisId?: string): DiagnosisHookResult => {
       return;
     }
 
-    const loadDiagnosis = async () => {
+    const load = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const record = await DiagnosisService.fetchById(diagnosisId);
         setData(record);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Gagal memuat diagnosis."
-        );
+        setError(err instanceof Error ? err.message : "Failed to load diagnosis");
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadDiagnosis();
+    load();
   }, [diagnosisId]);
 
   return { data, isLoading, error };
 };
 
-export const useDiagnosisHistory = (): HistoryHookResult => {
+
+export const useDiagnosisHistory = (
+  params: UseDiagnosisHistoryParams
+): HistoryHookResult & {
+  page: number;
+  setPage: (p: number) => void;
+  search: string;
+  setSearch: (s: string) => void;
+  total: number;
+} => {
+  const {
+    userId,
+    pageSize = 10,
+    fromDate,
+    toDate,
+  } = params;
+
   const [data, setData] = useState<HistorySummary[]>([]);
+  const [page, setPage] = useState(params.page ?? 1);
+  const [search, setSearch] = useState(params.search ?? "");
+  const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadHistory = useCallback(async () => {
+  const fetchHistory = useCallback(async () => {
+    if (!userId) return;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const records = await DiagnosisService.fetchSummaries();
-      setData(records);
+      const result = await DiagnosisService.fetchSummaries({
+        userId,
+        page,
+        pageSize,
+        search,
+        fromDate,
+        toDate,
+      });
+
+      setData(result.data);
+      setTotal(result.total);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Gagal memuat riwayat diagnosis."
+        err instanceof Error ? err.message : "Failed to load history"
       );
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [userId, page, pageSize, search, fromDate, toDate]);
 
   useEffect(() => {
-    loadHistory();
-  }, [loadHistory]);
+    fetchHistory();
+  }, [fetchHistory]);
 
-  return { data, isLoading, error, refetch: loadHistory };
+  return {
+    data,
+    isLoading,
+    error,
+    refetch: fetchHistory,
+    page,
+    setPage,
+    search,
+    setSearch,
+    total,
+  };
 };
+
 
 function isValidDiagnosis(aiData: any): boolean {
   if (!aiData?.sections) return false;
-
   const steps = aiData.sections.find((s: any) => s.tag === "STEPS");
-
   return Array.isArray(steps?.items) && steps.items.length > 0;
 }
 
@@ -84,7 +123,7 @@ export const useCreateDiagnosis = (): CreateDiagnosisHookResult => {
       if (!userId || !description) return;
 
       if (!isValidDiagnosis(aiResponse)) {
-        console.log("Skip save: bukan diagnosis valid");
+        console.warn("Skipped saving invalid diagnosis");
         return;
       }
 
@@ -92,11 +131,16 @@ export const useCreateDiagnosis = (): CreateDiagnosisHookResult => {
       setError(null);
 
       try {
-        return await DiagnosisService.create(userId, description, aiResponse);
+        return await DiagnosisService.create(
+          userId,
+          description,
+          aiResponse
+        );
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Gagal membuat diagnosis."
+          err instanceof Error ? err.message : "Failed to create diagnosis"
         );
+        throw err;
       } finally {
         setIsSubmitting(false);
       }
@@ -109,15 +153,16 @@ export const useCreateDiagnosis = (): CreateDiagnosisHookResult => {
 
 export const useDeleteDiagnosis = () => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<string | number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const remove = useCallback(async (id: string | number) => {
+  const remove = useCallback(async (id: string) => {
     setIsDeleting(true);
     setError(null);
+
     try {
       await DiagnosisService.delete(id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menghapus.");
+      setError(err instanceof Error ? err.message : "Failed to delete diagnosis");
       throw err;
     } finally {
       setIsDeleting(false);

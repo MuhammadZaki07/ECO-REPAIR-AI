@@ -6,6 +6,8 @@ export interface UserData {
   full_name?: string;
   avatar_url?: string;
   role?: string;
+  bio?:string;
+  location?:string;
 }
 
 export interface AuthContextType {

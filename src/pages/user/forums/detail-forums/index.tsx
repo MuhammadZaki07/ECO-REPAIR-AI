@@ -21,8 +21,18 @@ import { formatDateID } from "@/utils/date";
 import { lexicalToHtml } from "@/helpers/lexicalToHtml";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { DynamicSkeleton } from "@/components/skeletons";
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { z } from "zod";
+import { IconHeartFilled, IconThumbUpFilled } from "@tabler/icons-react";
 
 const ONE_HOUR = 60 * 60 * 1000;
 const replySchema = z.string().min(1, "Reply tidak boleh kosong");
@@ -48,13 +58,20 @@ const ForumDetailPage = () => {
     updateReply,
     deleteReply,
     refetch,
-  } = useForumDetailRealtime(id);
+  } = useForumDetailRealtime(id, userData?.id);
 
   if (loading)
-    return <DynamicSkeleton className="w-full flex flex-col gap-4" preset="LIST" count={10} />;
+    return (
+      <DynamicSkeleton
+        className="w-full flex flex-col gap-4"
+        preset="LIST"
+        count={10}
+      />
+    );
   if (!forum) return <div className="p-5">Forum tidak ditemukan</div>;
 
-  const authorName = forum.author.first_name || forum.author.username || "Anonymous";
+  const authorName =
+    forum.author.first_name || forum.author.username || "Anonymous";
 
   const handleSubmit = async () => {
     try {
@@ -86,7 +103,7 @@ const ForumDetailPage = () => {
     }
   };
 
-  const canEditDelete = (r: typeof replies[0]) =>
+  const canEditDelete = (r: (typeof replies)[0]) =>
     userData &&
     r.user_id === userData.id &&
     new Date().getTime() - new Date(r.created_at).getTime() < ONE_HOUR;
@@ -110,8 +127,12 @@ const ForumDetailPage = () => {
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm">{authorName}</span>
-              <Badge variant="secondary" className="text-[10px]">{forum.category.name}</Badge>
-              {forum.status === "solved" && <Verified className="text-emerald-600" />}
+              <Badge variant="secondary" className="text-[10px]">
+                {forum.category.name}
+              </Badge>
+              {forum.status === "solved" && (
+                <Verified className="text-emerald-600" />
+              )}
               <Button
                 variant="ghost"
                 size="sm"
@@ -119,16 +140,25 @@ const ForumDetailPage = () => {
                 onClick={() => userData && toggleLikeForum(userData.id)}
                 disabled={!userData}
               >
-                <Heart className="w-4 h-4 text-red-500" />
+                {forum.user_has_liked ? (
+                  <IconHeartFilled className="w-4 h-4 text-red-500" />
+                ) : (
+                  <Heart className="w-4 h-4 text-red-500" />
+                )}
                 <span className="text-sm">{forum.likes_count ?? 0}</span>
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">{formatDateID(forum.created_at)}</p>
+            <p className="text-xs text-muted-foreground">
+              {formatDateID(forum.created_at)}
+            </p>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <h1 className="text-2xl font-bold">{forum.title}</h1>
-          <p className="text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: lexicalToHtml(forum.content) }} />
+          <p
+            className="text-muted-foreground leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: lexicalToHtml(forum.content) }}
+          />
         </CardContent>
       </Card>
 
@@ -139,7 +169,9 @@ const ForumDetailPage = () => {
 
         {replies.map((r) => {
           const authorName = r.author?.username || "User";
-          const highlightSolution = r.is_solution ? "bg-emerald-50 dark:bg-emerald-950/20" : "";
+          const highlightSolution = r.is_solution
+            ? "bg-emerald-50 dark:bg-emerald-950/20"
+            : "";
 
           return (
             <Card key={r.id} className={highlightSolution}>
@@ -147,36 +179,77 @@ const ForumDetailPage = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <Avatar className="w-6 h-6">
-                      {r.author?.avatar_url ? <AvatarImage src={r.author.avatar_url} /> : <AvatarFallback className="text-[10px]">{authorName[0]}</AvatarFallback>}
+                      {r.author?.avatar_url ? (
+                        <AvatarImage src={r.author.avatar_url} />
+                      ) : (
+                        <AvatarFallback className="text-[10px]">
+                          {authorName[0]}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                     <span className="text-sm font-semibold">{authorName}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {r.is_solution && <Badge className="bg-emerald-600 text-white text-[10px]"><CheckCircle2 className="w-3 h-3 mr-1" /> Solusi</Badge>}
+                    {r.is_solution && (
+                      <Badge className="bg-emerald-600 text-white text-[10px]">
+                        <CheckCircle2 className="w-3 h-3 mr-1" /> Solusi
+                      </Badge>
+                    )}
                     {canEditDelete(r) && (
                       <>
-                        <Button size="sm" variant="ghost" onClick={() => { setEditReplyId(r.id); setEditReplyContent(r.content); }}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            setEditReplyId(r.id);
+                            setEditReplyContent(r.content);
+                          }}
+                        >
                           <Edit2 className="w-3 h-3" />
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button size="sm" variant="ghost"><Trash2 className="w-3 h-3" /></Button>
+                            <Button size="sm" variant="ghost">
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Hapus Jawaban?</AlertDialogTitle>
-                              <AlertDialogDescription>Jawaban yang dihapus tidak bisa dikembalikan.</AlertDialogDescription>
+                              <AlertDialogTitle>
+                                Hapus Jawaban?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Jawaban yang dihapus tidak bisa dikembalikan.
+                              </AlertDialogDescription>
                             </AlertDialogHeader>
                             <div className="flex justify-end gap-2 mt-4">
                               <AlertDialogCancel>Batal</AlertDialogCancel>
-                              <AlertDialogAction className="bg-red-500 text-white hover:bg-red-300" onClick={async () => { await deleteReply?.(r.id); await refetch(); }}>Hapus</AlertDialogAction>
+                              <AlertDialogAction
+                                className="bg-red-500 text-white hover:bg-red-300"
+                                onClick={async () => {
+                                  await deleteReply?.(r.id);
+                                  await refetch();
+                                }}
+                              >
+                                Hapus
+                              </AlertDialogAction>
                             </div>
                           </AlertDialogContent>
                         </AlertDialog>
                       </>
                     )}
-                    <Button variant="ghost" size="sm" className="h-7 px-2 gap-1" onClick={() => userData && toggleLikeReply(r.id, userData.id)}>
-                      <ThumbsUp className="w-3 h-3" /> {r.likes_count ?? 0}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 gap-1"
+                      onClick={() => userData && toggleLikeReply(r.id)}
+                    >
+                      {r.user_has_liked ? (
+                        <IconThumbUpFilled />
+                      ) : (
+                        <ThumbsUp className="w-3 h-3" />
+                      )}
+                      {r.likes_count ?? 0}
                     </Button>
                   </div>
                 </div>
@@ -184,13 +257,33 @@ const ForumDetailPage = () => {
                   <div>
                     <Textarea
                       value={editReplyContent}
-                      onChange={(e) => { setEditReplyContent(e.target.value); if (replyError) { try { replySchema.parse(e.target.value); setReplyError(""); } catch {} } }}
+                      onChange={(e) => {
+                        setEditReplyContent(e.target.value);
+                        if (replyError) {
+                          try {
+                            replySchema.parse(e.target.value);
+                            setReplyError("");
+                          } catch {}
+                        }
+                      }}
                       className={replyError ? "border-red-500" : ""}
                     />
-                    {replyError && <p className="text-red-500 text-sm mt-1">{replyError}</p>}
+                    {replyError && (
+                      <p className="text-red-500 text-sm mt-1">{replyError}</p>
+                    )}
                     <div className="flex justify-end mt-2 gap-2">
-                      <Button onClick={() => handleEditSubmit(r.id)}>Simpan</Button>
-                      <Button variant="ghost" onClick={() => { setEditReplyId(null); setEditReplyContent(""); }}>Batal</Button>
+                      <Button onClick={() => handleEditSubmit(r.id)}>
+                        Simpan
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setEditReplyId(null);
+                          setEditReplyContent("");
+                        }}
+                      >
+                        Batal
+                      </Button>
                     </div>
                   </div>
                 ) : (
@@ -202,18 +295,27 @@ const ForumDetailPage = () => {
         })}
       </div>
 
-      <Card className={`border-2 p-4 ${replyError ? "border-red-500" : "border-dashed border-muted/30"}`}>
+      <Card
+        className={`border-2 p-4 ${
+          replyError ? "border-red-500" : "border-dashed border-muted/30"
+        }`}
+      >
         <Textarea
           placeholder="Tulis saran perbaikanmu..."
           value={reply}
           onChange={(e) => {
             setReply(e.target.value);
             if (replyError) {
-              try { replySchema.parse(e.target.value); setReplyError(""); } catch {}
+              try {
+                replySchema.parse(e.target.value);
+                setReplyError("");
+              } catch {}
             }
           }}
         />
-        {replyError && <p className="text-red-500 text-sm mt-1">{replyError}</p>}
+        {replyError && (
+          <p className="text-red-500 text-sm mt-1">{replyError}</p>
+        )}
         <div className="flex justify-end mt-2">
           <Button disabled={!reply.trim()} onClick={handleSubmit}>
             <Send className="w-4 h-4 mr-2" /> Kirim Jawaban

@@ -51,3 +51,21 @@ export interface HistorySummary {
   summary: string;
   user_input: string;
 }
+
+export type FetchDiagnosisParams = {
+  userId: string;
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  fromDate?: string;
+  toDate?: string;
+};
+
+export type UseDiagnosisHistoryParams = {
+  userId: string;
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  fromDate?: string;
+  toDate?: string;
+};

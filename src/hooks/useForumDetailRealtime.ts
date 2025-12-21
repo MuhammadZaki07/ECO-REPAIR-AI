@@ -3,83 +3,126 @@ import { supabase } from "@/lib/supabase/client";
 import { ForumService } from "@/services/forumService";
 import type { Forum, ForumReply } from "@/types/forum";
 
-export const useForumDetailRealtime = (forumId: string | number) => {
+export const useForumDetailRealtime = (
+  forumId: string | number,
+  userId?: string
+) => {
   const [forum, setForum] = useState<Forum | null>(null);
   const [replies, setReplies] = useState<ForumReply[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
+    if (forumId === "my") {
+      setForum(null);
+      setReplies([]);
+      return;
+    }
     setLoading(true);
     try {
-      const forumData = await ForumService.getForumById(forumId.toString());
-      setForum(forumData ?? null);
-      const repliesData = await ForumService.getReplies(forumId.toString());
-      setReplies(repliesData ?? []);
+      const data = await ForumService.getForumByIdWithUserLikes(
+        forumId.toString(),
+        userId
+      );
+      setForum(data);
+      setReplies(data.replies);
     } catch (err: any) {
       setError(err);
     } finally {
       setLoading(false);
     }
-  }, [forumId]);
+  }, [forumId, userId]);
+
+  const [stats, setStats] = useState({
+    reputation: 0,
+    totalReplies: 0,
+    totalSolutions: 0,
+    openQuestions: 0,
+  });
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  useEffect(() => {
+    if (!userId) return;
+    setLoadingStats(true);
+
+    const fetchStats = async () => {
+      try {
+        const { data: replyData, error: replyError } = await supabase
+          .from("forum_replies")
+          .select("id, is_solution, forum_id")
+          .eq("user_id", userId);
+        if (replyError) throw replyError;
+        const totalReplies = replyData?.length || 0;
+        const totalSolutions =
+          replyData?.filter((r) => r.is_solution).length || 0;
+
+        const { data: openQuestions, error: openError } = await supabase
+          .from("forums")
+          .select("id")
+          .eq("user_id", userId)
+          .neq("status", "solved");
+        if (openError) throw openError;
+        const openQuestionsCount = openQuestions?.length || 0;
+
+        setStats({
+          reputation: 0,
+          totalReplies,
+          totalSolutions,
+          openQuestions: openQuestionsCount,
+        });
+      } catch {
+        setStats({
+          reputation: 0,
+          totalReplies: 0,
+          totalSolutions: 0,
+          openQuestions: 0,
+        });
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, [userId]);
 
   const addReply = useCallback(
     async (userId: string, content: string) => {
-      const reply = await ForumService.postReply(
-        forumId.toString(),
-        userId,
-        content
-      );
-      setReplies((prev) => [...prev, reply]);
-      return reply;
+      await ForumService.postReply(forumId.toString(), userId, content);
+      fetchData();
     },
-    [forumId]
+    [forumId, fetchData]
   );
 
-  const toggleLikeForum = useCallback(
-    async (userId: string) => {
-      if (!forum) return;
-      try {
-        const updatedForum = await ForumService.toggleForumLike(
-          forum.id,
-          userId
-        );
-        setForum(updatedForum);
-      } catch (e) {
-        console.error(e);
-      }
-    },
-    [forum]
-  );
+  const toggleLikeForum = useCallback(async () => {
+    if (!forum || !userId) return;
+    await ForumService.toggleForumLike(forum.id, userId);
+    fetchData();
+  }, [forum, userId, fetchData]);
 
   const toggleLikeReply = useCallback(
-    async (replyId: string, userId: string) => {
-      try {
-        const diff = await ForumService.toggleReplyLike(replyId, userId);
-        setReplies((prev) =>
-          prev.map((r) =>
-            r.id === replyId
-              ? { ...r, likes_count: Math.max((r.likes_count ?? 0) + diff, 0) }
-              : r
-          )
-        );
-      } catch (e) {
-        console.error(e);
-      }
+    async (replyId: string) => {
+      if (!userId) return;
+      await ForumService.toggleReplyLike(replyId, userId);
+      fetchData();
     },
-    []
+    [userId, fetchData]
   );
 
-  const updateReply = useCallback(async (replyId: string, content: string) => {
-    const updated = await ForumService.updateReply(replyId, content);
-    setReplies((prev) => prev.map((r) => (r.id === replyId ? updated : r)));
-    return updated;
-  }, []);
+  const updateReply = useCallback(
+    async (replyId: string, content: string) => {
+      await ForumService.updateReply(replyId, content);
+      fetchData();
+    },
+    [fetchData]
+  );
 
-  const deleteReply = useCallback(async (replyId: string) => {
-    await ForumService.deleteReply(replyId);
-    setReplies((prev) => prev.filter((r) => r.id !== replyId));
-  }, []);
+  const deleteReply = useCallback(
+    async (replyId: string) => {
+      await ForumService.deleteReply(replyId);
+      fetchData();
+    },
+    [fetchData]
+  );
 
   useEffect(() => {
     if (!forumId) return;
@@ -90,12 +133,12 @@ export const useForumDetailRealtime = (forumId: string | number) => {
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "forum_replies",
           filter: `forum_id=eq.${forumId}`,
         },
-        (payload) => setReplies((prev) => [...prev, payload.new])
+        fetchData
       )
       .subscribe();
 
@@ -123,6 +166,10 @@ export const useForumDetailRealtime = (forumId: string | number) => {
     forum,
     replies,
     addReply,
+    updateReply,
+    deleteReply,
+    stats,
+    loadingStats,
     toggleLikeForum,
     toggleLikeReply,
     loading,

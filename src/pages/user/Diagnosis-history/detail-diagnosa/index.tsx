@@ -60,7 +60,7 @@ const DiagnosisDetailPage: React.FC = () => {
         setYoutubeVideos(videos);
       } catch (err: any) {
         toast({
-          title: "Gagal ambil video",
+          title: "Failed to load videos",
           description: err.message,
           variant: "destructive",
         });
@@ -75,7 +75,7 @@ const DiagnosisDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <LoadingState>
-        <DynamicSkeleton preset="LIST" />
+        <DynamicSkeleton preset="LIST" count={5}/>
       </LoadingState>
     );
   }
@@ -83,9 +83,9 @@ const DiagnosisDetailPage: React.FC = () => {
   if (error) {
     return (
       <ErrorState
-        title="Terjadi Kesalahan"
+        title="Something went wrong"
         description={error?.message}
-        actionLabel="Kembali"
+        actionLabel="Go back"
         onAction={() => navigate("/user/history")}
       />
     );
@@ -94,8 +94,8 @@ const DiagnosisDetailPage: React.FC = () => {
   if (!diagnosis?.ai_response_json) {
     return (
       <EmptyState
-        title="Data tidak tersedia"
-        description="Detail diagnosis belum tersedia."
+        title="No data available"
+        description="Diagnosis details are not available."
       />
     );
   }
@@ -111,7 +111,7 @@ const DiagnosisDetailPage: React.FC = () => {
   return (
     <div className="p-5 space-y-6">
       <Button variant="ghost" onClick={() => navigate(-1)}>
-        <ChevronLeft className="w-4 h-4 mr-2" /> Kembali
+        <ChevronLeft className="w-4 h-4 mr-2" /> Back
       </Button>
 
       <h1 className="text-3xl font-bold">{aiData.title}</h1>
@@ -123,16 +123,17 @@ const DiagnosisDetailPage: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Ringkasan Diagnosis</CardTitle>
+          <CardTitle>Diagnosis Summary</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="border-l-4 border-neutral-500 pl-3">
-            {aiData.summary || "Ringkasan tidak tersedia"}
+            {aiData.summary || "Summary not available"}
           </p>
+
           {risks.length > 0 && (
             <Card className="p-4 bg-neutral-900 border-red-900/50 flex flex-col gap-1">
               <h4 className="font-bold flex items-center mb-2 text-red-500">
-                <AlertTriangle className="w-4 h-4 mr-2" /> Resiko
+                <AlertTriangle className="w-4 h-4 mr-2" /> Risks
               </h4>
               <ul className="list-disc ml-5 text-sm space-y-1 text-neutral-300">
                 {risks.map((r, i) => (
@@ -143,10 +144,11 @@ const DiagnosisDetailPage: React.FC = () => {
               </ul>
             </Card>
           )}
+
           {steps.length > 0 && (
             <div>
               <h4 className="font-bold flex items-center mb-2">
-                <ListOrdered className="w-4 h-4 mr-2" /> Langkah Perbaikan
+                <ListOrdered className="w-4 h-4 mr-2" /> Repair Steps
               </h4>
               <ol className="list-decimal ml-5 text-sm space-y-2">
                 {steps.map((s, i) => (
@@ -163,10 +165,10 @@ const DiagnosisDetailPage: React.FC = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid grid-cols-2 my-4">
           <TabsTrigger value="parts">
-            <Wrench className="w-4 h-4 mr-2" /> Kebutuhan
+            <Wrench className="w-4 h-4 mr-2" /> Requirements
           </TabsTrigger>
           <TabsTrigger value="guides">
-            <BookOpen className="w-4 h-4 mr-2" /> Panduan
+            <BookOpen className="w-4 h-4 mr-2" /> Guides
           </TabsTrigger>
         </TabsList>
 
@@ -192,8 +194,8 @@ const DiagnosisDetailPage: React.FC = () => {
                 ))
               ) : (
                 <EmptyState
-                  title="Belum ada data"
-                  description="Tidak ada data alat/bahan."
+                  title="No data"
+                  description="No parts or tools information available."
                 />
               )}
             </CardContent>
@@ -204,17 +206,17 @@ const DiagnosisDetailPage: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-lg">
-                <BookOpen className="w-5 h-5 mr-2 text-primary" /> Panduan
-                Perbaikan
+                <BookOpen className="w-5 h-5 mr-2 text-primary" /> Repair Guides
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-3">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Panduan Terkait "{searchKeyword}"
+                  Related Guides for "{searchKeyword}"
                 </h4>
+
                 {isGuidesLoading ? (
-                  <DynamicSkeleton className="w-full" preset="LIST" count={3} />
+                  <DynamicSkeleton preset="LIST" count={3} />
                 ) : guides.length > 0 ? (
                   guides.map((g) => (
                     <div
@@ -235,8 +237,8 @@ const DiagnosisDetailPage: React.FC = () => {
                   ))
                 ) : (
                   <EmptyState
-                    title="Tidak ada data"
-                    description={`Tidak ada panduan internal untuk ${searchKeyword}.`}
+                    title="No data"
+                    description={`No internal guides found for ${searchKeyword}.`}
                   />
                 )}
               </div>
@@ -246,8 +248,9 @@ const DiagnosisDetailPage: React.FC = () => {
                   <div className="bg-red-600 text-white p-1 rounded mr-2">
                     <Wrench className="w-3 h-3" />
                   </div>
-                  Video Tutorial
+                  Video Tutorials
                 </h4>
+
                 {isYoutubeLoading ? (
                   <DynamicSkeleton
                     className="grid grid-cols-3 gap-3"
@@ -266,7 +269,7 @@ const DiagnosisDetailPage: React.FC = () => {
                           <img
                             src={video.thumbnail}
                             className="w-full h-full object-cover"
-                            alt="thumb"
+                            alt="thumbnail"
                           />
                           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 flex items-center justify-center transition">
                             <ExternalLink className="w-4 h-4 text-white" />
@@ -279,11 +282,11 @@ const DiagnosisDetailPage: React.FC = () => {
                     ))}
                   </div>
                 ) : (
-                  <EmptyState description=" Video tidak ditemukan." />
+                  <EmptyState description="No videos found." />
                 )}
               </div>
 
-              <div className="flex justify-center space-y-3 border-t pt-6">
+              <div className="flex justify-center border-t pt-6">
                 <Button
                   variant="outline"
                   size="lg"
@@ -296,8 +299,7 @@ const DiagnosisDetailPage: React.FC = () => {
                     )
                   }
                 >
-                  <Search className="w-3 h-3 mr-2" /> Cari Lebih Lengkap di
-                  Google
+                  <Search className="w-3 h-3 mr-2" /> Search More on Google
                 </Button>
               </div>
             </CardContent>

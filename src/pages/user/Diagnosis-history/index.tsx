@@ -1,12 +1,14 @@
-import React, { useMemo, useState } from "react";
-import { useDeleteDiagnosis, useDiagnosisHistory } from "@/hooks/useDiagnosis";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Clock, FolderOpen, Search, Trash2 } from "lucide-react";
+
+import { useAuthContext } from "@/hooks/context/AuthContext";
+import { useDeleteDiagnosis, useDiagnosisHistory } from "@/hooks/useDiagnosis";
+import { useToast } from "@/hooks/use-toast";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-const PAGE_SIZE = import.meta.env.VITE_PAGE_SIZE;
 import {
   Dialog,
   DialogContent,
@@ -19,32 +21,32 @@ import { DynamicSkeleton } from "@/components/skeletons";
 import { EmptyState } from "@/components/state/EmptyState";
 import { ErrorState } from "@/components/state/ErrorState";
 
+const PAGE_SIZE = import.meta.env.VITE_PAGE_SIZE ?? 9;
+
 const DiagnosisHistoryPage: React.FC = () => {
+  const { user } = useAuthContext();
   const { toast } = useToast();
-  const { data = [], isLoading, error, refetch } = useDiagnosisHistory();
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(1);
+  const {
+    data,
+    isLoading,
+    error,
+    refetch,
+    page,
+    setPage,
+    search,
+    setSearch,
+    total,
+  } = useDiagnosisHistory({
+    userId: user?.id ?? "",
+    pageSize: PAGE_SIZE,
+  });
 
-  const [open, setOpen] = useState(false);
-  const [targetId, setTargetId] = useState<string | null | number>(null);
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
   const { remove, isDeleting } = useDeleteDiagnosis();
-
-  const filteredRecords = useMemo(() => {
-    const q = searchTerm.toLowerCase();
-    return data.filter((r) =>
-      [r.title, r.user_input, r.summary].some((text) =>
-        text.toLowerCase().includes(q)
-      )
-    );
-  }, [data, searchTerm]);
-
-  const totalPages = Math.ceil(filteredRecords.length / PAGE_SIZE);
-
-  const paginatedRecords = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-    return filteredRecords.slice(start, start + PAGE_SIZE);
-  }, [filteredRecords, page]);
+  const [open, setOpen] = useState(false);
+  const [targetId, setTargetId] = useState<string | null>(null);
 
   const confirmDelete = async () => {
     if (!targetId) return;
@@ -54,13 +56,13 @@ const DiagnosisHistoryPage: React.FC = () => {
       await refetch();
 
       toast({
-        title: "Riwayat dihapus",
-        description: "Data berhasil dihapus",
+        title: "History deleted",
+        description: "Diagnosis history removed successfully",
       });
     } catch (err) {
       toast({
         variant: "destructive",
-        title: "Gagal menghapus",
+        title: "Delete failed",
         description: err instanceof Error ? err.message : String(err),
       });
     } finally {
@@ -72,9 +74,9 @@ const DiagnosisHistoryPage: React.FC = () => {
   if (error) {
     return (
       <ErrorState
-        title="Terjadi Kesalahan"
+        title="Something went wrong"
         description={error}
-        actionLabel="Coba Lagi"
+        actionLabel="Try again"
         onAction={refetch}
       />
     );
@@ -86,26 +88,26 @@ const DiagnosisHistoryPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-3">
             <FolderOpen className="w-7 h-7 text-primary" />
-            <h1 className="text-3xl font-bold">Riwayat Diagnosis</h1>
+            <h1 className="text-3xl font-bold">Diagnosis History</h1>
           </div>
           <p className="text-muted-foreground mt-3">
-            Daftar seluruh diagnosis yang pernah Anda lakukan.
+            A record of all diagnoses you have created.
           </p>
         </div>
 
         <Input
           className="max-w-xs bg-background"
-          placeholder="Cari diagnosis..."
-          value={searchTerm}
+          placeholder="Search diagnosis..."
+          value={search}
           onChange={(e) => {
-            setSearchTerm(e.target.value);
+            setSearch(e.target.value);
             setPage(1);
           }}
         />
 
         {isLoading && (
           <DynamicSkeleton
-            className="grid grid-cols-3 gap-3"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             preset="CARD_GRID"
             count={PAGE_SIZE}
           />
@@ -113,12 +115,12 @@ const DiagnosisHistoryPage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {!isLoading &&
-            paginatedRecords.map((record) => (
+            data.map((record) => (
               <Card key={record.id} className="relative rounded-2xl">
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="absolute right-2 top-3.5 z-10 hover:text-destructive"
+                  className="absolute right-2 top-3 z-10 hover:text-destructive"
                   onClick={() => {
                     setTargetId(record.id);
                     setOpen(true);
@@ -128,20 +130,28 @@ const DiagnosisHistoryPage: React.FC = () => {
                 </Button>
 
                 <Link
-                  to={`/user/history/${record.id}?question=${record.user_input}`}
+                  to={`/user/history/${record.id}?question=${encodeURIComponent(
+                    record.user_input
+                  )}`}
                   className="block"
                 >
                   <CardHeader className="mb-3">
-                    <CardTitle className="pr-6">{record.title}</CardTitle>
+                    <CardTitle className="pr-6">
+                      {record.title}
+                    </CardTitle>
                     <div className="flex items-center text-xs text-muted-foreground gap-1">
                       <Clock className="w-3 h-3" />
-                      {new Date(record.date).toLocaleDateString("id-ID")}
+                      {new Date(record.date).toLocaleDateString("en-US")}
                     </div>
                   </CardHeader>
 
                   <CardContent className="space-y-2 text-sm">
-                    <p className="italic line-clamp-3">“{record.user_input}”</p>
-                    <p className="font-medium line-clamp-2">{record.summary}</p>
+                    <p className="italic line-clamp-3">
+                      “{record.user_input}”
+                    </p>
+                    <p className="font-medium line-clamp-2">
+                      {record.summary}
+                    </p>
                   </CardContent>
                 </Link>
               </Card>
@@ -150,18 +160,9 @@ const DiagnosisHistoryPage: React.FC = () => {
           {!isLoading && data.length === 0 && (
             <div className="col-span-full">
               <EmptyState
-                title="Belum ada data"
-                description="Kamu belum pernah melakukan diagnosis."
-              />
-            </div>
-          )}
-
-          {!isLoading && data.length > 0 && paginatedRecords.length === 0 && (
-            <div className="col-span-full">
-              <EmptyState
                 icon={<Search className="w-6 h-6" />}
-                title="Data tidak ditemukan"
-                description="Coba ubah kata kunci pencarian."
+                title="No history found"
+                description="Try a different keyword or create a new diagnosis."
               />
             </div>
           )}
@@ -193,21 +194,21 @@ const DiagnosisHistoryPage: React.FC = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Hapus riwayat?</DialogTitle>
+            <DialogTitle>Delete history?</DialogTitle>
             <DialogDescription>
-              Data ini akan dihapus permanen.
+              This diagnosis history will be permanently deleted.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>
-              Batal
+              Cancel
             </Button>
             <Button
               variant="destructive"
               disabled={isDeleting}
               onClick={confirmDelete}
             >
-              Hapus
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

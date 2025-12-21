@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, Leaf, MessageSquare, Plus, Trophy } from "lucide-react";
+import { Plus } from "lucide-react";
 import ModalForums from "./components/ModalForums";
 import ForumStats from "./components/ForumStats";
 import ForumPostList from "./components/ForumPostList";
@@ -9,33 +9,6 @@ import { Button } from "@/components/ui/button";
 const DashboardForums = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [refetchForums, setRefetchForums] = useState<null | (() => void)>(null);
-
-  const forumStats = [
-    {
-      label: "Reputasi",
-      value: "1,250 XP",
-      icon: Trophy,
-      colorClass: "text-emerald-600",
-    },
-    {
-      label: "Jawaban Anda",
-      value: "42",
-      icon: MessageSquare,
-      colorClass: "text-purple-600",
-    },
-    {
-      label: "Solusi Berhasil",
-      value: "14",
-      icon: CheckCircle2,
-      colorClass: "text-blue-600",
-    },
-    {
-      label: "E-Waste",
-      value: "5.2 Kg",
-      icon: Leaf,
-      colorClass: "text-orange-600",
-    },
-  ];
 
   return (
     <div className="p-6 mx-auto space-y-8 h-screen">
@@ -65,7 +38,7 @@ const DashboardForums = () => {
         </Dialog>
       </div>
 
-      <ForumStats stats={forumStats} />
+      <ForumStats/>
       <ForumPostList onReady={(refetch) => setRefetchForums(() => refetch)} />
     </div>
   );
