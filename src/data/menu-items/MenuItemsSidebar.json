@@ -16,6 +16,11 @@
     "path": "/user/history"
   },
   {
+    "label": "Leaderboard",
+    "icon": "tropy",
+    "path": "/user/leaderboard"
+  },
+  {
     "label": "Forum",
     "icon": "users",
     "path": "/user/forums"

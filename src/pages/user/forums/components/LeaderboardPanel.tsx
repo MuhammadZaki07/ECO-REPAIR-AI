@@ -5,6 +5,7 @@ import { useDailyTips } from "@/hooks/useDailyTips";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { DynamicSkeleton } from "@/components/skeletons";
+import { Link } from "react-router-dom";
 
 export default function LeaderboardPanel() {
   const { userData } = useAuthContext();
@@ -43,12 +44,14 @@ export default function LeaderboardPanel() {
               <span>{user.xp} XP</span>
             </div>
           ))}
-          <Button
-            variant="ghost"
-            className="w-full text-xs text-emerald-600 mt-2"
-          >
-            View Leaderboard
-          </Button>
+          <Link to={"/user/leaderboard"}>
+            <Button
+              variant="ghost"
+              className="w-full text-xs text-emerald-600 mt-2"
+            >
+              View Leaderboard
+            </Button>
+          </Link>
         </CardContent>
       </Card>
 

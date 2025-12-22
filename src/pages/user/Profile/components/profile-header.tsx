@@ -25,7 +25,7 @@ export default function ProfileHeader() {
           <div className="relative">
             <Avatar className="h-24 w-24">
               {avatarUrl ? (
-                <AvatarImage src={avatarUrl} alt={fullName} />
+                <AvatarImage loading="lazy" src={avatarUrl} alt={fullName} />
               ) : (
                 <AvatarFallback className="text-2xl">
                   {firstName?.[0] || "U"}

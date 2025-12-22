@@ -1,31 +1,60 @@
 import { supabase } from "@/lib/supabase/client";
 
+export type LeaderboardSortBy = "xp" | "username" | "contributions";
+export type SortOrder = "asc" | "desc";
+
+export interface LeaderboardQuery {
+  page?: number;
+  pageSize?: number;
+  sortBy?: LeaderboardSortBy;
+  order?: SortOrder;
+  search?: string;
+}
+
 export class LeaderboardService {
-  static async getTopContributors(limit = 5, search?: string) {
+  static async getLeaderboardTable(query: LeaderboardQuery = {}) {
+    const {
+      page = 1,
+      pageSize = 10,
+      sortBy = "xp",
+      order = "desc",
+      search,
+    } = query;
+
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    let qb = supabase
+      .from("leaderboard_view")
+      .select("*", { count: "exact" });
+
+    if (search) {
+      qb = qb.ilike("username", `%${search}%`);
+    }
+
+    qb = qb.order(sortBy, { ascending: order === "asc" });
+    qb = qb.range(from, to);
+
+    const { data, error, count } = await qb;
+    if (error) throw error;
+
+    return {
+      data: data ?? [],
+      total: count ?? 0,
+      page,
+      pageSize,
+    };
+  }
+
+  static async getTopContributors(limit = 5) {
     const { data, error } = await supabase
-      .from("user_rewards")
-      .select(`
-        user_id,
-        xp,
-        users!inner(id, username)
-      `)
+      .from("leaderboard_view")
+      .select("*")
       .order("xp", { ascending: false })
       .limit(limit);
 
     if (error) throw error;
-
-    let results = data?.map((row: any) => ({
-      id: row.user_id,
-      username: row.users.username,
-      xp: row.xp,
-    })) ?? [];
-
-    if (search) {
-      const q = search.toLowerCase();
-      results = results.filter(u => u.username.toLowerCase().includes(q));
-    }
-
-    return results;
+    return data ?? [];
   }
 
   static async getUserXP(userId: string) {
@@ -34,6 +63,7 @@ export class LeaderboardService {
       .select("xp")
       .eq("user_id", userId)
       .single();
+
     if (error) throw error;
     return { xp: data?.xp ?? 0 };
   }

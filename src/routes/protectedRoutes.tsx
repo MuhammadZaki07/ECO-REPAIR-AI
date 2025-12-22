@@ -12,12 +12,13 @@ import DiagnosisDetailPage from "@/pages/user/Diagnosis-history/detail-diagnosa"
 import ForumDetailPage from "@/pages/user/forums/detail-forums";
 import UserDashboard from "@/pages/user/dashboard";
 import AdminLayout from "@/layouts/AdminLayouts";
+import Leaderboard from "@/pages/user/leaderboard";
 
 export const protectedRoutes: RouteObject[] = [
   {
     path: "/auth/callback",
     element: (
-      <AuthGuard>
+      <AuthGuard >
         <AuthCallback />
       </AuthGuard>
     ),
@@ -40,6 +41,7 @@ export const protectedRoutes: RouteObject[] = [
       { path: "forums/:id", element: <ForumDetailPage /> },
       { path: "ecocoin", element: <EcoCoints /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "leaderboard", element: <Leaderboard   /> },
     ],
   },
 

@@ -15,6 +15,7 @@ import {
   Clipboard,
   FileQuestion,
   SkipBack,
+  Trophy,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -51,6 +52,7 @@ const iconMap: Record<string, any> = {
   settings: SettingsIcon,
   clipboard: Clipboard,
   Questions: FileQuestion,
+  tropy:Trophy
 };
 
 export const Sidebar: React.FC = () => {
