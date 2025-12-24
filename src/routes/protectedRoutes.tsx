@@ -13,6 +13,7 @@ import ForumDetailPage from "@/pages/user/forums/detail-forums";
 import UserDashboard from "@/pages/user/dashboard";
 import AdminLayout from "@/layouts/AdminLayouts";
 import Leaderboard from "@/pages/user/leaderboard";
+import DonationDetailPage from "@/pages/user/Eco-coints/DonationDetailPage";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -42,6 +43,7 @@ export const protectedRoutes: RouteObject[] = [
       { path: "ecocoin", element: <EcoCoints /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "leaderboard", element: <Leaderboard   /> },
+      { path: "ecocoin/donation/:id", element: <DonationDetailPage   /> },
     ],
   },
 

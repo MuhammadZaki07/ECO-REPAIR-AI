@@ -1,5 +1,5 @@
 import { leaderboardColumns } from "./components/columns";
-import { DataTable } from "./components/data-table";
+import { DataTable } from "../../../components/ui/data-table";
 import { useLeaderboardTable } from "@/hooks/useLeaderboardTable";
 
 export default function LeaderboardPage() {
