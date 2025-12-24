@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { ArrowLeft, Heart, Leaf, Users } from "lucide-react";
-import { useDonationCampaigns } from "@/hooks/useDonationCampaigns";
+// import { useDonationCampaigns } from "@/hooks/useDonationCampaigns";
 
 export default function DonationDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { detail, detailLoading, fetchCampaignDetail } = useDonationCampaigns();
+  // const { detail, detailLoading, fetchCampaignDetail } = useDonationCampaigns();
 
   useEffect(() => {
     if (id) fetchCampaignDetail(id);
