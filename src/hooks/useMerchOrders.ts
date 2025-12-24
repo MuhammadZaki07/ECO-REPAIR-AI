@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { MerchOrderService } from "@/services/MerchOrderService";
+import { MerchandiseService } from "@/services/MerchandiseService";
+import { useState, useEffect, useCallback } from "react";
 
 export const useMerchOrders = (userId?: string) => {
   const [orders, setOrders] = useState<any[]>([]);
@@ -15,7 +15,7 @@ export const useMerchOrders = (userId?: string) => {
 
     try {
       setLoading(true);
-      const data = await MerchOrderService.getMyOrders(userId);
+      const data = await MerchandiseService.getMyOrders(userId);
       setOrders(data);
       setError(null);
     } catch (err) {

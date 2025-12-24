@@ -2,6 +2,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import VoucherTab from "./components/tabs/VoucherTab";
 import MerchTab from "./components/tabs/MerchTab";
+import DonationTab from "./components/tabs/DonationTab";
 interface ExchangeHubProps {
   activeTab: string;
   setActiveTab: (value: string) => void;
@@ -45,7 +46,7 @@ export default function ExchangeHub({
       <div>
         {activeTab === "vouchers" && <VoucherTab search={search} />}
         {activeTab === "merch" && <MerchTab search={search} />}
-        {/* {activeTab === "donasi" && <DonationTab search={search} />} */}
+        {activeTab === "donasi" && <DonationTab search={search} />}
       </div>
     </div>
   );

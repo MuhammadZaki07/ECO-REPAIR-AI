@@ -1,28 +1,33 @@
-import { supabase } from "@/lib/supabase/client";
+import { useState, useEffect, useCallback } from "react";
+import { DonationService, type DonationCampaign } from "@/services/DonationService";
 
-export interface DonationCampaignSummary {
-  id: string;
-  title: string;
-  description?: string;
-  goal_eco_coin: number;
-  current_eco_coin: number;
-}
+export const useDonationCampaigns = () => {
+  const [campaigns, setCampaigns] = useState<DonationCampaign[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-export async function getActiveDonationCampaigns(): Promise<
-  DonationCampaignSummary[]
-> {
-  const { data, error } = await supabase
-    .from("donation_campaigns")
-    .select(`
-      id,
-      title,
-      description,
-      goal_eco_coin,
-      current_eco_coin
-    `)
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
+  const fetchCampaigns = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await DonationService.getAllCampaigns();
+      setCampaigns(data);
+      setError(null);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  if (error) throw error;
-  return data ?? [];
-}
+  useEffect(() => {
+    fetchCampaigns();
+  }, [fetchCampaigns]);
+
+  return {
+    campaigns,
+    loading,
+    error,
+    refetch: fetchCampaigns,
+    isEmpty: !loading && campaigns.length === 0,
+  };
+};

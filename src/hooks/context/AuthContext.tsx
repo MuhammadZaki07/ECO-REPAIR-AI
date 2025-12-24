@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .select("*")
         .eq("auth_id", user.id)
         .single();
-
       setUserData(data ?? null);
     };
 

@@ -10,12 +10,11 @@ export class EcoWalletService {
       .from("eco_wallets")
       .select("balance")
       .eq("user_id", userId)
-      .maybeSingle();
+      .maybeSingle();      
 
     if (error) throw error;
 
-    // fallback utk user baru
-    return {
+      return {
       balance: data?.balance ?? 0,
     };
   }

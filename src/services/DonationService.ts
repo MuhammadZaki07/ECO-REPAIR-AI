@@ -3,121 +3,67 @@ import { supabase } from "@/lib/supabase/client";
 export interface DonationCampaign {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
   goal_eco_coin: number;
   current_eco_coin: number;
-  is_active: boolean;
   created_at: string;
+  updated_at: string;
+}
+
+export interface DonationRecord {
+  id: string;
+  campaign_id: string;
+  user_id: string;
+  amount: number;
+  created_at: string;
+  user_name?: string;
 }
 
 export class DonationService {
-  /** ===== USER ===== */
-  static async getActiveCampaigns(): Promise<DonationCampaign[]> {
+  static async getAllCampaigns(): Promise<DonationCampaign[]> {
     const { data, error } = await supabase
-      .from("donation_campaigns")
+      .from("eco_donation_campaigns")
       .select("*")
-      .eq("is_active", true)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data ?? [];
   }
 
-  static async donate(campaignId: string, ecoCoin: number) {
-    /**
-     * NOTE:
-     * ecoCoin boleh dipakai kalau:
-     * - preset (10, 20, 50, 100)
-     * - tetap divalidasi di DB
-     */
-    const { error } = await supabase.rpc("donate_to_campaign", {
+  static async getCampaignDetail(id: string) {
+    const { data, error } = await supabase
+      .from("eco_donation_campaigns")
+      .select("*, donors:eco_donation_records(*, user:users(name))")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async donate(
+    campaignId: string,
+    userId: string,
+    amount: number
+  ): Promise<void> {
+    const { data, error } = await supabase.rpc("donate_to_campaign", {
       p_campaign_id: campaignId,
-      p_eco_coin: ecoCoin,
+      p_user_id: userId,
+      p_amount: amount,
     });
 
     if (error) throw error;
+    return data;
   }
 
-  static async getDetail(id: string) {
-    const { data: campaign } = await supabase
-      .from("donation_campaigns")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    const { data: donors } = await supabase
-      .from("donations")
-      .select("id, amount, user:users(name)")
-      .eq("campaign_id", id);
-
-    const { data: me } = await supabase.auth.getUser();
-
-    const userHasDonated = donors?.some(
-      (d) => d.user?.name === me.user?.user_metadata?.name
-    );
-
-    return {
-      ...campaign,
-      donors:
-        donors?.map((d) => ({
-          id: d.id,
-          name: d.user?.name ?? "Anonymous",
-          amount: d.amount,
-        })) ?? [],
-      userHasDonated,
-    };
-  }
-
-  /** ===== ADMIN ===== */
-  static async getAllCampaigns(): Promise<DonationCampaign[]> {
+   static async getUserDonations(userId: string): Promise<DonationRecord[]> {
     const { data, error } = await supabase
-      .from("donation_campaigns")
+      .from("eco_donation_records")
       .select("*")
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data ?? [];
-  }
-
-  static async getCampaignDonors(campaignId: string) {
-    const { data, error } = await supabase
-      .from("donation_transactions")
-      .select(
-        `
-        eco_coin,
-        created_at,
-        users(username, avatar_url)
-      `
-      )
-      .eq("campaign_id", campaignId)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-    return data ?? [];
-  }
-
-  static async createCampaign(
-    payload: Omit<DonationCampaign, "id" | "created_at" | "current_eco_coin">
-  ) {
-    const { data, error } = await supabase
-      .from("donation_campaigns")
-      .insert(payload)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
-  }
-
-  static async updateCampaign(id: string, payload: Partial<DonationCampaign>) {
-    const { data, error } = await supabase
-      .from("donation_campaigns")
-      .update(payload)
-      .eq("id", id)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
   }
 }

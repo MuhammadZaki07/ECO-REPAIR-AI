@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useEcoWallet } from "@/hooks/useEcoWallet";
-
 import TopCards from "./TopCards";
 import ExchangeHub from "./ExchangeHub";
 import History from "./components/History";
