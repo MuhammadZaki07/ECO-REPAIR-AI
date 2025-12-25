@@ -1,3 +1,4 @@
+import { ENV } from "@/env";
 import { supabase } from "@/lib/supabase/client";
 
 export class VoucherService {
@@ -6,12 +7,8 @@ export class VoucherService {
     page?: number;
     limit?: number;
   }) {
-    const PAGE_SIZE =
-      Number(import.meta.env.VITE_PAGE_SIZE) > 0
-        ? Number(import.meta.env.VITE_PAGE_SIZE)
-        : 9;
 
-    const { search = "", page = 1, limit = PAGE_SIZE } = params;
+    const { search = "", page = 1, limit = ENV.PAGE_SIZE } = params;
 
     const from = (page - 1) * limit;
     const to = from + limit - 1;
@@ -54,6 +51,9 @@ export class VoucherService {
     });
 
     if (error) throw error;
-    return data[0];
+
+    return {
+      voucher_code: data?.[0]?.voucher_code,
+    };
   }
 }

@@ -1,0 +1,22 @@
+export const ENV = {
+  PROJECT_TITLE: import.meta.env.VITE_PROJECT_TITLE,
+  PROJECT_DESCRIPTION: import.meta.env.VITE_PROJECT_DESCRIPTION,
+  PROJECT_KEYWORDS: import.meta.env.VITE_PROJECT_KEYWORDS,
+  PROJECT_AUTHOR: import.meta.env.VITE_PROJECT_AUTHOR,
+  PROJECT_VIEWPORT: import.meta.env.VITE_PROJECT_VIEWPORT,
+  PROJECT_FAVICON: import.meta.env.VITE_PROJECT_FAVICON,
+  PROJECT_LOGO: import.meta.env.VITE_PROJECT_LOGO,
+
+  PAGE_SIZE: Number(import.meta.env.VITE_PAGE_SIZE || 6),
+
+  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+  SUPABASE_EDGE_FUNCTION_URL: import.meta.env.VITE_SUPABASE_EDGE_FUNCTION_URL,
+  SUPABASE_ANON_KEY:import.meta.env.VITE_SUPABASE_ANON_KEY,
+  GEMINI_API_KEY:import.meta.env.VITE_GEMINI_API_KEY,
+  YOUTUBE_API_KEY:import.meta.env.VITE_YOUTUBE_API_KEY,
+  BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
+  YOUTUBE_BASE_URL: import.meta.env.VITE_YOUTUBE_BASE_URL,
+
+  URL_USER: import.meta.env.VITE_URL_USER || "/user",
+  URL_ADMIN: import.meta.env.VITE_URL_ADMIN || "/admin",
+};

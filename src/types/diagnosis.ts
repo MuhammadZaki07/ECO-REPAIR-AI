@@ -62,7 +62,7 @@ export type FetchDiagnosisParams = {
 };
 
 export type UseDiagnosisHistoryParams = {
-  userId: string;
+  userId?: string;
   page?: number;
   pageSize?: number;
   search?: string;

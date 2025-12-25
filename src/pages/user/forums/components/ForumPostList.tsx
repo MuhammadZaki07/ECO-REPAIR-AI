@@ -14,7 +14,6 @@ import {
   Search,
 } from "lucide-react";
 import { useForums } from "@/hooks/useForums";
-import { AuthService } from "@/services/AuthService";
 import { DynamicSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/state/ErrorState";
 import { EmptyState } from "@/components/state/EmptyState";
@@ -40,8 +39,8 @@ import { useToast } from "@/hooks/use-toast";
 import { getAuthorName } from "@/helpers/getAuthorName";
 import { getAuthorInitial } from "@/helpers/getAuthorInitial";
 import LeaderboardPanel from "./LeaderboardPanel";
-
-const PAGE_SIZE = Number(import.meta.env.VITE_PAGE_SIZE) || 10;
+import { ENV } from "@/env";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 
 function ForumPostList({
   onReady,
@@ -50,7 +49,6 @@ function ForumPostList({
 }) {
   const [activeTab, setActiveTab] = useState("my");
   const [searchTerm, setSearchTerm] = useState("");
-  const [userId, setUserId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingForum, setEditingForum] = useState<any>(null);
@@ -58,18 +56,11 @@ function ForumPostList({
     [key: string]: boolean;
   }>({});
   const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const profile = await AuthService.ensureUserProfile();
-      if (profile) setUserId(profile.id);
-    };
-    fetchUser();
-  }, []);
+  const {userData} = useAuthContext()
 
   const forumsHook = useForums(
     activeTab,
-    activeTab === "my" ? userId ?? undefined : undefined
+    activeTab === "my" ? userData?.id ?? undefined : undefined
   );
 
   useEffect(() => {
@@ -85,7 +76,7 @@ function ForumPostList({
     setPage(1);
   }, [forumsHook.refetch, activeTab, searchTerm]);
 
-  const totalPages = Math.ceil(forumsHook.total / PAGE_SIZE);
+  const totalPages = Math.ceil(forumsHook.total / ENV.PAGE_SIZE);
 
   const openEditModal = (forum: any) => {
     setEditingForum(forum);
@@ -148,7 +139,7 @@ function ForumPostList({
         {forumsHook.loading ? (
           <DynamicSkeleton
             preset="LIST"
-            count={PAGE_SIZE}
+            count={ENV.PAGE_SIZE}
             className="w-full space-y-4"
           />
         ) : forumsHook.error ? (
@@ -174,7 +165,7 @@ function ForumPostList({
                         {forum.category?.name ?? "Unknown"}
                       </Badge>
                       {forum.status === "solved" ? (
-                        <Badge className="bg-emerald-100 text-emerald-700 border-none flex gap-1 items-center">
+                        <Badge className="bg-green-100 text-green-700 border-none flex gap-1 items-center">
                           <CheckCircle2 className="w-3 h-3" /> Solved
                         </Badge>
                       ) : (
@@ -182,7 +173,7 @@ function ForumPostList({
                       )}
                     </div>
 
-                    {activeTab === "my" && forum.user_id === userId && (
+                    {activeTab === "my" && forum.user_id === userData?.id && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="p-1">

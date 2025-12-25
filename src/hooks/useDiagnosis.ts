@@ -27,7 +27,9 @@ export const useDiagnosis = (diagnosisId?: string): DiagnosisHookResult => {
         const record = await DiagnosisService.fetchById(diagnosisId);
         setData(record);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load diagnosis");
+        setError(
+          err instanceof Error ? err.message : "Failed to load diagnosis"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -39,26 +41,19 @@ export const useDiagnosis = (diagnosisId?: string): DiagnosisHookResult => {
   return { data, isLoading, error };
 };
 
-
 export const useDiagnosisHistory = (
   params: UseDiagnosisHistoryParams
 ): HistoryHookResult & {
-  page: number;
-  setPage: (p: number) => void;
-  search: string;
-  setSearch: (s: string) => void;
-  total: number;
+  page?: number;
+  setPage?: (p: number) => void;
+  search?: string;
+  setSearch?: (s: string) => void;
+  total?: number;
 } => {
-  const {
-    userId,
-    pageSize = 10,
-    fromDate,
-    toDate,
-  } = params;
+  const { userId, pageSize = 10, fromDate, toDate } = params;
 
   const [data, setData] = useState<HistorySummary[]>([]);
   const [page, setPage] = useState(params.page ?? 1);
-  const [search, setSearch] = useState(params.search ?? "");
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +69,7 @@ export const useDiagnosisHistory = (
         userId,
         page,
         pageSize,
-        search,
+        search: params.search,
         fromDate,
         toDate,
       });
@@ -82,13 +77,11 @@ export const useDiagnosisHistory = (
       setData(result.data);
       setTotal(result.total);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to load history"
-      );
+      setError(err instanceof Error ? err.message : "Failed to load history");
     } finally {
       setIsLoading(false);
     }
-  }, [userId, page, pageSize, search, fromDate, toDate]);
+  }, [userId, page, pageSize, params.search, fromDate, toDate]);
 
   useEffect(() => {
     fetchHistory();
@@ -101,12 +94,9 @@ export const useDiagnosisHistory = (
     refetch: fetchHistory,
     page,
     setPage,
-    search,
-    setSearch,
     total,
   };
 };
-
 
 function isValidDiagnosis(aiData: any): boolean {
   if (!aiData?.sections) return false;
@@ -131,11 +121,7 @@ export const useCreateDiagnosis = (): CreateDiagnosisHookResult => {
       setError(null);
 
       try {
-        return await DiagnosisService.create(
-          userId,
-          description,
-          aiResponse
-        );
+        return await DiagnosisService.create(userId, description, aiResponse);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to create diagnosis"
@@ -162,7 +148,9 @@ export const useDeleteDiagnosis = () => {
     try {
       await DiagnosisService.delete(id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete diagnosis");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete diagnosis"
+      );
       throw err;
     } finally {
       setIsDeleting(false);

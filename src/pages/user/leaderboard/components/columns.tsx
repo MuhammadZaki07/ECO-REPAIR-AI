@@ -86,7 +86,7 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
       return (
         <Badge
           variant="outline"
-          className="font-semibold text-emerald-600 border-emerald-300"
+          className="font-semibold text-green-600 border-green-300"
         >
           {xp} XP
         </Badge>

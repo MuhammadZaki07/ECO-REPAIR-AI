@@ -1,3 +1,4 @@
+import { ENV } from "@/env";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
@@ -20,20 +21,17 @@ export default function AuthGuard({ children }: Props) {
 
   const role = userData.role;
 
-  const ADMIN_BASE = import.meta.env.VITE_URL_ADMIN;
-  const USER_BASE = import.meta.env.VITE_URL_USER;
-
-  const isAdminRoute = location.pathname.startsWith(ADMIN_BASE);
-  const isUserRoute = location.pathname.startsWith(USER_BASE);
+  const isAdminRoute = location.pathname.startsWith(ENV.URL_ADMIN);
+  const isUserRoute = location.pathname.startsWith(ENV.URL_USER);
 
   if (isUserRoute && role !== "user") {
-    if (location.pathname !== ADMIN_BASE) {
+    if (location.pathname !== ENV.URL_ADMIN) {
       return <Navigate to={"/403"} replace />;
     }
   }
 
   if (isAdminRoute && role !== "admin") {
-    if (location.pathname !== USER_BASE) {
+    if (location.pathname !== ENV.URL_USER) {
       return <Navigate to={"/403"} replace />;
     }
   }

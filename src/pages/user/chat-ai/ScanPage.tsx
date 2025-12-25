@@ -6,12 +6,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useCreateDiagnosis } from "@/hooks/useDiagnosis";
 import { supabase } from "@/lib/supabase/client";
+import { ENV } from "@/env";
 
 export default function ScanPage() {
   const { user, loading: isAuthLoading } = useAuthContext();
   const currentUserId = user?.id;
   const isLoggedIn = !!user;
-  const SUPABASE_BASE_URL = import.meta.env.VITE_SUPABASE_EDGE_FUNCTION_URL;
   const { create } = useCreateDiagnosis();
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
   const [input, setInput] = useState("");
@@ -54,7 +54,7 @@ export default function ScanPage() {
         data: { session },
       } = await supabase.auth.getSession();
       const res = await fetch(
-        `${SUPABASE_BASE_URL}/functions/v1/generate-diagnosis`,
+        `${ENV.SUPABASE_EDGE_FUNCTION_URL}/functions/v1/generate-diagnosis`,
         {
           method: "POST",
           headers: {

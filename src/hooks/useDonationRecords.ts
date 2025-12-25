@@ -1,47 +1,26 @@
-import { useState, useEffect, useCallback } from "react";
-import { DonationService } from "@/services/DonationService";
-
-export interface DonationRecord {
-  id: string;
-  campaign_id: string;
-  user_id: string;
-  amount: number;
-  created_at: string;
-}
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase/client";
 
 export const useDonationRecords = (userId?: string) => {
-  const [records, setRecords] = useState<DonationRecord[]>([]);
+  const [records, setRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
-  const fetchRecords = useCallback(async () => {
-    if (!userId) {
-      setRecords([]);
-      setLoading(false);
-      return;
-    }
+  const fetchRecords = async () => {
+    if (!userId) return setLoading(false);
 
-    try {
-      setLoading(true);
-      const data = await DonationService.getUserDonations(userId);
-      setRecords(data);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("eco_donation_records")
+      .select("*")
+      .eq("user_id", userId);
+
+    if (!error) setRecords(data ?? []);
+    setLoading(false);
+  };
 
   useEffect(() => {
     fetchRecords();
-  }, [fetchRecords]);
+  }, [userId]);
 
-  return {
-    records,
-    loading,
-    error,
-    refetch: fetchRecords,
-    isEmpty: !loading && records.length === 0,
-  };
+  return { records, loading, refetch: fetchRecords };
 };

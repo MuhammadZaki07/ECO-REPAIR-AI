@@ -14,6 +14,7 @@ import UserDashboard from "@/pages/user/dashboard";
 import AdminLayout from "@/layouts/AdminLayouts";
 import Leaderboard from "@/pages/user/leaderboard";
 import DonationDetailPage from "@/pages/user/Eco-coints/DonationDetailPage";
+import { ENV } from "@/env";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -26,7 +27,7 @@ export const protectedRoutes: RouteObject[] = [
   },
 
   {
-    path: `${import.meta.env.VITE_URL_USER}`,
+    path: `${ENV.URL_USER}`,
     element: (
       <AuthGuard>
         <UserLayout />
@@ -48,7 +49,7 @@ export const protectedRoutes: RouteObject[] = [
   },
 
   {
-    path: `${import.meta.env.VITE_URL_ADMIN}`,
+    path: `${ENV.URL_ADMIN}`,
     element: (
       <AuthGuard>
         <AdminLayout />

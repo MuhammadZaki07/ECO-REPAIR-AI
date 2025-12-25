@@ -17,7 +17,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
     "RISK!": "border-red-400 text-red-400 bg-red-500/30",
     TOOLS: "border-yellow-400 text-yellow-400 bg-yellow-500/30",
     PARTS: "border-blue-400 text-blue-400 bg-blue-500/30",
-    STEPS: "border-emerald-400 text-emerald-400 bg-emerald-500/30",
+    STEPS: "border-green-400 text-green-400 bg-green-500/30",
   };
 
   const tagIcon: Record<AIStepSection["tag"], JSX.Element> = {

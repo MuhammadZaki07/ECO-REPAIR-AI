@@ -38,7 +38,7 @@ export const ProcessCard = ({
           }}
         >
           <Icon
-            className="w-10 h-10 text-neutral-500 dark:text-emerald-100 dark:group-hover:text-primary"
+            className="w-10 h-10 text-neutral-500 dark:text-green-100 dark:group-hover:text-primary"
             strokeWidth={1}
           />
         </div>

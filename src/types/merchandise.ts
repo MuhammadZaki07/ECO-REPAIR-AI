@@ -17,3 +17,16 @@ export interface EcoMerch {
   is_active: boolean;
   created_at: string;
 }
+
+export interface MerchOrder {
+  id: string;
+  merchandise_id: string;
+  user_id: string;
+  address: string;
+  note?: string;
+  status: string;
+  step: number;
+  created_at: string;
+  updated_at: string;
+  merchandise: EcoMerch;
+}

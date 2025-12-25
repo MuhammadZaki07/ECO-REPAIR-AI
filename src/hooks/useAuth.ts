@@ -3,7 +3,7 @@ import { useAuthContext } from "@/hooks/context/AuthContext";
 import { AuthService } from "@/services/AuthService";
 
 export const useAuth = () => {
-  const { setUser } = useAuthContext();
+  const { user, clearUser } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +41,10 @@ export const useAuth = () => {
       setError(null);
 
       await AuthService.logout();
-      setUser(null);
+
+      // clear local cache & context
+      if (user) localStorage.removeItem(`userData-${user.id}`);
+      clearUser();
     } catch (err: any) {
       setError(err.message);
       throw err;

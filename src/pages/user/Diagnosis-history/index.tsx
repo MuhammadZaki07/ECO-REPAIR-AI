@@ -20,29 +20,30 @@ import {
 import { DynamicSkeleton } from "@/components/skeletons";
 import { EmptyState } from "@/components/state/EmptyState";
 import { ErrorState } from "@/components/state/ErrorState";
-
-const PAGE_SIZE = import.meta.env.VITE_PAGE_SIZE ?? 9;
+import { ENV } from "@/env";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const DiagnosisHistoryPage: React.FC = () => {
   const { user } = useAuthContext();
   const { toast } = useToast();
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 1000);
 
   const {
-    data,
-    isLoading,
-    error,
-    refetch,
-    page,
-    setPage,
-    search,
-    setSearch,
-    total,
-  } = useDiagnosisHistory({
-    userId: user?.id ?? "",
-    pageSize: PAGE_SIZE,
-  });
+  data,
+  isLoading,
+  error,
+  page,
+  setPage,
+  total,
+  refetch
+} = useDiagnosisHistory({
+  userId: user?.id ?? "",
+  pageSize: ENV.PAGE_SIZE,
+  search: debouncedSearch,
+});
 
-  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const totalPages = Math.ceil(total / ENV.PAGE_SIZE);
 
   const { remove, isDeleting } = useDeleteDiagnosis();
   const [open, setOpen] = useState(false);
@@ -109,7 +110,7 @@ const DiagnosisHistoryPage: React.FC = () => {
           <DynamicSkeleton
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             preset="CARD_GRID"
-            count={PAGE_SIZE}
+            count={ENV.PAGE_SIZE}
           />
         )}
 
@@ -136,9 +137,7 @@ const DiagnosisHistoryPage: React.FC = () => {
                   className="block"
                 >
                   <CardHeader className="mb-3">
-                    <CardTitle className="pr-6">
-                      {record.title}
-                    </CardTitle>
+                    <CardTitle className="pr-6">{record.title}</CardTitle>
                     <div className="flex items-center text-xs text-muted-foreground gap-1">
                       <Clock className="w-3 h-3" />
                       {new Date(record.date).toLocaleDateString("en-US")}
@@ -146,12 +145,8 @@ const DiagnosisHistoryPage: React.FC = () => {
                   </CardHeader>
 
                   <CardContent className="space-y-2 text-sm">
-                    <p className="italic line-clamp-3">
-                      “{record.user_input}”
-                    </p>
-                    <p className="font-medium line-clamp-2">
-                      {record.summary}
-                    </p>
+                    <p className="italic line-clamp-3">“{record.user_input}”</p>
+                    <p className="font-medium line-clamp-2">{record.summary}</p>
                   </CardContent>
                 </Link>
               </Card>

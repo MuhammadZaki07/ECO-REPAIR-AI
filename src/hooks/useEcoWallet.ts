@@ -5,6 +5,7 @@ export const useEcoWallet = (userId?: string) => {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  
 
   const fetchWallet = useCallback(async () => {
     if (!userId) {
@@ -27,7 +28,7 @@ export const useEcoWallet = (userId?: string) => {
 
   useEffect(() => {
     fetchWallet();
-  }, [fetchWallet]);
+  }, []);
 
   return {
     balance,

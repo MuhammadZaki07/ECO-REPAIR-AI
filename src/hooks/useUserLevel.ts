@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { UserLevelService, type UserLevel, type UserBadge } from "@/services/UserLevelService";
+import { UserLevelService } from "@/services/UserLevelService";
+import type { UserBadge, UserLevel } from "@/types/levelUser";
 
 export const useUserLevel = (userId?: string) => {
   const [level, setLevel] = useState<UserLevel | null>(null);
@@ -8,7 +9,6 @@ export const useUserLevel = (userId?: string) => {
 
   const fetchLevelAndBadges = useCallback(async () => {
     if (!userId) return;
-
     setLoading(true);
     try {
       const lvl = await UserLevelService.getUserLevel(userId);

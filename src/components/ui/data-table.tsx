@@ -45,7 +45,6 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
   });
 
-  // helper buat class alignment
   const getAlignClass = (align?: "left" | "center" | "right") => {
     switch (align) {
       case "left": return "text-left";

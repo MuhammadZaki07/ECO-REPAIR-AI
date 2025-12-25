@@ -157,8 +157,8 @@ export default function VoucherTab({ search }: { search: string }) {
                       </div>
 
                       {isMine ? (
-                        <div className="flex flex-col items-end gap-1">
-                          <Badge className="bg-emerald-500/10 text-emerald-600">
+                        <div className="flex flex-col items-end gap-2">
+                          <Badge>
                             Claimed
                           </Badge>
                           {v.voucher_code && (
@@ -187,11 +187,11 @@ export default function VoucherTab({ search }: { search: string }) {
                               </AlertDialogTitle>
                               <AlertDialogDescription>
                                 Claim{" "}
-                                <strong className="text-emerald-500">
+                                <strong className="text-green-500">
                                   {v.title}
                                 </strong>{" "}
                                 for{" "}
-                                <strong className="text-emerald-500">
+                                <strong className="text-green-500">
                                   {v.eco_coin_cost} EC
                                 </strong>
                                 ?
@@ -257,7 +257,7 @@ export default function VoucherTab({ search }: { search: string }) {
                   onClick={() => handleCopy(selectedVoucherCode)}
                 >
                   {copied ? (
-                    <Check className="w-4 h-4 text-emerald-500" />
+                    <Check className="w-4 h-4 text-green-500" />
                   ) : (
                     <Copy className="w-4 h-4" />
                   )}

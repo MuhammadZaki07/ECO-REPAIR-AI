@@ -35,7 +35,7 @@ import { SidebarItem } from "./SidebarItem";
 import menuJson from "@/data/menu-items/MenuItemsSidebar.json";
 import { IconBolt, IconTools } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../Avatar";
-import { Badge } from "../badge";
+import { ENV } from "@/env";
 
 const iconMap: Record<string, any> = {
   home: Home,
@@ -125,8 +125,8 @@ export const Sidebar: React.FC = () => {
               icon={<Icon size={20} />}
               label={item.label}
               badge={item.badge}
-              active={location.pathname.startsWith(item.path)}
-              onClick={() => navigate(item.path)}
+              active={location.pathname.startsWith(`${ENV.URL_USER}/${item.path}`)}
+              onClick={() => navigate(`${ENV.URL_USER}/${item.path}`)}
               mini={mini}
             />
           );

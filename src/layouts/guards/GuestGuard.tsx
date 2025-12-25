@@ -1,3 +1,4 @@
+import { ENV } from "@/env";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
@@ -11,5 +12,5 @@ export default function GuestGuard({ children }: Props) {
 
   if (loading) return null;
 
-  return user ? <Navigate to={`${import.meta.env.VITE_URL_ADMIN}/dashboard`} replace /> : children;
+  return user ? <Navigate to={`${ENV.URL_USER}/dashboard`} replace /> : children;
 }

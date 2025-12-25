@@ -29,7 +29,7 @@ export default function LeaderboardPanel() {
       <Card className="shadow-none">
         <CardHeader>
           <CardTitle className="text-sm font-bold flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-emerald-500" /> Top Contributors
+            <TrendingUp className="w-4 h-4 text-green-500" /> Top Contributors
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -47,7 +47,7 @@ export default function LeaderboardPanel() {
           <Link to={"/user/leaderboard"}>
             <Button
               variant="ghost"
-              className="w-full text-xs text-emerald-600 mt-2"
+              className="w-full text-xs text-green-600 mt-2"
             >
               View Leaderboard
             </Button>
@@ -55,11 +55,10 @@ export default function LeaderboardPanel() {
         </CardContent>
       </Card>
 
-      <Card className="bg-emerald-600 text-white overflow-hidden relative">
+      <Card className="bg-green-600 text-white overflow-hidden relative">
         <CardContent className="p-6">
-          <Leaf className="absolute -right-4 -bottom-4 w-24 h-24 opacity-20 rotate-12" />
           <h4 className="font-bold mb-2">Tip of the Day</h4>
-          <p className="text-xs text-emerald-50 leading-relaxed">
+          <p className="text-xs text-green-50 leading-relaxed">
             {dailyTip?.content || "No tips available today."}
           </p>
         </CardContent>

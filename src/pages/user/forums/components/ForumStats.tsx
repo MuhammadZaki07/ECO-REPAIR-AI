@@ -25,7 +25,7 @@ function ForumStats() {
       label: "Reputation",
       value: loadingUserXP ? "..." : `${userXP} XP`,
       icon: Trophy,
-      colorClass: "text-emerald-600",
+      colorClass: "text-green-600",
     },
     {
       label: "Your Answers",

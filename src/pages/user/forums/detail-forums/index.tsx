@@ -132,7 +132,7 @@ const ForumDetailPage = () => {
                 {forum.category.name}
               </Badge>
               {forum.status === "solved" && (
-                <Verified className="text-emerald-600" />
+                <Verified className="text-green-600" />
               )}
               <Button
                 variant="ghost"
@@ -172,7 +172,7 @@ const ForumDetailPage = () => {
         {replies.map((r) => {
           const authorName = r.author?.username || "User";
           const highlightSolution = r.is_solution
-            ? "bg-emerald-50 dark:bg-emerald-950/20"
+            ? "bg-green-50 dark:bg-green-950/20"
             : "";
 
           return (
@@ -194,7 +194,7 @@ const ForumDetailPage = () => {
 
                   <div className="flex items-center gap-2">
                     {r.is_solution && (
-                      <Badge className="bg-emerald-600 text-white text-[10px]">
+                      <Badge className="bg-green-600 text-white text-[10px]">
                         <CheckCircle2 className="w-3 h-3 mr-1" /> Solution
                       </Badge>
                     )}

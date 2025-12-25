@@ -17,3 +17,11 @@ export const formatDateID = (date?: string | Date) => {
     year: "numeric",
   });
 };
+export function formatDateWithDay(dateString: string, locale = "en-US") {
+  const d = new Date(dateString);
+  const day = d.toLocaleDateString(locale, { weekday: "long" });
+  const formattedDate = `${day}, ${d.toLocaleDateString(
+    locale
+  )} ${d.toLocaleTimeString(locale)}`;
+  return formattedDate;
+}

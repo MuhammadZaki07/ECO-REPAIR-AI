@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 
 export interface UserData {
   id: string;
-  full_name?: string;
+  auth_id?:string;
+  username?: string;
   avatar_url?: string;
   role?: string;
   bio?:string;
@@ -15,6 +16,8 @@ export interface AuthContextType {
   session: Session | null;
   userData: UserData | null;
   loading: boolean;
+  clearUser: () => void
+  updateUserData: any
 }
 
 export interface AuthProviderProps {

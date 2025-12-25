@@ -1,11 +1,9 @@
+import { ENV } from "@/env";
 import type { YouTubeVideo } from "@/types/youtube";
-
-const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
-const BASE_URL = import.meta.env.VITE_YOUTUBE_BASE_URL;
 
 export class YouTubeService {
   private static ensureApiKey() {
-    if (!API_KEY) {
+    if (!ENV.YOUTUBE_BASE_URL) {
       throw new Error("YouTube API Key tidak ditemukan.");
     }
   }
@@ -15,7 +13,7 @@ export class YouTubeService {
 
     const searchQuery = encodeURIComponent(`cara memperbaiki ${query}`);
     const response = await fetch(
-      `${BASE_URL}/search?part=snippet&maxResults=6&q=${searchQuery}&type=video&key=${API_KEY}`
+      `${ENV.YOUTUBE_BASE_URL}/search?part=snippet&maxResults=6&q=${searchQuery}&type=video&key=${ENV.YOUTUBE_API_KEY}`
     );
 
     const data = await response.json();

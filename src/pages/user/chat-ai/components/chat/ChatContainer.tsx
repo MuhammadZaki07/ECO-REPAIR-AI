@@ -4,13 +4,14 @@ import { useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ChatContainerProps } from "@/types/chat-ai";
 import { TypingAnimation } from "@/components/ui/typing-animation";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({
   messages,
   loading,
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const { userData } = useAuthContext();
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
@@ -54,7 +55,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             blinkCursor
             cursorStyle="line"
           >
-            Welcome to Eco Repair AI
+            {`Welcome to ${userData?.username ?? "Eco Repair AI"}`}
           </TypingAnimation>
         )}
 

@@ -1,12 +1,12 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
-import type { AuthContextType, AuthProviderProps, UserData } from "@/types/auth";
+import type {
+  AuthContextType,
+  AuthProviderProps,
+  UserData,
+} from "@/types/auth";
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -42,16 +42,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
 
+      const cacheKey = `userData-${user.id}`;
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        setUserData(JSON.parse(cached));
+        return;
+      }
+
       const { data } = await supabase
         .from("users")
         .select("*")
         .eq("auth_id", user.id)
         .single();
-      setUserData(data ?? null);
+
+      if (data) {
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        setUserData(data);
+      }
     };
 
     fetchUserData();
   }, [user]);
+
+  const updateUserData = (data: UserData) => {
+    setUserData(data);
+    if (user) {
+      localStorage.setItem(`userData-${user.id}`, JSON.stringify(data));
+    }
+  };
+
+  const clearUser = () => {
+    setUser(null);
+    setUserData(null);
+  };
 
   return (
     <AuthContext.Provider
@@ -60,6 +83,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         session,
         userData,
         loading,
+        updateUserData,
+        clearUser,
       }}
     >
       {children}

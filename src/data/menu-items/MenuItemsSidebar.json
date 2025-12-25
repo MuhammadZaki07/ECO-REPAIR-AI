@@ -2,37 +2,37 @@
   {
     "label": "Dashboard",
     "icon": "home",
-    "path": "/user/dashboard"
+    "path": "dashboard"
   },
   {
     "label": "ECO REPAIR AI",
     "icon": "IconBolt",
-    "path": "/user/scan",
+    "path": "scan",
     "badge": "BETA"
   },
   {
     "label": "Diagnosis History",
     "icon": "clipboard",
-    "path": "/user/history"
+    "path": "history"
   },
   {
     "label": "Leaderboard",
     "icon": "tropy",
-    "path": "/user/leaderboard"
+    "path": "leaderboard"
   },
   {
     "label": "Forum",
     "icon": "users",
-    "path": "/user/forums"
+    "path": "forums"
   },
   {
     "label": "Eco Coin",
     "icon": "coins",
-    "path": "/user/ecocoin"
+    "path": "ecocoin"
   },
   {
     "label": "Profile",
     "icon": "user2",
-    "path": "/user/profile"
+    "path": "profile"
   }
 ]

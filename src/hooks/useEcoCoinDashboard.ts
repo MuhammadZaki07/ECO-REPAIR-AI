@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import {
   getActiveDonationCampaigns,
   type DonationCampaignSummary,
-} from "./useDonationCampaigns";
+} from "./useDonation";
 import { donateToCampaign } from "./donationTransaction";
 
 export function useEcoCoinDashboard() {

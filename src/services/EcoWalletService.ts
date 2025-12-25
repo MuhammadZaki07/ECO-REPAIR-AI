@@ -55,7 +55,6 @@ export class EcoWalletService {
     return data ?? null;
   }
 
-  /** init wallet kalau belum ada */
   static async initWallet(): Promise<EcoWallet> {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) throw new Error("Unauthorized");

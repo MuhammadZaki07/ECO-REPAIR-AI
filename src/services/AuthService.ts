@@ -35,30 +35,4 @@ export class AuthService {
     const { error } = await supabase.auth.signOut();
     if (error) throw new Error(error.message);
   }
-
-  static async ensureUserProfile() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data: existing } = await supabase
-      .from("users")
-      .select("id")
-      .eq("auth_id", user.id)
-      .maybeSingle();
-
-    if (existing) return existing;
-
-    const { data, error } = await supabase
-      .from("users")
-      .insert({
-        auth_id: user.id,
-        username: user.email?.split("@")[0] ?? "user",
-      })
-      .select()
-      .single();
-
-    if (error) throw new Error(error.message);
-
-    return data;
-  }
 }

@@ -51,6 +51,7 @@ export const useVouchers = (
       if (!userId) throw new Error("User not logged in");
 
       setClaimingId(voucherId);
+
       try {
         const result = await VoucherService.claimVoucher(userId, voucherId);
 
@@ -60,7 +61,6 @@ export const useVouchers = (
               ? {
                   ...v,
                   claimed_by: userId,
-                  claimed_at: result.claimed_at,
                   voucher_code: result.voucher_code,
                 }
               : v
