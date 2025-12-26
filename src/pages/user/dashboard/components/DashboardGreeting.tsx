@@ -137,10 +137,6 @@ export default function DashboardGreeting() {
                       </p>
                     </div>
                   </div>
-
-                  <Badge variant={"outline"} className="w-14 text-sm">
-                    Lv. {level?.level_id?.badge || 5}
-                  </Badge>
                 </div>
               </Card>
             )}

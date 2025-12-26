@@ -35,7 +35,7 @@ export default function LeaderboardPanel() {
         <CardContent className="space-y-2">
           {(contributors || []).map((user, idx) => (
             <div
-              key={user.id}
+              key={idx + 1}
               className="flex justify-between text-xs font-medium"
             >
               <span>

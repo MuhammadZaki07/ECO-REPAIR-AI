@@ -35,7 +35,7 @@ export default function History() {
       date: formatDateWithDay(h.created_at),
       emount: h.amount ?? "Completed",
     }));
-  }, [history]);
+  }, [history]);  
 
   const columns: ColumnDef<HistoryRow>[] = [
     {
