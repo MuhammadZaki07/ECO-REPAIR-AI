@@ -28,6 +28,7 @@ import {
   type MerchOrderForm,
 } from "@/schemas/merchOrderSchema";
 import { Pagination } from "@/components/ui/pagination";
+import { DynamicSkeleton } from "@/components/skeletons";
 
 export default function MerchTab({ search }: { search: string }) {
   const { userData } = useAuthContext();
@@ -103,7 +104,15 @@ export default function MerchTab({ search }: { search: string }) {
     hasClaimed: orders.some((o) => o.merchandise_id === m.id),
   }));
 
-  if (merchLoading || ordersLoading) return <p>Loading...</p>;
+  if (merchLoading || ordersLoading) {
+    return (
+      <DynamicSkeleton
+        preset="CARD_GRID"
+        count={3}
+        className="w-full space-y-4 grid grid-cols-3 gap-2"
+      />
+    );
+  }
 
   return (
     <>
@@ -257,8 +266,7 @@ export default function MerchTab({ search }: { search: string }) {
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="text-green-500" /> Order
-                    Completed
+                    <CheckCircle2 className="text-green-500" /> Order Completed
                   </>
                 )}
               </DialogTitle>

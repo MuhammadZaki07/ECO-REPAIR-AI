@@ -85,7 +85,7 @@ const DiagnosisHistoryPage: React.FC = () => {
 
   return (
     <>
-      <div className="space-y-8 p-5">
+      <div className="space-y-8 lg:p-5">
         <div>
           <div className="flex items-center gap-3">
             <FolderOpen className="w-7 h-7 text-primary" />
@@ -131,9 +131,7 @@ const DiagnosisHistoryPage: React.FC = () => {
                 </Button>
 
                 <Link
-                  to={`/user/history/${record.id}?question=${encodeURIComponent(
-                    record.user_input
-                  )}`}
+                  to={`/user/history/${record.id}`}
                   className="block"
                 >
                   <CardHeader className="mb-3">

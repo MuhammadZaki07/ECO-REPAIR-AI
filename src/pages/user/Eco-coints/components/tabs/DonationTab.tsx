@@ -33,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { EcoDonationCampaign } from "@/types/donations";
 import { Link } from "react-router-dom";
+import { DynamicSkeleton } from "@/components/skeletons";
 
 export default function DonationTab({ search }: { search: string }) {
   const debouncedSearch = useDebounce(search, 500);
@@ -81,7 +82,15 @@ export default function DonationTab({ search }: { search: string }) {
   const userHasDonated = (id: string) =>
     records.some((r) => r.campaign_id === id);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <DynamicSkeleton
+        preset="CARD_GRID"
+        count={3}
+        className="w-full space-y-4 grid grid-cols-3 gap-2"
+      />
+    );
+  }
   if (!campaigns.length) return <p>No campaigns found</p>;
 
   return (
@@ -102,7 +111,9 @@ export default function DonationTab({ search }: { search: string }) {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Link to={`/user/ecocoin/donation/${item.id}`}>
-                      <h4 className="font-bold text-lg hover:underline">{item.title}</h4>
+                      <h4 className="font-bold text-lg hover:underline">
+                        {item.title}
+                      </h4>
                     </Link>
                     <Button
                       size="icon"
@@ -255,7 +266,9 @@ export default function DonationTab({ search }: { search: string }) {
           <div className="space-y-4 py-4">
             <CheckCircle2 strokeWidth={1} className="w-20 h-20 mx-auto" />
             <DialogHeader>
-              <DialogTitle className="text-center">Donation Successful</DialogTitle>
+              <DialogTitle className="text-center">
+                Donation Successful
+              </DialogTitle>
               <DialogDescription className="text-center">
                 Thank you for making a difference
               </DialogDescription>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
-  Send,
   CheckCircle2,
   MessageSquare,
   Heart,

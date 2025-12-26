@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ENV } from "@/env";
 import { getAuthorInitial } from "@/helpers/getAuthorInitial";
@@ -37,7 +38,7 @@ export default function ForumCard() {
           onValueChange={setActiveTab}
           className="w-full sm:w-auto"
         >
-          <TabsList className="grid grid-cols-4 lg:w-full w-[400px]">
+          <TabsList className="grid grid-cols-4 lg:w-full w-[355px] overflow-x-auto dark:bg-black">
             <TabsTrigger value="my">My Questions</TabsTrigger>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="trending">Trending</TabsTrigger>
@@ -45,7 +46,7 @@ export default function ForumCard() {
           </TabsList>
         </Tabs>
       </div>
-
+      <Separator />
       {forumsHook.loading ? (
         <DynamicSkeleton
           preset="LIST"
@@ -67,7 +68,10 @@ export default function ForumCard() {
       ) : (
         <div className="flex flex-col gap-3">
           {forumsHook.forums.slice(0, 5).map((forum) => (
-            <Card key={forum.id} className="border shadow-none">
+            <Card
+              key={forum.id}
+              className="border shadow-none dark:bg-transparent"
+            >
               <CardContent className="p-5">
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex gap-2">

@@ -10,12 +10,17 @@ import { FlickeringGrid } from "@/components/ui/flickering-grid";
 type Props = {
   totalEarned: number;
   diagnosisCount: number;
+  loading: boolean;
 };
 
-export default function DashboardStats({ totalEarned, diagnosisCount }: Props) {
+export default function DashboardStats({
+  totalEarned,
+  diagnosisCount,
+  loading,
+}: Props) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <Card className="col-span-2 relative overflow-hidden rounded-3xl border-zinc-800 bg-gradient-to-br from-black via-black/90 to-neutral-900 p-8">
+      <Card className="col-span-2 relative overflow-hidden rounded-3xl shadow-none dark:border-zinc-800 dark:bg-gradient-to-br dark:from-black dark:via-black/90 dark:to-neutral-900 p-8">
         <FlickeringGrid
           className="absolute inset-0 ml-2 mt-1.5"
           squareSize={3.5}
@@ -25,7 +30,7 @@ export default function DashboardStats({ totalEarned, diagnosisCount }: Props) {
           flickerChance={0.1}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-neutral-950/70 to-transparent" />
+        <div className="absolute inset-0 dark:bg-gradient-to-br from-black/80 via-neutral-950/70 to-transparent" />
         <div className="relative z-10 max-w-lg space-y-4">
           <Badge className="w-fit bg-green-500/10 text-green-500 border-green-500/20 text-[10px] font-bold">
             BETA
@@ -33,7 +38,7 @@ export default function DashboardStats({ totalEarned, diagnosisCount }: Props) {
 
           <h2 className="text-3xl font-black tracking-tight">ECO REPAIR AI</h2>
 
-          <p className="text-sm text-zinc-400 leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             Diagnose vehicle issues instantly using AI. Faster insights, smarter
             repairs, and real eco impact.
           </p>
@@ -48,6 +53,7 @@ export default function DashboardStats({ totalEarned, diagnosisCount }: Props) {
 
       <StatActionCard
         label="Diagnosis"
+        loading={loading}
         value={diagnosisCount}
         icon={History}
         color="text-blue-500"
@@ -58,6 +64,7 @@ export default function DashboardStats({ totalEarned, diagnosisCount }: Props) {
       <StatActionCard
         label="Experience"
         value={totalEarned}
+        loading={loading}
         icon={TrendingUp}
         color="text-amber-500"
         actionLabel="Leaderboard"

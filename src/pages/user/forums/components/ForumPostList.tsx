@@ -115,7 +115,7 @@ function ForumPostList({
             onValueChange={setActiveTab}
             className="w-full sm:w-auto"
           >
-            <TabsList className="grid grid-cols-4 lg:w-full w-[400px]">
+            <TabsList className="grid grid-cols-4 lg:w-full w-[350px]">
               <TabsTrigger value="my">My Questions</TabsTrigger>
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="trending">Trending</TabsTrigger>

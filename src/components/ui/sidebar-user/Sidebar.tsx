@@ -104,7 +104,7 @@ export const Sidebar: React.FC = () => {
         {!mini && (
           <button
             onClick={() => setMini(true)}
-            className="p-1 rounded-lg hover:bg-white/10 transition"
+            className="p-1 rounded-lg hover:bg-white/10 transition cursor-pointer"
           >
             <SidebarClose
               size={20}

@@ -8,7 +8,7 @@ const EcoCoinsPage = () => {
   const [search, setSearch] = useState("");
 
   return (
-    <div className="p-6 space-y-8 bg-background min-h-screen pb-20">
+    <div className="lg:p-6 space-y-8 min-h-screen pb-20">
       <TopCards/>
 
       <ExchangeHub

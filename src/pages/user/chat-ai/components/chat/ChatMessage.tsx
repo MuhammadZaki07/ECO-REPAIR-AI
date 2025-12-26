@@ -1,35 +1,56 @@
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { TypingAnimation } from "@/components/ui/typing-animation";
-import { Sparkles, User, ShieldAlert, Wrench, Cog, Cpu } from "lucide-react";
-import React, { useState, type JSX } from "react";
-import type { ChatMessageProps, AIStepSection } from "@/types/chat-ai";
+import { Sparkles, User, Copy, CopyCheck } from "lucide-react";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ENV } from "@/env";
+import type { ChatMessageProps } from "@/types/chat-ai";
+import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   type,
   text,
   image,
   data,
+  meta,
+  diagnosisId,
 }) => {
   const [typingDone, setTypingDone] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
 
-  const tagStyle: Record<AIStepSection["tag"], string> = {
-    "RISK!": "border-red-400 text-red-400 bg-red-500/30",
-    TOOLS: "border-yellow-400 text-yellow-400 bg-yellow-500/30",
-    PARTS: "border-blue-400 text-blue-400 bg-blue-500/30",
-    STEPS: "border-green-400 text-green-400 bg-green-500/30",
-  };
+  const handleCopyValues = (data: any) => {
+    if (!data) return;
 
-  const tagIcon: Record<AIStepSection["tag"], JSX.Element> = {
-    "RISK!": <ShieldAlert className="size-3.5" />,
-    TOOLS: <Wrench className="size-3.5" />,
-    PARTS: <Cog className="size-3.5" />,
-    STEPS: <Cpu className="size-3.5" />,
+    const values: string[] = [];
+    if (data.title) values.push(data.title);
+    if (data.summary) values.push(data.summary);
+
+    data.sections?.forEach((section: any) => {
+      values.push(section.label);
+      section.items.forEach((item: any) => {
+        values.push(item.title);
+        values.push(item.description);
+      });
+    });
+
+    const textToCopy = values.join("\n\n");
+    navigator.clipboard.writeText(textToCopy);
+
+    setCopied(true);
+    toast({
+      title: "Copied successfully",
+      description: "Content has been copied to clipboard",
+    });
+
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const renderParsedText = (content?: string) => {
     if (!content) return null;
-
     return content.split("\n").map((line, i) => (
       <p key={i} className="leading-relaxed">
         {line
@@ -56,7 +77,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               className="w-40 rounded-xl border shadow-sm"
             />
           )}
-
           {text && (
             <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-900 border dark:border-neutral-800 shadow-sm">
               <div className="text-[1rem] text-black dark:text-white space-y-1">
@@ -64,8 +84,19 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               </div>
             </div>
           )}
+          {text && (
+            <Button
+              variant="link"
+              size="sm"
+              className="mt-2 flex items-center gap-1"
+              onClick={() =>
+                handleCopyValues({ title: "", summary: text, sections: [] })
+              }
+            >
+              {copied ? <CopyCheck size={14} /> : <Copy size={14} />}
+            </Button>
+          )}
         </div>
-
         <div className="w-9 h-9 rounded-full bg-white text-black flex items-center justify-center border">
           <User size={16} />
         </div>
@@ -107,14 +138,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className={`flex items-center gap-1 px-2 py-0.5 ${
-                        tagStyle[section.tag]
-                      }`}
+                      className={`flex items-center gap-1 px-2 py-0.5`}
                     >
-                      {tagIcon[section.tag]}
                       {section.tag}
                     </Badge>
-
                     <span className="font-semibold text-white">
                       {section.label}
                     </span>
@@ -139,6 +166,35 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               ))}
             </div>
           ) : null}
+          <Separator className="m-0"/>
+          {typingDone && data && (
+            <Button
+              variant="link"
+              size="sm"
+              className="flex items-center gap-1"
+              onClick={() => handleCopyValues(data)}
+            >
+              {copied ? <CopyCheck size={14} /> : <Copy size={14} />}
+            </Button>
+          )}
+
+          {typingDone && meta === true && (
+            <div className="pt-2">
+              <p className="text-sm text-neutral-100 leading-relaxed">
+                Diagnosis has been successfully analyzed by the system. To
+                review the complete results, please continue to the detailed
+                diagnosis page via the button below.
+              </p>
+              <Link to={`${ENV.URL_USER}/history/${diagnosisId}`}>
+                <Button
+                  variant="link"
+                  className="mt-2 px-0 text-green-500 hover:text-green-300"
+                >
+                  View detailed diagnosis →
+                </Button>
+              </Link>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

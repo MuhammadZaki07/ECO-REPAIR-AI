@@ -27,10 +27,10 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             opacity={0.8}
             gap={10}
             radius={1.6}
-            colorLightVar="--primary"
-            glowColorLightVar="--primary-glow"
-            colorDarkVar="--primary"
-            glowColorDarkVar="--primary-glow"
+            colorLightVar="--color-green-500"
+            glowColorLightVar="--color-green-600"
+            colorDarkVar="--color-green-500"
+            glowColorDarkVar="--color-sky-800"
             backgroundOpacity={0}
             speedMin={0.3}
             speedMax={1.6}
@@ -40,13 +40,13 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-background/80 dark:via-background/0 dark:to-background/80" />
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-neutral-100 via-neutral-100/0 to-neutral-100 dark:from-background/80 dark:via-background/0 dark:to-background/80" />
 
-          <span className="absolute inset-0 flex items-center justify-center text-[clamp(4rem,15vw,8rem)] font-bold text-primary/15 select-none pointer-events-none text-center">
+          <span className="absolute inset-0 flex items-center uppercase justify-center text-[clamp(4rem,15vw,8rem)] font-bold text-green-800/15 select-none pointer-events-none text-center">
             Eco Repair Ai
           </span>
         </>
       )}
 
-      <div className="relative z-10 h-full w-full max-w-7xl custom-scroll mx-auto flex flex-col px-40 pt-18 pb-5 overflow-y-auto space-y-3">
+      <div className="relative z-10 h-full w-full lg:max-w-7xl custom-scroll mx-auto flex flex-col lg:px-40 pt-18 pb-5 overflow-y-auto space-y-3">
         {isEmpty && (
           <TypingAnimation
             className="text-center font-bold text-5xl text-neutral-700 dark:text-white"
@@ -67,6 +67,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             text={msg.text}
             image={msg.image}
             data={msg.data}
+            meta={msg.meta}
+            diagnosisId={msg.diagnosisId}
           />
         ))}
 

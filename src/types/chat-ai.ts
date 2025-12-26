@@ -4,7 +4,7 @@ export interface AIStepItem {
 }
 
 export interface AIStepSection {
-  tag: "RISK!" | "TOOLS" | "STEPS" | "PARTS"; 
+  tag: "RISK!" | "TOOLS" | "STEPS" | "PARTS";
   label: string;
   items: AIStepItem[];
 }
@@ -21,6 +21,8 @@ export interface ChatMessageProps {
   text?: string;
   image?: string | null;
   data?: AIResponse;
+  meta: boolean;
+  diagnosisId: string | number;
 }
 
 export interface ChatContainerProps {

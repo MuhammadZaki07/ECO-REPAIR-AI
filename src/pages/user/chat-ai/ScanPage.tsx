@@ -19,77 +19,55 @@ export default function ScanPage() {
   const [isAILoading, setIsAILoading] = useState(false);
 
   const handleSend = async () => {
-    if (!input.trim() && files.length === 0) return;
-    if (!isLoggedIn || !currentUserId) {
-      alert("Anda harus login untuk membuat diagnosis dan menyimpan riwayat.");
-      return;
-    }
+  if (!input.trim() && files.length === 0) return;
+  if (!isLoggedIn || !currentUserId) {
+    alert("Anda harus login untuk membuat diagnosis dan menyimpan riwayat.");
+    return;
+  }
 
-    const currentInput = input;
-    setMessages((prev) => [
-      ...prev,
+  const currentInput = input;
+  setMessages((prev) => [
+    ...prev,
+    {
+      id: Date.now(),
+      type: "user",
+      text: currentInput,
+      image: files.length > 0 ? URL.createObjectURL(files[0]) : null,
+    },
+  ]);
+  setInput("");
+  setFiles([]);
+  setIsAILoading(true);
+
+  let imageBase64: string | null = null;
+  if (files.length > 0) {
+    const reader = new FileReader();
+    imageBase64 = await new Promise((resolve) => {
+      reader.onloadend = () =>
+        resolve(reader.result?.toString().split(",")[1] || "");
+      reader.readAsDataURL(files[0]);
+    });
+  }
+
+  try {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const res = await fetch(
+      `${ENV.SUPABASE_EDGE_FUNCTION_URL}/functions/v1/generate-diagnosis`,
       {
-        id: Date.now(),
-        type: "user",
-        text: currentInput,
-        image: files.length > 0 ? URL.createObjectURL(files[0]) : null,
-      },
-    ]);
-    setInput("");
-    setFiles([]);
-    setIsAILoading(true);
-
-    let imageBase64: string | null = null;
-    if (files.length > 0) {
-      const reader = new FileReader();
-      imageBase64 = await new Promise((resolve) => {
-        reader.onloadend = () =>
-          resolve(reader.result?.toString().split(",")[1] || "");
-        reader.readAsDataURL(files[0]);
-      });
-    }
-
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const res = await fetch(
-        `${ENV.SUPABASE_EDGE_FUNCTION_URL}/functions/v1/generate-diagnosis`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-          body: JSON.stringify({ description: currentInput, imageBase64 }),
-        }
-      );
-
-      const result = await res.json();
-      if (!result.success) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now() + 1,
-            type: "ai",
-            data: {
-              title: "",
-              summary:
-                "Maaf ya server AI lagi sibuk. Coba lagi beberapa saat nanti.",
-              sections: [],
-            },
-          },
-        ]);
-        return;
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ description: currentInput, imageBase64 }),
       }
+    );
 
-      const aiDataResult = result.data;
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, type: "ai", data: aiDataResult },
-      ]);
-      await create(currentUserId, currentInput, aiDataResult);
-    } catch {
+    const result = await res.json();
+
+    if (!result.success) {
       setMessages((prev) => [
         ...prev,
         {
@@ -98,15 +76,69 @@ export default function ScanPage() {
           data: {
             title: "",
             summary:
-              "Koneksi ke AI gagal Cek internet kamu atau coba lagi nanti.",
+              "Maaf ya server AI lagi sibuk. Coba lagi beberapa saat nanti.",
             sections: [],
           },
         },
       ]);
-    } finally {
-      setIsAILoading(false);
+      return;
     }
-  };
+
+    const aiDataResult = result.data;
+
+    // Simpan ke Supabase
+    const insertRes = await fetch(
+      `${ENV.SUPABASE_URL}/rest/v1/diagnoses?select=id`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: ENV.SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${session?.access_token}`,
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          user_id: currentUserId,
+          user_description: currentInput,
+          ai_response_json: aiDataResult,
+        }),
+      }
+    );
+
+    const insertResult = await insertRes.json();
+    const diagnosisId = insertResult[0]?.id;
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        type: "ai",
+        data: aiDataResult,
+        meta: result?.meta?.diagnosisValid,
+        diagnosisId : diagnosisId,
+      },
+    ]);
+
+    await create(currentUserId, currentInput, aiDataResult);
+  } catch {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        type: "ai",
+        data: {
+          title: "",
+          summary:
+            "Koneksi ke AI gagal. Cek internet kamu atau coba lagi nanti.",
+          sections: [],
+        },
+      },
+    ]);
+  } finally {
+    setIsAILoading(false);
+  }
+};
+
 
   if (isAuthLoading) {
     return (
@@ -130,7 +162,7 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="flex h-screen p-3 pt-20 overflow-hidden">
+    <div className="flex h-screen p-3 lg:pt-20 overflow-hidden">
       <div className="flex-1 flex flex-col h-full">
         <ChatContainer messages={messages} loading={isAILoading} />
         <ChatInput

@@ -4,6 +4,7 @@ import { SidebarOpen, Bell, Settings, Search } from "lucide-react";
 import { ModeToggle } from "../theme-switch";
 import { ProfileMenu } from "@/components/ui/ProfileMenu";
 import { Button } from "@/components/ui/button";
+import GitHubButton from "@/components/GitHubButton";
 
 interface HeaderProps {
   hideBreadcrumb?: boolean;
@@ -34,10 +35,7 @@ const Header: React.FC<HeaderProps> = ({ hideBreadcrumb = false, onOpenSidebar }
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant={"ghost"} className="relative">
-            <Bell size={18} />
-            <span className="absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-red-500 ring-1 ring-white" />
-          </Button>
+          <GitHubButton />
           <ModeToggle />
           <ProfileMenu />
         </div>

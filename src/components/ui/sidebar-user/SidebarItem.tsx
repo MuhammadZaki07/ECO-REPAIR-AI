@@ -1,4 +1,5 @@
 import React from "react";
+import { Badge } from "../badge";
 
 interface SidebarItemProps {
   icon?: React.ReactNode;
@@ -20,7 +21,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors
+      className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors cursor-pointer
         ${mini ? "justify-center" : "justify-between"}
         ${
           active
@@ -34,10 +35,9 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
       </div>
 
       {!mini && badge && (
-        <span className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold
-           text-white border border-green-300">
+        <Badge variant={'outline'} className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold border-green-500 animate-bounce">
           {badge}
-        </span>
+        </Badge>
       )}
     </button>
   );

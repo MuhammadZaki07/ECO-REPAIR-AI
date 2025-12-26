@@ -20,10 +20,11 @@ import {
 import { YouTubeService } from "@/services/youtubeService";
 import { formatDateID } from "@/utils/date";
 import { DynamicSkeleton } from "@/components/skeletons";
-import LoadingState from "@/components/state/LoadingState";
 import { ErrorState } from "@/components/state/ErrorState";
 import { EmptyState } from "@/components/state/EmptyState";
 import { useToast } from "@/hooks/use-toast";
+import ContainerLoading from "@/components/state/LoadingState";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const getTagStyle = (tag: string) => {
   if (tag === "PARTS") return "bg-blue-100 text-blue-800 border-blue-200";
@@ -74,9 +75,12 @@ const DiagnosisDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <LoadingState>
-        <DynamicSkeleton preset="LIST" count={5}/>
-      </LoadingState>
+      <ContainerLoading>
+        <Skeleton className="h-5 w-24" />
+        <Skeleton className="h-5 w-2/3" />
+        <Skeleton className="h-5 w-42" />
+        <Skeleton className="h-[700px] w-full" />
+      </ContainerLoading>
     );
   }
 
@@ -109,7 +113,7 @@ const DiagnosisDetailPage: React.FC = () => {
   const risks = sections.find((s) => s.tag === "RISK!")?.items ?? [];
 
   return (
-    <div className="p-5 space-y-6">
+    <div className="lg:p-5 space-y-6">
       <Button variant="ghost" onClick={() => navigate(-1)}>
         <ChevronLeft className="w-4 h-4 mr-2" /> Back
       </Button>
@@ -131,14 +135,17 @@ const DiagnosisDetailPage: React.FC = () => {
           </p>
 
           {risks.length > 0 && (
-            <Card className="p-4 bg-neutral-900 border-red-900/50 flex flex-col gap-1">
+            <Card className="p-4 flex flex-col gap-1">
               <h4 className="font-bold flex items-center mb-2 text-red-500">
                 <AlertTriangle className="w-4 h-4 mr-2" /> Risks
               </h4>
-              <ul className="list-disc ml-5 text-sm space-y-1 text-neutral-300">
+              <ul className="list-disc ml-5 text-sm space-y-1 ">
                 {risks.map((r, i) => (
                   <li key={i}>
-                    <b>{r.title}</b>: {r.description}
+                    <b className="text-neutral-900 dark:text-neutral-100">
+                      {r.title}
+                    </b>
+                    : {r.description}
                   </li>
                 ))}
               </ul>
