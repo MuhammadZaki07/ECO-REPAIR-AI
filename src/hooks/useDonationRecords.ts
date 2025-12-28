@@ -1,26 +1,30 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
 
 export const useDonationRecords = (userId?: string) => {
-  const [records, setRecords] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: records = [],
+    isLoading: loading,
+    refetch,
+  } = useQuery({
+    queryKey: ["donation-records", userId],
+    queryFn: async () => {
+      if (!userId) return [];
 
-  const fetchRecords = async () => {
-    if (!userId) return setLoading(false);
+      const { data, error } = await supabase
+        .from("eco_donation_records")
+        .select("*")
+        .eq("user_id", userId);
 
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("eco_donation_records")
-      .select("*")
-      .eq("user_id", userId);
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!userId,
+  });
 
-    if (!error) setRecords(data ?? []);
-    setLoading(false);
+  return {
+    records,
+    loading,
+    refetch,
   };
-
-  useEffect(() => {
-    fetchRecords();
-  }, [userId]);
-
-  return { records, loading, refetch: fetchRecords };
 };

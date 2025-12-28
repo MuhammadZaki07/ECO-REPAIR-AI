@@ -1,33 +1,36 @@
-import { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { UserLevelService } from "@/services/UserLevelService";
 import type { UserBadge, UserLevel } from "@/types/levelUser";
 
 export const useUserLevel = (userId?: string) => {
-  const [level, setLevel] = useState<UserLevel | null>(null);
-  const [badges, setBadges] = useState<UserBadge[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data,
+    isLoading: loading,
+    refetch,
+  } = useQuery<{
+    level: UserLevel | null;
+    badges: UserBadge[];
+  }>({
+    queryKey: ["user-level", userId],
+    queryFn: async () => {
+      if (!userId) {
+        return { level: null, badges: [] };
+      }
 
-  const fetchLevelAndBadges = useCallback(async () => {
-    if (!userId) return;
-    setLoading(true);
-    try {
-      const lvl = await UserLevelService.getUserLevel(userId);
-      const bds = await UserLevelService.getUserBadges(userId);
-      setLevel(lvl);
-      setBadges(bds);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
+      const [level, badges] = await Promise.all([
+        UserLevelService.getUserLevel(userId),
+        UserLevelService.getUserBadges(userId),
+      ]);
 
-  useEffect(() => {
-    fetchLevelAndBadges();
-  }, [fetchLevelAndBadges]);
+      return { level, badges };
+    },
+    enabled: !!userId,
+  });
 
   return {
-    level,
-    badges,
+    level: data?.level ?? null,
+    badges: data?.badges ?? [],
     loading,
-    refetch: fetchLevelAndBadges,
+    refetch,
   };
 };

@@ -31,6 +31,7 @@ import {
 import { validateField } from "@/helpers/handleFieldValidation";
 import type { ModalForumsProps } from "@/types/forum";
 import { parseLexicalEditorState } from "@/helpers/parseLexicalEditorState";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 
 const initialEditorState = {
   root: {
@@ -69,7 +70,7 @@ export default function ModalForums({
   initialTitle = "",
   initialDescription = initialEditorState,
   initialCategoryId = null,
-  onSuccess
+  onSuccess,
 }: ModalForumsProps) {
   const isEditMode = Boolean(forumId);
   const {
@@ -92,7 +93,7 @@ export default function ModalForums({
     category?: string;
   }>({});
   const [loading, setLoading] = useState(false);
-
+  const { user, userData } = useAuthContext();
   useEffect(() => {
     setTitle(initialTitle);
     setEditorState(
@@ -171,8 +172,7 @@ export default function ModalForums({
 
     setLoading(true);
     try {
-      const userProfile = await AuthService.ensureUserProfile();
-      if (!userProfile) {
+      if (!userData) {
         toast({
           title: "Belum login",
           description: "Silakan login dulu",
@@ -191,7 +191,7 @@ export default function ModalForums({
         toast({ title: "Forum berhasil diupdate" });
       } else {
         await ForumService.createForum(
-          userProfile.id,
+          userData.id,
           title.trim(),
           selectedCategory,
           editorState

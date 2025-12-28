@@ -1,12 +1,21 @@
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { TypingAnimation } from "@/components/ui/typing-animation";
-import { Sparkles, User, Copy, CopyCheck } from "lucide-react";
-import React, { useState } from "react";
+import {
+  Sparkles,
+  User,
+  Copy,
+  CopyCheck,
+  ShieldAlert,
+  Wrench,
+  Cpu,
+  Cog,
+} from "lucide-react";
+import React, { useState, type JSX } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ENV } from "@/env";
-import type { ChatMessageProps } from "@/types/chat-ai";
+import type { AIStepSection, ChatMessageProps } from "@/types/chat-ai";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 
@@ -21,6 +30,20 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   const [typingDone, setTypingDone] = useState(false);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
+
+  const tagStyle: Record<AIStepSection["tag"], string> = {
+    "RISK!": "border-red-400 text-red-400 bg-red-500/30",
+    TOOLS: "border-yellow-400 text-yellow-400 bg-yellow-500/30",
+    PARTS: "border-blue-400 text-blue-400 bg-blue-500/30",
+    STEPS: "border-green-400 text-green-400 bg-green-500/30",
+  };
+
+ const tagIcon: Record<AIStepSection["tag"], JSX.Element> = {
+    "RISK!": <ShieldAlert className="size-3.5" />,
+    TOOLS: <Wrench className="size-3.5" />,
+    PARTS: <Cog className="size-3.5" />,
+    STEPS: <Cpu className="size-3.5" />,
+  };
 
   const handleCopyValues = (data: any) => {
     if (!data) return;
@@ -138,8 +161,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                   <div className="flex items-center gap-2">
                     <Badge
                       variant="outline"
-                      className={`flex items-center gap-1 px-2 py-0.5`}
+                      className={`flex items-center gap-1 px-2 py-0.5 ${
+                        tagStyle[section.tag]
+                      }`}
                     >
+                      {tagIcon[section.tag]}
                       {section.tag}
                     </Badge>
                     <span className="font-semibold text-white">
@@ -166,7 +192,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               ))}
             </div>
           ) : null}
-          <Separator className="m-0"/>
+          <Separator className="m-0" />
           {typingDone && data && (
             <Button
               variant="link"

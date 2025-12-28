@@ -1,43 +1,68 @@
-import { useState, useEffect, useCallback } from "react";
-import { ImpactMiningService, type ImpactMining } from "@/services/ImpactMiningService";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  ImpactMiningService,
+  type ImpactMining,
+} from "@/services/ImpactMiningService";
 
 export const useImpactMining = (userId?: string) => {
-  const [data, setData] = useState<ImpactMining | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const queryClient = useQueryClient();
+  const queryKey = ["impact-mining", userId];
 
-  const fetch = useCallback(async () => {
-    if (!userId) {
-      setData(null);
-      setLoading(false);
-      return;
-    }
+  const {
+    data,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery<ImpactMining | null>({
+    queryKey,
+    enabled: !!userId,
+    queryFn: async () => {
+      if (!userId) return null;
+      return ImpactMiningService.getByUser(userId);
+    },
+  });
 
-    try {
-      setLoading(true);
-      const mining = await ImpactMiningService.getByUser(userId);
-      setData(mining);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
+  const updateProgress = useMutation({
+    mutationFn: ({
+      progress,
+      remainingLikes,
+    }: {
+      progress: number;
+      remainingLikes: number;
+    }) => {
+      if (!userId) throw new Error("User not logged in");
+      return ImpactMiningService.updateProgress(
+        userId,
+        progress,
+        remainingLikes
+      );
+    },
+    onSuccess: (updated) => {
+      queryClient.setQueryData(queryKey, updated);
+    },
+  });
 
-  const updateProgress = useCallback(async (progress: number, remainingLikes: number) => {
-    if (!userId) return;
-    const updated = await ImpactMiningService.updateProgress(userId, progress, remainingLikes);
-    setData(updated);
-  }, [userId]);
+  const claimReward = useMutation({
+    mutationFn: async () => {
+      if (!userId) throw new Error("User not logged in");
+      return ImpactMiningService.claimReward(userId);
+    },
+    onSuccess: (updated) => {
+      queryClient.setQueryData(queryKey, updated);
+    },
+  });
 
-  const claimReward = useCallback(async () => {
-    if (!userId) return;
-    const updated = await ImpactMiningService.claimReward(userId);
-    setData(updated);
-  }, [userId]);
+  return {
+    data,
+    loading,
+    error,
 
-  useEffect(() => { fetch(); }, [fetch]);
+    refetch,
 
-  return { data, loading, error, refetch: fetch, updateProgress, claimReward };
+    updateProgress: updateProgress.mutateAsync,
+    claimingProgress: updateProgress.isPending,
+
+    claimReward: claimReward.mutateAsync,
+    claimingReward: claimReward.isPending,
+  };
 };

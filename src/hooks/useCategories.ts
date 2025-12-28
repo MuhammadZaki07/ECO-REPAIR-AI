@@ -1,51 +1,45 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CategoryService, type Category } from "@/services/CategoryService";
-import { useState, useEffect, useCallback } from "react";
 
 export const useCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchCategories = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await CategoryService.getCategories();
-      setCategories(data);
-    } catch (err: any) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const categoriesQuery = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: CategoryService.getCategories,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const createCategory = useCallback(async (name: string) => {
-    const newCategory = await CategoryService.createCategory(name);
-    setCategories((prev) => [...prev, newCategory]);
-    return newCategory;
-  }, []);
+  const createCategory = useMutation({
+    mutationFn: (name: string) => CategoryService.createCategory(name),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
 
-  const updateCategory = useCallback(async (id: number, name: string) => {
-    const updated = await CategoryService.updateCategory(id, name);
-    setCategories((prev) => prev.map((cat) => (cat.id === id ? updated : cat)));
-    return updated;
-  }, []);
+  const updateCategory = useMutation({
+    mutationFn: ({ id, name }: { id: number; name: string }) =>
+      CategoryService.updateCategory(id, name),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
 
-  const deleteCategory = useCallback(async (id: number) => {
-    await CategoryService.deleteCategory(id);
-    setCategories((prev) => prev.filter((cat) => cat.id !== id));
-  }, []);
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  const deleteCategory = useMutation({
+    mutationFn: (id: number) => CategoryService.deleteCategory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
 
   return {
-    categories,
-    loading,
-    error,
-    refetch: fetchCategories,
-    createCategory,
-    updateCategory,
-    deleteCategory,
+    categories: categoriesQuery.data ?? [],
+    loading: categoriesQuery.isLoading,
+    error: categoriesQuery.error as Error | null,
+    refetch: categoriesQuery.refetch,
+
+    createCategory: createCategory.mutateAsync,
+    updateCategory: updateCategory.mutateAsync,
+    deleteCategory: deleteCategory.mutateAsync,
   };
 };

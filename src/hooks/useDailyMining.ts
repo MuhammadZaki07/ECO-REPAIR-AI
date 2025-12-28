@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 
@@ -10,54 +10,47 @@ interface MiningStatus {
 
 export function useDailyMining() {
   const { user } = useAuthContext();
-  const [status, setStatus] = useState<MiningStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [claiming, setClaiming] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchStatus = async () => {
-    if (!user) return;
+  const statusQuery = useQuery<MiningStatus>({
+    queryKey: ["daily-mining-status", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc(
+        "get_daily_mining_status",
+        { p_auth_id: user!.id }
+      );
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 1000 * 30,
+  });
 
-    setLoading(true);
-    const { data, error } = await supabase.rpc(
-      "get_daily_mining_status",
-      { p_auth_id: user.id }
-    );
-
-    if (error) setError(error.message);
-    else setStatus(data);
-
-    setLoading(false);
-  };
-
-  const claim = async () => {
-    if (!user) return;
-    setClaiming(true);
-
-    const { error } = await supabase.rpc(
-      "claim_daily_mining_reward",
-      { p_auth_id: user.id }
-    );
-
-    if (error) {
-      setError(error.message);
-    } else {
-      await fetchStatus(); 
-    }
-
-    setClaiming(false);
-  };
-
-  useEffect(() => {
-    fetchStatus();
-  }, []);
+  const claimMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.rpc(
+        "claim_daily_mining_reward",
+        { p_auth_id: user!.id }
+      );
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["daily-mining-status", user?.id],
+      });
+    },
+  });
 
   return {
-    status,
-    loading,
-    claiming,
-    error,
-    claim,
-    refetch: fetchStatus,
+    status: statusQuery.data ?? null,
+    loading: statusQuery.isLoading,
+    error: statusQuery.error
+      ? (statusQuery.error as Error).message
+      : null,
+
+    claiming: claimMutation.isPending,
+    claim: claimMutation.mutateAsync,
+
+    refetch: statusQuery.refetch,
   };
 }

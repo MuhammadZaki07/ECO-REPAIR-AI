@@ -1,5 +1,9 @@
 import { supabase } from "@/lib/supabase/client";
-import type { DiagnosisRecord, FetchDiagnosisParams, HistorySummary } from "@/types/diagnosis";
+import type {
+  DiagnosisRecord,
+  FetchDiagnosisParams,
+  HistorySummary,
+} from "@/types/diagnosis";
 
 export class DiagnosisService {
   static async fetchById(id: string): Promise<DiagnosisRecord | null> {
@@ -13,9 +17,7 @@ export class DiagnosisService {
     return data as DiagnosisRecord;
   }
 
-  static async fetchSummaries(
-    params: FetchDiagnosisParams
-  ): Promise<{
+  static async fetchSummaries(params: FetchDiagnosisParams): Promise<{
     data: HistorySummary[];
     total: number;
   }> {
@@ -33,10 +35,9 @@ export class DiagnosisService {
 
     let query = supabase
       .from("diagnoses")
-      .select(
-        "id, created_at, user_description, ai_response_json",
-        { count: "exact" }
-      )
+      .select("id, created_at, user_description, ai_response_json", {
+        count: "exact",
+      })
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .range(from, to);
@@ -47,7 +48,6 @@ export class DiagnosisService {
       );
     }
 
-    /* 📅 Date filters */
     if (fromDate) query = query.gte("created_at", fromDate);
     if (toDate) query = query.lte("created_at", toDate);
 
@@ -73,7 +73,11 @@ export class DiagnosisService {
     aiResponse: {
       title: string;
       summary: string;
-      sections: [];
+      sections: {
+        title: string;
+        label: string;
+        items: { title: string; description: string }[];
+      }[];
     }
   ): Promise<string> {
     const { data, error } = await supabase
@@ -91,10 +95,7 @@ export class DiagnosisService {
   }
 
   static async delete(id: string): Promise<void> {
-    const { error } = await supabase
-      .from("diagnoses")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("diagnoses").delete().eq("id", id);
 
     if (error) throw new Error(error.message);
   }

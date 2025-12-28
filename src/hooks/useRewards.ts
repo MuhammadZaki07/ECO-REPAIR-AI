@@ -1,37 +1,22 @@
-import { useEffect, useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   RewardService,
-  type Reward,
   type RewardType,
 } from "@/services/RewardService";
 
 export const useRewards = (type?: RewardType) => {
-  const [rewards, setRewards] = useState<Reward[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchRewards = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await RewardService.getActiveRewards(type);
-      setRewards(data);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [type]);
-
-  useEffect(() => {
-    fetchRewards();
-  }, [fetchRewards]);
+  const query = useQuery({
+    queryKey: ["rewards", type],
+    queryFn: () => RewardService.getActiveRewards(type),
+    enabled: !!type || type === undefined,
+    staleTime: 1000 * 60 * 5,
+  });
 
   return {
-    rewards,
-    loading,
-    error,
-    refetch: fetchRewards,
-    isEmpty: !loading && rewards.length === 0,
+    rewards: query.data ?? [],
+    loading: query.isLoading,
+    error: query.error as Error | null,
+    refetch: query.refetch,
+    isEmpty: !query.isLoading && (query.data?.length ?? 0) === 0,
   };
 };

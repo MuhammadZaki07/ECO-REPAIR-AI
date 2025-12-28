@@ -7,6 +7,7 @@ import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useCreateDiagnosis } from "@/hooks/useDiagnosis";
 import { supabase } from "@/lib/supabase/client";
 import { ENV } from "@/env";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ScanPage() {
   const { user, loading: isAuthLoading } = useAuthContext();
@@ -17,57 +18,105 @@ export default function ScanPage() {
   const [input, setInput] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [isAILoading, setIsAILoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSend = async () => {
-  if (!input.trim() && files.length === 0) return;
-  if (!isLoggedIn || !currentUserId) {
-    alert("Anda harus login untuk membuat diagnosis dan menyimpan riwayat.");
-    return;
-  }
+    if (!input.trim() && files.length === 0) return;
 
-  const currentInput = input;
-  setMessages((prev) => [
-    ...prev,
-    {
-      id: Date.now(),
-      type: "user",
-      text: currentInput,
-      image: files.length > 0 ? URL.createObjectURL(files[0]) : null,
-    },
-  ]);
-  setInput("");
-  setFiles([]);
-  setIsAILoading(true);
+    if (!isLoggedIn || !currentUserId) {
+      toast({
+        title: "Warning",
+        description:
+          "Anda harus login untuk membuat diagnosis dan menyimpan riwayat.",
+      });
+      return;
+    }
 
-  let imageBase64: string | null = null;
-  if (files.length > 0) {
-    const reader = new FileReader();
-    imageBase64 = await new Promise((resolve) => {
-      reader.onloadend = () =>
-        resolve(reader.result?.toString().split(",")[1] || "");
-      reader.readAsDataURL(files[0]);
-    });
-  }
+    const currentInput = input;
 
-  try {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const res = await fetch(
-      `${ENV.SUPABASE_EDGE_FUNCTION_URL}/functions/v1/generate-diagnosis`,
+    setMessages((prev) => [
+      ...prev,
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify({ description: currentInput, imageBase64 }),
+        id: Date.now(),
+        type: "user",
+        text: currentInput,
+        image: files.length > 0 ? URL.createObjectURL(files[0]) : null,
+      },
+    ]);
+
+    setInput("");
+    setFiles([]);
+    setIsAILoading(true);
+
+    let imageBase64: string | null = null;
+
+    if (files.length > 0) {
+      const reader = new FileReader();
+      imageBase64 = await new Promise((resolve) => {
+        reader.onloadend = () =>
+          resolve(reader.result?.toString().split(",")[1] || null);
+        reader.readAsDataURL(files[0]);
+      });
+    }
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch(
+        `${ENV.SUPABASE_EDGE_FUNCTION_URL}/functions/v1/generate-diagnosis`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+          body: JSON.stringify({
+            description: currentInput,
+            imageBase64,
+          }),
+        }
+      );
+
+      const result = await res.json();
+
+      if (!result.success) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now() + 1,
+            type: "ai",
+            data: {
+              title: "",
+              summary: "Maaf ya, AI lagi sibuk. Coba lagi bentar.",
+              sections: [],
+            },
+          },
+        ]);
+        return;
       }
-    );
 
-    const result = await res.json();
+      const aiDataResult = result.data;
+      const isValid = result?.meta?.diagnosisValid === true;
 
-    if (!result.success) {
+      let diagnosisId: string | undefined;
+
+      if (isValid) {
+        diagnosisId = await create(currentUserId, currentInput, aiDataResult);
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          type: "ai",
+          data: aiDataResult,
+          meta: isValid,
+          diagnosisId,
+        },
+      ]);
+    } catch (error) {
       setMessages((prev) => [
         ...prev,
         {
@@ -75,70 +124,15 @@ export default function ScanPage() {
           type: "ai",
           data: {
             title: "",
-            summary:
-              "Maaf ya server AI lagi sibuk. Coba lagi beberapa saat nanti.",
+            summary: "Koneksi ke AI gagal. Coba lagi nanti.",
             sections: [],
           },
         },
       ]);
-      return;
+    } finally {
+      setIsAILoading(false);
     }
-
-    const aiDataResult = result.data;
-
-    // Simpan ke Supabase
-    const insertRes = await fetch(
-      `${ENV.SUPABASE_URL}/rest/v1/diagnoses?select=id`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: ENV.SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${session?.access_token}`,
-          Prefer: "return=representation",
-        },
-        body: JSON.stringify({
-          user_id: currentUserId,
-          user_description: currentInput,
-          ai_response_json: aiDataResult,
-        }),
-      }
-    );
-
-    const insertResult = await insertRes.json();
-    const diagnosisId = insertResult[0]?.id;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now() + 1,
-        type: "ai",
-        data: aiDataResult,
-        meta: result?.meta?.diagnosisValid,
-        diagnosisId : diagnosisId,
-      },
-    ]);
-
-    await create(currentUserId, currentInput, aiDataResult);
-  } catch {
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now() + 1,
-        type: "ai",
-        data: {
-          title: "",
-          summary:
-            "Koneksi ke AI gagal. Cek internet kamu atau coba lagi nanti.",
-          sections: [],
-        },
-      },
-    ]);
-  } finally {
-    setIsAILoading(false);
-  }
-};
-
+  };
 
   if (isAuthLoading) {
     return (

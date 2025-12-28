@@ -1,6 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
 import { DailyTipService } from "@/services/DailyTipService";
+
+type UseDailyTipsParams = {
+  search?: string;
+  limit?: number;
+  page?: number;
+  startDate?: string;
+  endDate?: string;
+};
 
 export const useDailyTips = ({
   search = "",
@@ -8,72 +21,89 @@ export const useDailyTips = ({
   page = 1,
   startDate,
   endDate,
-} = {}) => {
-  const [tips, setTips] = useState<any[]>([]);
-  const [dailyTip, setDailyTip] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+}: UseDailyTipsParams = {}) => {
+  const queryClient = useQueryClient();
 
-  const fetchTips = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await DailyTipService.getTips({
+  // list tips
+  const tipsQuery = useQuery({
+    queryKey: ["daily-tips", search, limit, page, startDate, endDate],
+    queryFn: () =>
+      DailyTipService.getTips({
         search,
         limit,
         page,
         startDate,
         endDate,
+      }),
+    keepPreviousData: true,
+  });
+
+  // random daily tip
+  const dailyTipQuery = useQuery({
+    queryKey: ["daily-tip-random"],
+    queryFn: DailyTipService.getRandomTip,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // mutations
+  const createMutation = useMutation({
+    mutationFn: (content: string) =>
+      DailyTipService.createTip(content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["daily-tips"],
       });
-      setTips(data);
-      setError(null);
-    } catch (err: any) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [search, limit, page, startDate, endDate]);
+      queryClient.invalidateQueries({
+        queryKey: ["daily-tip-random"],
+      });
+    },
+  });
 
-  const fetchDailyTip = useCallback(async () => {
-    try {
-      const tip = await DailyTipService.getRandomTip();
-      setDailyTip(tip);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
+  const updateMutation = useMutation({
+    mutationFn: ({
+      id,
+      content,
+    }: {
+      id: string;
+      content: string;
+    }) => DailyTipService.updateTip(id, content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["daily-tips"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["daily-tip-random"],
+      });
+    },
+  });
 
-  const createTip = useCallback(async (content: string) => {
-    const tip = await DailyTipService.createTip(content);
-    fetchTips();
-    fetchDailyTip();
-    return tip;
-  }, [fetchTips, fetchDailyTip]);
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      DailyTipService.deleteTip(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["daily-tips"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["daily-tip-random"],
+      });
+    },
+  });
 
-  const updateTip = useCallback(async (id: string, content: string) => {
-    const tip = await DailyTipService.updateTip(id, content);
-    fetchTips();
-    fetchDailyTip();
-    return tip;
-  }, [fetchTips, fetchDailyTip]);
-
-  const deleteTip = useCallback(async (id: string) => {
-    await DailyTipService.deleteTip(id);
-    fetchTips();
-    fetchDailyTip();
-  }, [fetchTips, fetchDailyTip]);
-
+  // realtime sync
   useEffect(() => {
-    fetchTips();
-    fetchDailyTip();
-
     const sub = supabase
       .channel("daily_tips_realtime")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "daily_tips" },
         () => {
-          fetchTips();
-          fetchDailyTip();
+          queryClient.invalidateQueries({
+            queryKey: ["daily-tips"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["daily-tip-random"],
+          });
         }
       )
       .subscribe();
@@ -81,18 +111,23 @@ export const useDailyTips = ({
     return () => {
       supabase.removeChannel(sub);
     };
-  }, [fetchTips, fetchDailyTip]);
+  }, [queryClient]);
 
-return {
-  tips,
-  dailyTip,
-  loading,
-  error,
-  fetchTips,
-  fetchDailyTip,
-  createTip,
-  updateTip,
-  deleteTip,
-};
+  return {
+    tips: tipsQuery.data ?? [],
+    dailyTip: dailyTipQuery.data ?? null,
 
+    loading:
+      tipsQuery.isLoading || dailyTipQuery.isLoading,
+    error: tipsQuery.error ?? dailyTipQuery.error,
+
+    createTip: (content: string) =>
+      createMutation.mutateAsync(content),
+
+    updateTip: (id: string, content: string) =>
+      updateMutation.mutateAsync({ id, content }),
+
+    deleteTip: (id: string) =>
+      deleteMutation.mutateAsync(id),
+  };
 };

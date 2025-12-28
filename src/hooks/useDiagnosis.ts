@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import type {
   DiagnosisRecord,
   HistorySummary,
@@ -8,93 +8,66 @@ import type {
   UseDiagnosisHistoryParams,
 } from "@/types/diagnosis";
 import { DiagnosisService } from "@/services/diagnosisService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useDiagnosis = (diagnosisId?: string): DiagnosisHookResult => {
-  const [data, setData] = useState<DiagnosisRecord | null>(null);
-  const [isLoading, setIsLoading] = useState(!!diagnosisId);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery<DiagnosisRecord>({
+    queryKey: ["diagnosis", diagnosisId],
+    queryFn: () => DiagnosisService.fetchById(diagnosisId!),
+    enabled: !!diagnosisId,
+  });
 
-  useEffect(() => {
-    if (!diagnosisId) {
-      setIsLoading(false);
-      return;
-    }
-
-    const load = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const record = await DiagnosisService.fetchById(diagnosisId);
-        setData(record);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load diagnosis"
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    load();
-  }, [diagnosisId]);
-
-  return { data, isLoading, error };
+  return {
+    data: query.data ?? null,
+    isLoading: query.isLoading,
+    error: query.error ? (query.error as Error).message : null,
+  };
 };
 
 export const useDiagnosisHistory = (
   params: UseDiagnosisHistoryParams
 ): HistoryHookResult & {
-  page?: number;
-  setPage?: (p: number) => void;
-  search?: string;
-  setSearch?: (s: string) => void;
-  total?: number;
+  page: number;
+  setPage: (p: number) => void;
+  total: number;
 } => {
-  const { userId, pageSize = 10, fromDate, toDate } = params;
-
-  const [data, setData] = useState<HistorySummary[]>([]);
+  const { userId, pageSize = 10, fromDate, toDate, search } = params;
   const [page, setPage] = useState(params.page ?? 1);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchHistory = useCallback(async () => {
-    if (!userId) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const result = await DiagnosisService.fetchSummaries({
-        userId,
+  const query = useQuery<{
+    data: HistorySummary[];
+    total: number;
+  }>({
+    queryKey: [
+      "diagnosis-history",
+      userId,
+      page,
+      pageSize,
+      search,
+      fromDate,
+      toDate,
+    ],
+    queryFn: () =>
+      DiagnosisService.fetchSummaries({
+        userId: userId!,
         page,
         pageSize,
-        search: params.search,
+        search,
         fromDate,
         toDate,
-      });
-
-      setData(result.data);
-      setTotal(result.total);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load history");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId, page, pageSize, params.search, fromDate, toDate]);
-
-  useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
+      }),
+    enabled: !!userId,
+    keepPreviousData: true,
+  });
 
   return {
-    data,
-    isLoading,
-    error,
-    refetch: fetchHistory,
+    data: query.data?.data ?? [],
+    total: query.data?.total ?? 0,
+    isLoading: query.isLoading,
+    error: query.error ? (query.error as Error).message : null,
+    refetch: query.refetch,
     page,
     setPage,
-    total,
   };
 };
 
@@ -105,57 +78,54 @@ function isValidDiagnosis(aiData: any): boolean {
 }
 
 export const useCreateDiagnosis = (): CreateDiagnosisHookResult => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const create = useCallback(
-    async (userId: string, description: string, aiResponse: any) => {
-      if (!userId || !description) return;
-
+  const mutation = useMutation({
+    mutationFn: async ({
+      userId,
+      description,
+      aiResponse,
+    }: {
+      userId: string;
+      description: string;
+      aiResponse: any;
+    }) => {
       if (!isValidDiagnosis(aiResponse)) {
         console.warn("Skipped saving invalid diagnosis");
         return;
       }
-
-      setIsSubmitting(true);
-      setError(null);
-
-      try {
-        return await DiagnosisService.create(userId, description, aiResponse);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to create diagnosis"
-        );
-        throw err;
-      } finally {
-        setIsSubmitting(false);
-      }
+      return DiagnosisService.create(userId, description, aiResponse);
     },
-    []
-  );
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["diagnosis-history", variables.userId],
+      });
+    },
+  });
 
-  return { isSubmitting, error, create };
+  return {
+    isSubmitting: mutation.isPending,
+    error: mutation.error ? (mutation.error as Error).message : null,
+    create: (userId, description, aiResponse) =>
+      mutation.mutateAsync({ userId, description, aiResponse }),
+  };
 };
 
 export const useDeleteDiagnosis = () => {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const remove = useCallback(async (id: string) => {
-    setIsDeleting(true);
-    setError(null);
+  const mutation = useMutation({
+    mutationFn: (id: string) => DiagnosisService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["diagnosis-history"],
+      });
+    },
+  });
 
-    try {
-      await DiagnosisService.delete(id);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to delete diagnosis"
-      );
-      throw err;
-    } finally {
-      setIsDeleting(false);
-    }
-  }, []);
-
-  return { isDeleting, error, remove };
+  return {
+    isDeleting: mutation.isPending,
+    error: mutation.error ? (mutation.error as Error).message : null,
+    remove: mutation.mutateAsync,
+  };
 };

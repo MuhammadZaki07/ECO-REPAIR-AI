@@ -1,98 +1,92 @@
-import { useCallback, useEffect, useState } from "react";
+import { useMemo } from "react";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { VoucherService } from "@/services/VoucherService";
 import { useEcoWallet } from "./useEcoWallet";
 import type { EcoVoucher } from "@/types/voucher";
 
 export const useVouchers = (
   userId?: string,
-  search?: string,
+  search = "",
   page = 1,
   limit = 9
 ) => {
-  const [vouchers, setVouchers] = useState<EcoVoucher[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [claimingId, setClaimingId] = useState<string | null>(null);
-
+  const queryClient = useQueryClient();
   const { balance } = useEcoWallet(userId);
 
-  const fetchVouchers = useCallback(async () => {
-    if (!userId) return;
-    setLoading(true);
+  const vouchersQuery = useQuery<{
+    data: EcoVoucher[];
+    total: number;
+  }>({
+    queryKey: ["vouchers", userId, search, page, limit],
+    queryFn: async () => {
+      const [{ data, total }, claims] = await Promise.all([
+        VoucherService.getActiveVouchers({ search, page, limit }),
+        VoucherService.getUserVoucherClaims(userId!),
+      ]);
 
-    const [{ data, total }, claims] = await Promise.all([
-      VoucherService.getActiveVouchers({
-        search,
-        page,
-        limit,
-      }),
-      VoucherService.getUserVoucherClaims(userId),
-    ]);
+      const merged = data.map((v) => {
+        const claim = claims.find((c) => c.voucher_id === v.id);
+        return claim
+          ? {
+              ...v,
+              claimed_by: userId,
+              claimed_at: claim.claimed_at,
+              voucher_code: claim.voucher_code,
+            }
+          : v;
+      });
 
-    const merged = data.map((v) => {
-      const claim = claims.find((c) => c.voucher_id === v.id);
-      return claim
-        ? {
-            ...v,
-            claimed_by: userId,
-            claimed_at: claim.claimed_at,
-            voucher_code: claim.voucher_code,
-          }
-        : v;
-    });
-
-    setVouchers(merged);
-    setTotal(total);
-    setLoading(false);
-  }, [userId, search, page, limit]);
-
-  const claimVoucher = useCallback(
-    async (voucherId: string) => {
-      if (!userId) throw new Error("User not logged in");
-
-      setClaimingId(voucherId);
-
-      try {
-        const result = await VoucherService.claimVoucher(userId, voucherId);
-
-        setVouchers((prev) =>
-          prev.map((v) =>
-            v.id === voucherId
-              ? {
-                  ...v,
-                  claimed_by: userId,
-                  voucher_code: result.voucher_code,
-                }
-              : v
-          )
-        );
-
-        return result;
-      } finally {
-        setClaimingId(null);
-      }
+      return { data: merged, total };
     },
-    [userId]
-  );
+    enabled: !!userId,
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 2,
+  });
+
+  const claimMutation = useMutation({
+    mutationFn: (voucherId: string) => {
+      if (!userId) throw new Error("User not logged in");
+      return VoucherService.claimVoucher(userId, voucherId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["vouchers"] });
+      queryClient.invalidateQueries({ queryKey: ["eco-wallet", userId] });
+    },
+  });
+
+  const vouchers = vouchersQuery.data?.data ?? [];
 
   const hasClaimed = (voucherId: string) =>
-    vouchers.some((v) => v.id === voucherId && v.claimed_by === userId);
+    vouchers.some(
+      (v) => v.id === voucherId && v.claimed_by === userId
+    );
 
   const canClaim = (cost: number, voucherId: string) =>
     balance >= cost && !hasClaimed(voucherId);
 
-  useEffect(() => {
-    fetchVouchers();
-  }, [fetchVouchers]);
+  const pages = useMemo(() => {
+    const total = vouchersQuery.data?.total ?? 0;
+    return Math.max(1, Math.ceil(total / limit));
+  }, [vouchersQuery.data?.total, limit]);
 
   return {
     vouchers,
-    loading,
-    claimingId,
-    claimVoucher,
+    loading: vouchersQuery.isLoading,
+    claimingId: claimMutation.isPending
+      ? claimMutation.variables ?? null
+      : null,
+
+    claimVoucher: (voucherId: string) =>
+      claimMutation.mutateAsync(voucherId),
+
     canClaim,
-    total,
-    pages: Math.ceil(total / limit),
-    isEmpty: !loading && vouchers.length === 0,
+    total: vouchersQuery.data?.total ?? 0,
+    pages,
+    isEmpty:
+      !vouchersQuery.isLoading && vouchers.length === 0,
   };
 };

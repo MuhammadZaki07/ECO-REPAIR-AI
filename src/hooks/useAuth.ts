@@ -1,63 +1,44 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { AuthService } from "@/services/AuthService";
 
 export const useAuth = () => {
   const { user, clearUser } = useAuthContext();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const signInWithEmail = async (email: string) => {
-    try {
-      setLoading(true);
-      setError(null);
+  const signInWithEmail = useMutation({
+    mutationFn: (email: string) =>
+      AuthService.signInWithEmail(email),
+  });
 
-      await AuthService.signInWithEmail(email);
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const signInWithGoogle = useMutation({
+    mutationFn: () =>
+      AuthService.signInWithGoogle(),
+  });
 
-  const signInWithGoogle = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      await AuthService.signInWithGoogle();
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const logout = useMutation({
+    mutationFn: async () => {
       await AuthService.logout();
 
-      // clear local cache & context
-      if (user) localStorage.removeItem(`userData-${user.id}`);
+      if (user) {
+        localStorage.removeItem(`userData-${user.id}`);
+      }
       clearUser();
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
   return {
-    signInWithEmail,
-    signInWithGoogle,
-    logout,
-    loading,
-    error,
+    signInWithEmail: signInWithEmail.mutateAsync,
+    signInWithGoogle: signInWithGoogle.mutateAsync,
+    logout: logout.mutateAsync,
+
+    loading:
+      signInWithEmail.isPending ||
+      signInWithGoogle.isPending ||
+      logout.isPending,
+
+    error:
+      signInWithEmail.error ||
+      signInWithGoogle.error ||
+      logout.error,
   };
 };

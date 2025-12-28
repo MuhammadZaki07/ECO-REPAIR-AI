@@ -7,14 +7,17 @@ export const useGuides = (keyword?: string) => {
     queryFn: async () => {
       if (!keyword) return [];
 
-      let query = supabase.from("guides").select("*");
-      query = query.or(`title.ilike.%${keyword}%,category.ilike.%${keyword}%`);
-
-      const { data, error } = await query.limit(3);
+      const { data, error } = await supabase
+        .from("guides")
+        .select("*")
+        .or(`title.ilike.%${keyword}%,category.ilike.%${keyword}%`)
+        .limit(3);
 
       if (error) throw error;
-      return data || [];
+      return data ?? [];
     },
     enabled: !!keyword,
+    staleTime: 1000 * 60 * 5,
+    keepPreviousData: true,
   });
 };

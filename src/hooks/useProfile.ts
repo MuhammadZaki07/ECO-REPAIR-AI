@@ -1,5 +1,5 @@
-// hooks/useProfile.ts
 import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileService } from "@/services/ProfileService";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -7,13 +7,10 @@ import { useToast } from "@/hooks/use-toast";
 export const useProfile = () => {
   const { user, userData } = useAuthContext();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const [bio, setBio] = useState("");
   const [location, setLocation] = useState("");
-
-  const [saving, setSaving] = useState(false);
-  const [exporting, setExporting] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (userData) {
@@ -22,36 +19,28 @@ export const useProfile = () => {
     }
   }, [userData]);
 
-  const saveProfile = async () => {
-    if (!user) return;
-    setSaving(true);
-
-    try {
-      await ProfileService.updateProfile(user.id, { bio, location });
-
+  const saveProfileMutation = useMutation({
+    mutationFn: () =>
+      ProfileService.updateProfile(user!.id, { bio, location }),
+    onSuccess: () => {
       toast({
         title: "Profile updated",
         description: "Your profile has been saved",
       });
-    } catch (err) {
-      console.error(err);
+      queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+    },
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Update failed",
         description: "Unable to save profile",
       });
-    } finally {
-      setSaving(false);
-    }
-  };
+    },
+  });
 
-  const exportData = async () => {
-    if (!userData) return;
-    setExporting(true);
-
-    try {
-      const data = await ProfileService.exportUserData(userData.id);
-
+  const exportDataMutation = useMutation({
+    mutationFn: () => ProfileService.exportUserData(userData!.id),
+    onSuccess: (data) => {
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
       });
@@ -66,38 +55,33 @@ export const useProfile = () => {
         title: "Export success",
         description: "Your data has been downloaded",
       });
-    } catch (err) {
-      console.error(err);
+    },
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Export failed",
         description: "Unable to export your data",
       });
-    } finally {
-      setExporting(false);
-    }
-  };
+    },
+  });
 
-  const deleteAccount = async () => {
-    setDeleting(true);
-    try {
-      await ProfileService.deleteAccount();
+  const deleteAccountMutation = useMutation({
+    mutationFn: ProfileService.deleteAccount,
+    onSuccess: () => {
       toast({
         title: "Account deleted",
         description: "Goodbye 👋",
       });
       window.location.href = "/";
-    } catch (err) {
-      console.error(err);
+    },
+    onError: () => {
       toast({
         variant: "destructive",
         title: "Delete failed",
         description: "Unable to delete account",
       });
-    } finally {
-      setDeleting(false);
-    }
-  };
+    },
+  });
 
   return {
     bio,
@@ -105,12 +89,12 @@ export const useProfile = () => {
     location,
     setLocation,
 
-    saveProfile,
-    exportData,
-    deleteAccount,
+    saveProfile: saveProfileMutation.mutate,
+    exportData: exportDataMutation.mutate,
+    deleteAccount: deleteAccountMutation.mutate,
 
-    saving,
-    exporting,
-    deleting,
+    saving: saveProfileMutation.isPending,
+    exporting: exportDataMutation.isPending,
+    deleting: deleteAccountMutation.isPending,
   };
 };

@@ -1,43 +1,48 @@
 import { ENV } from "@/env";
 import { LeaderboardService } from "@/services/leaderboardService";
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export const useLeaderboardTable = () => {
-  const [data, setData] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<"xp" | "username">("xp");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [search, setSearch] = useState("");
-  const [pageSize] = useState(ENV.PAGE_SIZE || 6);
 
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await LeaderboardService.getLeaderboardTable({
+  const pageSize = ENV.PAGE_SIZE || 6;
+
+  const queryKey = [
+    "leaderboard-table",
+    page,
+    pageSize,
+    sortBy,
+    order,
+    search,
+  ];
+
+  const {
+    data,
+    isLoading: loading,
+    refetch,
+  } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      return LeaderboardService.getLeaderboardTable({
         page,
         pageSize,
         sortBy,
         order,
         search,
       });
+    },
+    keepPreviousData: true,
+  });
 
-      setData(res.data);
-      setTotal(res.total);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, pageSize, sortBy, order, search]);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  const totalPages = Math.ceil(total / pageSize);
+  const total = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return {
-    data,
+    data: data?.data ?? [],
     loading,
 
     page,
@@ -52,6 +57,6 @@ export const useLeaderboardTable = () => {
     search,
     setSearch,
 
-    refetch: fetch,
+    refetch,
   };
 };

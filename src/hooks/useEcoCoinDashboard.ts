@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getActiveDonationCampaigns,
   type DonationCampaignSummary,
@@ -6,29 +6,30 @@ import {
 import { donateToCampaign } from "./donationTransaction";
 
 export function useEcoCoinDashboard() {
-  const [donationCampaigns, setDonationCampaigns] = useState<
-    DonationCampaignSummary[]
-  >([]);
-  const [loadingDonation, setLoadingDonation] = useState(true);
+  const queryClient = useQueryClient();
 
-  const fetchDonationCampaigns = useCallback(async () => {
-    setLoadingDonation(true);
-    const data = await getActiveDonationCampaigns();
-    setDonationCampaigns(data);
-    setLoadingDonation(false);
-  }, []);
+  const {
+    data: donationCampaigns = [],
+    isLoading: loadingDonation,
+  } = useQuery<DonationCampaignSummary[]>({
+    queryKey: ["donation-campaigns", "active"],
+    queryFn: getActiveDonationCampaigns,
+  });
 
-  const donate = useCallback(
-    async (campaignId: string, ecoCoin: number) => {
-      await donateToCampaign(campaignId, ecoCoin);
-      await fetchDonationCampaigns();
+  const { mutateAsync: donate } = useMutation({
+    mutationFn: ({
+      campaignId,
+      ecoCoin,
+    }: {
+      campaignId: string;
+      ecoCoin: number;
+    }) => donateToCampaign(campaignId, ecoCoin),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["donation-campaigns", "active"],
+      });
     },
-    [fetchDonationCampaigns]
-  );
-
-  useEffect(() => {
-    fetchDonationCampaigns();
-  }, [fetchDonationCampaigns]);
+  });
 
   return {
     donationCampaigns,

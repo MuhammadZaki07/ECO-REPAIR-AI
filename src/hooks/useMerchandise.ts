@@ -1,110 +1,120 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useMemo } from "react";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { MerchandiseService } from "@/services/MerchandiseService";
 import type { EcoMerch, MerchOrder } from "@/types/merchandise";
 import { ENV } from "@/env";
 
-export const useMerch = (search: string = "", page: number = 1) => {
-  const [merch, setMerch] = useState<EcoMerch[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchMerch = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, total: totalItems } = await MerchandiseService.getAllMerch({
+export const useMerch = (search = "", page = 1) => {
+  const merchQuery = useQuery<{
+    data: EcoMerch[];
+    total: number;
+  }>({
+    queryKey: ["merch", search, page],
+    queryFn: () =>
+      MerchandiseService.getAllMerch({
         page,
         limit: ENV.PAGE_SIZE,
         search,
-      });
-      setMerch(data);
-      setTotal(totalItems);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, search]);
+      }),
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 2,
+  });
 
-  useEffect(() => {
-    fetchMerch();
-  }, [fetchMerch]);
-
-  const paginated = useMemo(() => merch, [merch]);
+  const pages = useMemo(() => {
+    const total = merchQuery.data?.total ?? 0;
+    return Math.max(1, Math.ceil(total / ENV.PAGE_SIZE));
+  }, [merchQuery.data?.total]);
 
   return {
-    merch: paginated,
-    loading,
-    error,
-    refetch: fetchMerch,
-    total,
-    pages: Math.max(1, Math.ceil(total / ENV.PAGE_SIZE)),
-    isEmpty: !loading && merch.length === 0,
+    merch: merchQuery.data?.data ?? [],
+    loading: merchQuery.isLoading,
+    error: merchQuery.error as Error | null,
+    refetch: merchQuery.refetch,
+    total: merchQuery.data?.total ?? 0,
+    pages,
+    isEmpty: !merchQuery.isLoading && (merchQuery.data?.data.length ?? 0) === 0,
   };
 };
 
-export const useMerchOrders = (userId?: string, search: string = "", page: number = 1) => {
-  const [orders, setOrders] = useState<MerchOrder[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+export const useMerchOrders = (
+  userId?: string,
+  search = "",
+  page = 1
+) => {
+  const queryClient = useQueryClient();
 
-  const fetchOrders = useCallback(async () => {
-    if (!userId) {
-      setOrders([]);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const { data, total: totalItems } = await MerchandiseService.getMyOrders(userId, {
+  const ordersQuery = useQuery<{
+    data: MerchOrder[];
+    total: number;
+  }>({
+    queryKey: ["merch-orders", userId, search, page],
+    queryFn: () =>
+      MerchandiseService.getMyOrders(userId!, {
         page,
         limit: ENV.PAGE_SIZE,
         search,
-      });
-      setOrders(data);
-      setTotal(totalItems);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, page, search]);
+      }),
+    enabled: !!userId,
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 2,
+  });
 
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
-
-  const orderMerch = useCallback(
-    async (merch_id: string, address: string, note?: string) => {
+  const orderMutation = useMutation({
+    mutationFn: ({
+      merch_id,
+      address,
+      note,
+    }: {
+      merch_id: string;
+      address: string;
+      note?: string;
+    }) => {
       if (!userId) throw new Error("User not logged in");
-      const order = await MerchandiseService.createOrder({ merch_id, user_id: userId, address, note });
-      setOrders((prev) => [order, ...prev]);
-      return order;
+      return MerchandiseService.createOrder({
+        merch_id,
+        user_id: userId,
+        address,
+        note,
+      });
     },
-    [userId]
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["merch-orders"] });
+    },
+  });
 
-  const refundOrder = useCallback(
-    async (orderId: string) => {
-      await MerchandiseService.requestRefund(orderId);
-      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "refunded" } : o)));
+  const refundMutation = useMutation({
+    mutationFn: (orderId: string) =>
+      MerchandiseService.requestRefund(orderId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["merch-orders"] });
     },
-    []
-  );
+  });
+
+  const pages = useMemo(() => {
+    const total = ordersQuery.data?.total ?? 0;
+    return Math.max(1, Math.ceil(total / ENV.PAGE_SIZE));
+  }, [ordersQuery.data?.total]);
 
   return {
-    orders,
-    loading,
-    error,
-    refetch: fetchOrders,
-    orderMerch,
-    refundOrder,
-    total,
-    pages: Math.max(1, Math.ceil(total / ENV.PAGE_SIZE)),
-    isEmpty: !loading && orders.length === 0,
+    orders: ordersQuery.data?.data ?? [],
+    loading: ordersQuery.isLoading,
+    error: ordersQuery.error as Error | null,
+    refetch: ordersQuery.refetch,
+
+    orderMerch: (merch_id: string, address: string, note?: string) =>
+      orderMutation.mutateAsync({ merch_id, address, note }),
+
+    refundOrder: (orderId: string) =>
+      refundMutation.mutateAsync(orderId),
+
+    total: ordersQuery.data?.total ?? 0,
+    pages,
+    isEmpty:
+      !ordersQuery.isLoading &&
+      (ordersQuery.data?.data.length ?? 0) === 0,
   };
 };

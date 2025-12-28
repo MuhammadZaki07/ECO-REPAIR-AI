@@ -1,108 +1,118 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Forum } from "@/types/forum";
+import { ForumService } from "@/services/forumService";
 import { supabase } from "@/lib/supabase/client";
 import type { SerializedEditorState } from "lexical";
-import { ForumService } from "@/services/forumService";
+import { ENV } from "@/env";
 
 export const useForums = (
   tab: "all" | "my" | "trending" | "solved",
   userId?: string
 ) => {
-  const [forums, setForums] = useState<Forum[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
-  const [search, setSearch] = useState("");
-  const [total, setTotal] = useState(0);
+  const queryClient = useQueryClient();
 
-  const fetchForums = useCallback(async () => {
-    if (tab === "my" && !userId) return;
-    setLoading(true);
-    try {
-      let result: { data: Forum[]; total: number };
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const pageSize = ENV.PAGE_SIZE;
+
+  const forumsQuery = useQuery({
+    queryKey: ["forums", tab, page, search, userId],
+    queryFn: async () => {
       switch (tab) {
         case "all":
-          result = await ForumService.getForums({ page, pageSize, search });
-          break;
+          return ForumService.getForums({ page, pageSize, search });
         case "my":
-          result = await ForumService.getForumsByUser(userId!, { page, pageSize, search });
-          break;
+          if (!userId) return { data: [], total: 0 };
+          return ForumService.getForumsByUser(userId, {
+            page,
+            pageSize,
+            search,
+          });
         case "trending":
-          result = await ForumService.getTrendingForums({ page, pageSize });
-          break;
+          return ForumService.getTrendingForums({ page, pageSize });
         case "solved":
-          result = await ForumService.getSolvedForums({ page, pageSize });
-          break;
+          return ForumService.getSolvedForums({ page, pageSize });
       }
-      setForums(result.data);
-      setTotal(result.total);
-      setError(null);
-    } catch (err: any) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [tab, userId, page, pageSize, search]);
+    },
+    keepPreviousData: true,
+    enabled: tab !== "my" || !!userId,
+  });
 
-  const createForum = useCallback(
-    async (
-      userId: string,
-      title: string,
-      category_id: number | string,
-      editorState: SerializedEditorState
-    ) => {
-      const forum = await ForumService.createForum(
+  const createForum = useMutation({
+    mutationFn: ({
+      userId,
+      title,
+      category_id,
+      editorState,
+    }: {
+      userId: string;
+      title: string;
+      category_id: number | string;
+      editorState: SerializedEditorState;
+    }) =>
+      ForumService.createForum(
         userId,
         title.trim(),
         category_id,
         editorState
-      );
-      setForums((prev) => [forum, ...prev]);
-      return forum;
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
     },
-    []
-  );
+  });
 
-  const updateForum = useCallback(
-    async (
-      forumId: string,
-      title: string,
-      category_id: number | string,
-      editorState: SerializedEditorState
-    ) => {
-      const updated = await ForumService.updateForum(
+  const updateForum = useMutation({
+    mutationFn: ({
+      forumId,
+      title,
+      category_id,
+      editorState,
+    }: {
+      forumId: string;
+      title: string;
+      category_id: number | string;
+      editorState: SerializedEditorState;
+    }) =>
+      ForumService.updateForum(
         forumId,
         title.trim(),
         category_id,
         editorState
-      );
-      setForums((prev) => prev.map((f) => (f.id === forumId ? updated : f)));
-      return updated;
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
     },
-    []
-  );
+  });
 
-  const deleteForum = useCallback(async (forumId: string) => {
-    await ForumService.deleteForum(forumId);
-    setForums((prev) => prev.filter((f) => f.id !== forumId));
-  }, []);
+  const deleteForum = useMutation({
+    mutationFn: (forumId: string) =>
+      ForumService.deleteForum(forumId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forums"] });
+    },
+  });
 
   useEffect(() => {
-    fetchForums();
-
     const replySub = supabase
       .channel("forum_replies")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "forum_replies" },
         (payload) => {
-          setForums((prev) =>
-            prev.map((f) =>
-              f.id === payload.new.forum_id
-                ? { ...f, replies_count: f.replies_count + 1 }
-                : f
-            )
+          queryClient.setQueriesData(
+            { queryKey: ["forums"] },
+            (old: any) => {
+              if (!old?.data) return old;
+              return {
+                ...old,
+                data: old.data.map((f: Forum) =>
+                  f.id === payload.new.forum_id
+                    ? { ...f, replies_count: f.replies_count + 1 }
+                    : f
+                ),
+              };
+            }
           );
         }
       )
@@ -114,12 +124,19 @@ export const useForums = (
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "forum_likes" },
         (payload) => {
-          setForums((prev) =>
-            prev.map((f) =>
-              f.id === payload.new.forum_id
-                ? { ...f, likes_count: f.likes_count + 1 }
-                : f
-            )
+          queryClient.setQueriesData(
+            { queryKey: ["forums"] },
+            (old: any) => {
+              if (!old?.data) return old;
+              return {
+                ...old,
+                data: old.data.map((f: Forum) =>
+                  f.id === payload.new.forum_id
+                    ? { ...f, likes_count: f.likes_count + 1 }
+                    : f
+                ),
+              };
+            }
           );
         }
       )
@@ -129,21 +146,24 @@ export const useForums = (
       supabase.removeChannel(replySub);
       supabase.removeChannel(likeSub);
     };
-  }, [fetchForums]);
+  }, [queryClient]);
 
   return {
-    forums,
-    loading,
-    error,
+    forums: forumsQuery.data?.data ?? [],
+    total: forumsQuery.data?.total ?? 0,
+    loading: forumsQuery.isLoading,
+    error: forumsQuery.error,
+
     page,
     pageSize,
-    total,
     search,
     setPage,
     setSearch,
-    refetch: fetchForums,
-    createForum,
-    updateForum,
-    deleteForum,
+
+    refetch: forumsQuery.refetch,
+
+    createForum: createForum.mutateAsync,
+    updateForum: updateForum.mutateAsync,
+    deleteForum: deleteForum.mutateAsync,
   };
 };

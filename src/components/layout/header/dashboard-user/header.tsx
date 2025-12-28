@@ -1,9 +1,8 @@
 import { cn } from "@/lib/utils";
 import { BreadcrumbComponent } from "@/components/breadcrumb/BreadcrumbComponent";
-import { SidebarOpen, Bell, Settings, Search } from "lucide-react";
+import { SidebarOpen } from "lucide-react";
 import { ModeToggle } from "../theme-switch";
 import { ProfileMenu } from "@/components/ui/ProfileMenu";
-import { Button } from "@/components/ui/button";
 import GitHubButton from "@/components/GitHubButton";
 
 interface HeaderProps {

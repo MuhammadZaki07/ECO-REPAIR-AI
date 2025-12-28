@@ -1,39 +1,23 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { EcoWalletService } from "@/services/EcoWalletService";
-import { useCallback, useEffect, useState } from "react";
 
 export const useEcoWallet = (userId?: string) => {
-  const [balance, setBalance] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  
+  const queryClient = useQueryClient();
 
-  const fetchWallet = useCallback(async () => {
-    if (!userId) {
-      setBalance(0);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const wallet = await EcoWalletService.getWallet(userId);
-      setBalance(wallet.balance);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchWallet();
-  }, []);
+  const query = useQuery({
+    queryKey: ["eco-wallet", userId],
+    queryFn: () => EcoWalletService.getWallet(userId!),
+    enabled: !!userId,
+    staleTime: 1000 * 30,
+  });
 
   return {
-    balance,
-    loading,
-    error,
-    refetch: fetchWallet,
+    balance: query.data?.balance ?? 0,
+    loading: query.isLoading,
+    error: query.error as Error | null,
+    refetch: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["eco-wallet", userId],
+      }),
   };
 };
