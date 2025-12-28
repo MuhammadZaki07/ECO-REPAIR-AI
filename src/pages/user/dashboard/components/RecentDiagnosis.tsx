@@ -4,21 +4,13 @@ import { ErrorState } from "@/components/state/ErrorState";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ENV } from "@/env";
-import { getAuthorInitial } from "@/helpers/getAuthorInitial";
-import { getAuthorName } from "@/helpers/getAuthorName";
 import { lexicalToHtml } from "@/helpers/lexicalToHtml";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useForums } from "@/hooks/useForums";
+import { getInitial } from "@/utils/getInitial";
 import { CheckCircle2, MessageSquare, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -106,18 +98,18 @@ export default function ForumCard() {
                       {forum?.author?.avatar_url ? (
                         <AvatarImage
                           src={forum.author.avatar_url}
-                          alt={getAuthorName(forum.author)}
+                          alt={getInitial(forum?.author?.username)}
                           className="object-cover w-full h-full"
                           loading="lazy"
                         />
                       ) : (
                         <AvatarFallback className="text-[10px] font-semibold bg-muted">
-                          {getAuthorInitial(forum.author)}
+                          {getInitial(forum?.author?.username)}
                         </AvatarFallback>
                       )}
                     </Avatar>
                     <span className="text-xs font-semibold">
-                      {getAuthorName(forum.author)}
+                      {forum?.author?.username}
                     </span>
                   </div>
 

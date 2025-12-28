@@ -1,66 +1,63 @@
 import { supabase } from "@/lib/supabase/client";
-
-export interface Category {
-  id: number;
-  name: string;
-}
+import type { Category } from "@/types/category";
 
 export class CategoryService {
-  static async getCategories(): Promise<Category[]> {
-    const { data, error } = await supabase
+  static async getCategories({
+    page = 1,
+    pageSize = 6,
+    search = "",
+  }: { page?: number; pageSize?: number; search?: string } = {}): Promise<{
+    data: Category[];
+    total: number;
+  }> {
+    let query = supabase
       .from("categories")
-      .select("*")
-      .order("name", { ascending: true });
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
 
-    if (error) {
-      console.error("[CategoryService.getCategories]", error);
-      throw error;
-    }
+    if (search) query = query.ilike("name", `%${search}%`);
 
-    return data ?? [];
-  }
+    const { data, error, count } = await query;
+    if (error) throw new Error(error.message);
 
-  static async getCategoryById(id: number): Promise<Category> {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      console.error("[CategoryService.getCategoryById]", error);
-      throw error;
-    }
-
-    return data as Category;
+    return { data: data ?? [], total: count ?? 0 };
   }
 
   static async createCategory(name: string): Promise<Category> {
+    const trimmedName = name.trim();
+    if (!trimmedName) throw new Error("Category name cannot be empty");
+
     const { data, error } = await supabase
       .from("categories")
-      .insert({ name: name.trim() })
+      .insert({ name: trimmedName })
       .select()
       .single();
 
     if (error) {
-      console.error("[CategoryService.createCategory]", error);
-      throw error;
+      if (error.code === "23505")
+        throw new Error("Category name already exists");
+      throw new Error(error.message);
     }
 
     return data as Category;
   }
 
   static async updateCategory(id: number, name: string): Promise<Category> {
+    const trimmedName = name.trim();
+    if (!trimmedName) throw new Error("Category name cannot be empty");
+
     const { data, error } = await supabase
       .from("categories")
-      .update({ name: name.trim() })
+      .update({ name: trimmedName })
       .eq("id", id)
       .select()
       .single();
 
     if (error) {
-      console.error("[CategoryService.updateCategory]", error);
-      throw error;
+      if (error.code === "23505")
+        throw new Error("Category name already exists");
+      throw new Error(error.message);
     }
 
     return data as Category;
@@ -68,10 +65,10 @@ export class CategoryService {
 
   static async deleteCategory(id: number): Promise<void> {
     const { error } = await supabase.from("categories").delete().eq("id", id);
-
     if (error) {
-      console.error("[CategoryService.deleteCategory]", error);
-      throw error;
+      if (error.code === "23503")
+        throw new Error("Cannot delete category: it is used in forums");
+      throw new Error(error.message);
     }
   }
 }

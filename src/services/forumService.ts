@@ -12,7 +12,7 @@ const BASE_FORUM_SELECT = `
   created_at,
   updated_at,
   user_id,
-  category:categories!inner (
+  category:categories (
     id,
     name
   ),

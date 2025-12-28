@@ -10,6 +10,7 @@ import { Avatar } from "./Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { AuthService } from "@/services/AuthService";
+import { getInitial } from "@/utils/getInitial";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export function ProfileMenu() {
               />
             ) : (
               <AvatarFallback className="font-semibold">
-                {userData?.username?.[0]?.toUpperCase() || "U"}
+                {getInitial(userData?.username)}
               </AvatarFallback>
             )}
           </Avatar>

@@ -36,11 +36,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { getAuthorName } from "@/helpers/getAuthorName";
-import { getAuthorInitial } from "@/helpers/getAuthorInitial";
 import LeaderboardPanel from "./LeaderboardPanel";
 import { ENV } from "@/env";
 import { useAuthContext } from "@/hooks/context/AuthContext";
+import { getInitial } from "@/utils/getInitial";
 
 function ForumPostList({
   onReady,
@@ -158,7 +157,7 @@ function ForumPostList({
           <div className="flex flex-col gap-3">
             {forumsHook.forums.map((forum) => (
               <Card key={forum.id} className="border shadow-none">
-                <CardContent className="p-5">
+                <CardContent>
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex gap-2">
                       <Badge variant="outline" className="rounded-md font-medium">
@@ -214,18 +213,18 @@ function ForumPostList({
                         {forum?.author?.avatar_url ? (
                           <AvatarImage
                             src={forum.author.avatar_url}
-                            alt={getAuthorName(forum.author)}
+                            alt={getInitial(forum?.author?.username)}
                             className="object-cover w-full h-full"
                             loading="lazy"
                           />
                         ) : (
                           <AvatarFallback className="text-[10px] font-semibold bg-muted">
-                            {getAuthorInitial(forum.author)}
+                            {getInitial(forum?.author?.username)}
                           </AvatarFallback>
                         )}
                       </Avatar>
                       <span className="text-xs font-semibold">
-                        {getAuthorName(forum.author)}
+                        {forum?.author?.username}
                       </span>
                     </div>
 

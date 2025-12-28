@@ -52,6 +52,7 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 import { SidebarGroup, SidebarGroupLabel } from "../sidebar";
+import { getInitial } from "@/utils/getInitial";
 
 type MenuItem = {
   label: string;
@@ -242,7 +243,7 @@ export const Sidebar = () => {
                   />
                 ) : (
                   <AvatarFallback className="font-semibold">
-                    {userData?.username?.[0]?.toUpperCase() || "U"}
+                    {getInitial(userData?.username)}
                   </AvatarFallback>
                 )}
               </Avatar>
@@ -251,9 +252,7 @@ export const Sidebar = () => {
                 <>
                   <div className="flex-1 text-left">
                     <div className="text-sm font-medium">
-                      {user?.user_metadata?.name ||
-                        userData?.username?.[0]?.toUpperCase() ||
-                        "U"}
+                      {userData?.username}
                     </div>
                     <div className="text-xs text-gray-400">
                       {isVerified ? "Active" : "Not verified"}
