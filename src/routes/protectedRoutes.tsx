@@ -1,6 +1,6 @@
 import AuthGuard from "@/layouts/guards/AuthGuard";
 import UserLayout from "@/layouts/UserLayout";
-import Dashboard from "@/pages/admin/Dashboard";
+import Dashboard from "@/pages/admin/dashboard";
 import AuthCallback from "@/pages/auth/callback";
 import ScanPage from "../pages/user/chat-ai/ScanPage";
 import type { RouteObject } from "react-router-dom";
@@ -15,12 +15,15 @@ import AdminLayout from "@/layouts/AdminLayouts";
 import Leaderboard from "@/pages/user/leaderboard";
 import DonationDetailPage from "@/pages/user/Eco-coints/DonationDetailPage";
 import { ENV } from "@/env";
+import CategoryPage from "@/pages/admin/categories";
+import LeaderboardPage from "@/pages/admin/leaderboards";
+import UsersPage from "@/pages/admin/users";
 
 export const protectedRoutes: RouteObject[] = [
   {
     path: "/auth/callback",
     element: (
-      <AuthGuard >
+      <AuthGuard>
         <AuthCallback />
       </AuthGuard>
     ),
@@ -43,8 +46,8 @@ export const protectedRoutes: RouteObject[] = [
       { path: "forums/:id", element: <ForumDetailPage /> },
       { path: "ecocoin", element: <EcoCoints /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "leaderboard", element: <Leaderboard   /> },
-      { path: "ecocoin/donation/:id", element: <DonationDetailPage   /> },
+      { path: "leaderboard", element: <Leaderboard /> },
+      { path: "ecocoin/donation/:id", element: <DonationDetailPage /> },
     ],
   },
 
@@ -58,6 +61,11 @@ export const protectedRoutes: RouteObject[] = [
     children: [
       { index: true, element: <Dashboard /> },
       { path: "dashboard", element: <Dashboard /> },
+      { path: "categories", element: <CategoryPage /> },
+      { path: "leaderboard", element: <LeaderboardPage /> },
+      { path: "community", element: <LeaderboardPage /> },
+      { path: "users-all", element: <UsersPage /> },
+      { path: "admin-all", element: <UsersPage /> },
     ],
   },
 ];

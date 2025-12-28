@@ -7,7 +7,7 @@ interface SidebarItemProps {
   onClick?: () => void;
   active?: boolean;
   mini?: boolean;
-  badge?: string;
+  badge?: string ;
 }
 
 export const SidebarItem: React.FC<SidebarItemProps> = ({

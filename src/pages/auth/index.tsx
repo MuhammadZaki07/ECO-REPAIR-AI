@@ -5,26 +5,25 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, Loader, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { emailOnlySchema } from "@/schemas/authSchemas";
 import { Trans, useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
-import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function AuthPage() {
-  const { toast } = useToast();
   const { t } = useTranslation("auth");
-  const words = t("welcomeEffectText");
+  const { toast } = useToast();
+  const { signInWithEmail, signInWithGoogle, loading } = useAuth();
+
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-  const [googleLoading, setGoogleLoading] = useState(false);
+  const from = location.state?.from?.pathname;
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isSubmitted },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(emailOnlySchema),
     mode: "onChange",
@@ -32,20 +31,12 @@ export default function AuthPage() {
 
   const onSubmit = async (data: { email: string }) => {
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: data.email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (error) throw error;
-
+      await signInWithEmail(data.email);
       toast({
         title: t("checkEmailTitle"),
         description: t("checkEmailDesc"),
       });
-    } catch (err) {
+    } catch {
       toast({
         title: t("loginFailedTitle"),
         description: t("loginFailedDesc"),
@@ -56,19 +47,16 @@ export default function AuthPage() {
 
   const handleGoogle = async () => {
     try {
-      setGoogleLoading(true);
-
-      await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback?from=${from}`,
-        },
-      });
+      await signInWithGoogle(from);
     } catch {
-      setGoogleLoading(false);
+      toast({
+        title: t("loginFailedTitle"),
+        variant: "destructive",
+      });
     }
   };
 
+  const words = t("welcomeEffectText");
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
       <div className="flex items-center justify-center p-8">
@@ -83,10 +71,10 @@ export default function AuthPage() {
             <Button
               variant="outline"
               className="w-full justify-center gap-2 disabled:hover:cursor-progress"
-              disabled={googleLoading}
+              disabled={loading}
               onClick={handleGoogle}
             >
-              {googleLoading ? (
+              {loading ? (
                 <Loader className="animate-spin h-4 w-4" />
               ) : (
                 <svg
@@ -115,9 +103,7 @@ export default function AuthPage() {
                     id="email"
                     placeholder={t("emailPlaceholder")}
                     type="email"
-                    className={`peer ps-9 ${
-                      errors.email && isSubmitted ? "border-red-500" : ""
-                    }`}
+                    className={`ps-9 ${errors.email ? "border-red-500" : ""}`}
                     {...register("email")}
                   />
                   <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-muted-foreground/80">

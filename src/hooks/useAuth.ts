@@ -3,25 +3,19 @@ import { useAuthContext } from "@/hooks/context/AuthContext";
 import { AuthService } from "@/services/AuthService";
 
 export const useAuth = () => {
-  const { user, clearUser } = useAuthContext();
+  const { clearUser } = useAuthContext();
 
   const signInWithEmail = useMutation({
-    mutationFn: (email: string) =>
-      AuthService.signInWithEmail(email),
+    mutationFn: AuthService.signInWithEmail,
   });
 
   const signInWithGoogle = useMutation({
-    mutationFn: () =>
-      AuthService.signInWithGoogle(),
+    mutationFn: (from?: string) => AuthService.signInWithGoogle(from),
   });
 
   const logout = useMutation({
     mutationFn: async () => {
       await AuthService.logout();
-
-      if (user) {
-        localStorage.removeItem(`userData-${user.id}`);
-      }
       clearUser();
     },
   });
@@ -36,9 +30,6 @@ export const useAuth = () => {
       signInWithGoogle.isPending ||
       logout.isPending,
 
-    error:
-      signInWithEmail.error ||
-      signInWithGoogle.error ||
-      logout.error,
+    error: signInWithEmail.error || signInWithGoogle.error || logout.error,
   };
 };

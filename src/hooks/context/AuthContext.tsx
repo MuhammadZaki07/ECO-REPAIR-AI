@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const loadSession = async () => {
       const { data } = await supabase.auth.getSession();
-      setSession(data.session || null);
+      setSession(data.session ?? null);
       setUser(data.session?.user ?? null);
       setLoading(false);
     };
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, newSession) => {
-        setSession(newSession);
+        setSession(newSession ?? null);
         setUser(newSession?.user ?? null);
       }
     );
@@ -44,18 +44,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const cacheKey = `userData-${user.id}`;
       const cached = localStorage.getItem(cacheKey);
+
       if (cached) {
         setUserData(JSON.parse(cached));
         return;
       }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("users")
         .select("*")
         .eq("auth_id", user.id)
         .single();
 
-      if (data) {
+      if (!error && data) {
         localStorage.setItem(cacheKey, JSON.stringify(data));
         setUserData(data);
       }
@@ -72,7 +73,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const clearUser = () => {
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("userData-")) {
+        localStorage.removeItem(key);
+      }
+    });
+
     setUser(null);
+    setSession(null);
     setUserData(null);
   };
 

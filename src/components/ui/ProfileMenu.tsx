@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar } from "./Avatar";
 import { Link, useNavigate } from "react-router-dom";
-import { getUserAvatar } from "@/utils/getUserAvatar";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { AuthService } from "@/services/AuthService";
 
@@ -16,8 +15,6 @@ export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, userData } = useAuthContext();
   if (!userData) return null;
-
-  const { avatarUrl, initial, bgColor } = getUserAvatar(user);
 
   const handleLogout = async () => {
     try {
@@ -32,19 +29,15 @@ export function ProfileMenu() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <div className="cursor-pointer p-0.5">
-          <Avatar
-            style={{ backgroundColor: bgColor }}
-            className="w-8 h-8 rounded-full flex justify-center items-center overflow-hidden"
-          >
-            {avatarUrl ? (
+          <Avatar className="w-8 h-8">
+            {userData.avatar_url ? (
               <AvatarImage
-                src={avatarUrl || undefined}
-                alt={initial}
-                className="object-cover w-full h-full"
+                src={userData.avatar_url || user?.user_metadata?.avatar_url}
+                alt={userData?.username?.[0]?.toUpperCase() || "U"}
               />
             ) : (
-              <AvatarFallback className="text-white font-semibold">
-                {initial}
+              <AvatarFallback className="font-semibold">
+                {userData?.username?.[0]?.toUpperCase() || "U"}
               </AvatarFallback>
             )}
           </Avatar>
@@ -60,9 +53,7 @@ export function ProfileMenu() {
           </DropdownMenuItem>
         </Link>
 
-        <Link
-          to={'/user/profile'}
-        >
+        <Link to={"/user/profile"}>
           <DropdownMenuItem className="cursor-pointer">
             Profile
           </DropdownMenuItem>

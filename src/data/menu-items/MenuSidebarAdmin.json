@@ -1,0 +1,83 @@
+[
+  {
+    "label": "Dashboard",
+    "icon": "home",
+    "path": "dashboard"
+  },
+  {
+    "label": "Category",
+    "icon": "layers",
+    "path": "categories"
+  },
+  {
+    "label": "Leaderboard",
+    "icon": "trophy",
+    "path": "leaderboard"
+  },
+  {
+    "label": "Forum",
+    "icon": "messagesSquare",
+    "path": "forums"
+  },
+  {
+    "label": "Guide",
+    "icon": "bookOpen",
+    "path": "guides"
+  },
+  {
+    "label": "Community",
+    "icon": "users",
+    "path": "community"
+  },
+  {
+    "label": "Exchange Hub",
+    "icon": "ExchangeHub",
+    "path": "ExchangeHub",
+    "key": "Exchange-Hub",
+    "children": [
+      {
+        "label": "Voucher",
+        "icon": "voucher",
+        "path": "Exchange-Hub/voucher"
+      },
+      {
+        "label": "Merchindase",
+        "icon": "merchandise",
+        "path": "Exchange-Hub/merchindase"
+      },
+      {
+        "label": "Donations",
+        "icon": "donation",
+        "path": "Exchange-Hub/donations"
+      }
+    ]
+  },
+  {
+    "label": "User",
+    "icon": "users",
+    "path": "users",
+    "key": "auth-user",
+    "children": [
+      {
+        "label": "All Users",
+        "icon": "list",
+        "path": "users-all"
+      },
+      {
+        "label": "Admin",
+        "icon": "userPlus",
+        "path": "admin-all"
+      },
+      {
+        "label": "My Profile",
+        "icon": "user2",
+        "path": "profile"
+      }
+    ]
+  },
+  {
+    "label": "Settings User",
+    "icon": "settings",
+    "path": "settings"
+  }
+]

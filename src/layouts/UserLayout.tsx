@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Sidebar } from "@/components/ui/sidebar-user/Sidebar";
+import { Sidebar } from "@/components/ui/sidebar/Sidebar";
 import Header from "@/components/layout/header/dashboard-user/header";
 
 function UserLayout() {
