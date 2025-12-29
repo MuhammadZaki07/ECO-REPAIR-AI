@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/badge";
 import { useForumDetailRealtime } from "@/hooks/useForumDetailRealtime";
 import { formatDateID } from "@/utils/date";
-import { lexicalToHtml } from "@/helpers/lexicalToHtml";
+import { lexicalToHtml } from "@/utils/lexicalToHtml";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { DynamicSkeleton } from "@/components/skeletons";
 import {

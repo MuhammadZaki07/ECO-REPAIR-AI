@@ -10,6 +10,7 @@ export interface UserData {
   bio?:string;
   location?:string;
   is_blocked?:boolean | string;
+  deleted_at?:boolean | string;
 }
 
 export interface AuthContextType {

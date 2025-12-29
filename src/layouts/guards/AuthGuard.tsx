@@ -25,6 +25,10 @@ export default function AuthGuard({ children }: Props) {
     }
   }
 
+  if (userData.deleted_at) {
+    return <Navigate to="/account-deleted" replace />;
+  }
+
   const role = userData.role;
   const isAdminRoute = location.pathname.startsWith(ENV.URL_ADMIN);
   const isUserRoute = location.pathname.startsWith(ENV.URL_USER);

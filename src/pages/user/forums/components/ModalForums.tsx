@@ -28,9 +28,9 @@ import {
   askQuestionSchema,
   editForumSchema,
 } from "@/schemas/ask-question.schema";
-import { validateField } from "@/helpers/handleFieldValidation";
+import { validateField } from "@/utils/handleFieldValidation";
 import type { ModalForumsProps } from "@/types/forum";
-import { parseLexicalEditorState } from "@/helpers/parseLexicalEditorState";
+import { parseLexicalEditorState } from "@/utils/parseLexicalEditorState";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 
 const initialEditorState = {

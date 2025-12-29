@@ -1,4 +1,4 @@
-import { isEditorEmpty } from "@/helpers/isEditorEmpty";
+import { isEditorEmpty } from "@/utils/isEditorEmpty";
 import type { SerializedEditorState } from "lexical";
 import { z } from "zod";
 

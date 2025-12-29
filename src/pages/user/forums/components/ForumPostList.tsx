@@ -17,7 +17,7 @@ import { useForums } from "@/hooks/useForums";
 import { DynamicSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/state/ErrorState";
 import { EmptyState } from "@/components/state/EmptyState";
-import { lexicalToHtml } from "@/helpers/lexicalToHtml";
+import { lexicalToHtml } from "@/utils/lexicalToHtml";
 import {
   DropdownMenu,
   DropdownMenuTrigger,

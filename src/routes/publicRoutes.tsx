@@ -1,4 +1,5 @@
 import MainLayout from "@/layouts/MainLayouts";
+import AccountDeleted from "@/pages/account/AccountDeleted";
 import AccountBlocked from "@/pages/account/Blocked";
 import Forbidden from "@/pages/errors/403";
 import ServerError from "@/pages/errors/500";
@@ -21,6 +22,10 @@ export const publicRoutes: RouteObject[] = [
       {
         path: "/blocked",
         element: <AccountBlocked />,
+      },
+      {
+        path: "/account-deleted",
+        element: <AccountDeleted />,
       },
     ],
   },

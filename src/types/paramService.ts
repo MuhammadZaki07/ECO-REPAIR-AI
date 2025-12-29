@@ -6,4 +6,6 @@ export interface ParamsService {
   userId?: number | string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  includeDeleted?: boolean;
+  role?: "admin" | "user";
 }

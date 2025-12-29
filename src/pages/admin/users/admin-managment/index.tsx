@@ -10,16 +10,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import { ArrowUpDown, MoreHorizontal, Trash2, UserPlus } from "lucide-react";
+import type { UserData } from "@/types/auth";
+import { ENV } from "@/env";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useToast } from "@/hooks/use-toast";
+import { formatDateWithDay } from "@/utils/date";
+import { useAuthContext } from "@/hooks/context/AuthContext";
+import { AddAdminModal } from "../components/AddAdminModal";
 import {
   Dialog,
   DialogContent,
@@ -27,18 +27,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarImage } from "@/components/ui/Avatar";
-import { ArrowUpDown, MoreHorizontal, Trash2, Undo } from "lucide-react";
-import type { UserData } from "@/types/auth";
-import { ENV } from "@/env";
-import { useDebounce } from "@/hooks/useDebounce";
-import { useToast } from "@/hooks/use-toast";
-import { formatDateWithDay } from "@/utils/date";
-import { useAuthContext } from "@/hooks/context/AuthContext";
+import { UserService } from "@/services/UserService";
 
-export default function UsersPage() {
+export default function UsersAdmin() {
+  const { user, userData } = useAuthContext();
+  const { toast } = useToast();
+
   const {
     users,
     total,
@@ -56,10 +61,6 @@ export default function UsersPage() {
     includeDeleted,
   } = useUsers(ENV.PAGE_SIZE);
 
-  const { toast } = useToast();
-  const { user, userData } = useAuthContext();
-  const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
-
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
 
@@ -67,7 +68,10 @@ export default function UsersPage() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [blockDialogOpen, setBlockDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
   const [confirmName, setConfirmName] = useState("");
+
+  const [addAdminDialogOpen, setAddAdminDialogOpen] = useState(false);
 
   const [sortBy, setSortBy] = useState<"created_at" | "email" | "username">(
     "created_at"
@@ -128,7 +132,7 @@ export default function UsersPage() {
 
     if (confirmName !== selectedUser.username) return;
 
-    await deleteUser(selectedUser.id, userData?.auth_id);
+    await deleteUser(selectedUser.id, user?.id);
 
     toast({
       title: "User Deleted",
@@ -140,6 +144,8 @@ export default function UsersPage() {
     setConfirmName("");
     refetch();
   };
+
+  const totalPages = Math.ceil(total / ENV.PAGE_SIZE);
 
   const columns = [
     {
@@ -180,12 +186,9 @@ export default function UsersPage() {
     {
       accessorKey: "role",
       header: "Role",
-      cell: ({ row }: any) =>
-        row.original.role === "admin" ? (
-          <Badge className="bg-yellow-400 text-black">admin</Badge>
-        ) : (
-          <Badge variant="outline">user</Badge>
-        ),
+      cell: ({ row }: any) => (
+        <Badge className="bg-yellow-400 text-black">{row.original.role}</Badge>
+      ),
     },
     {
       accessorKey: "is_blocked",
@@ -228,6 +231,25 @@ export default function UsersPage() {
         const isSelfRow = target.auth_id === user?.id;
         const isTargetDeleted = !!target.deleted_at;
 
+        const handleDemote = async () => {
+          if (!target) return;
+          try {
+            await UserService.updateRoleToUser(target.id, userData?.id);
+            toast({
+              title: "Role Updated",
+              description: `${target.username} is now a regular user.`,
+            });
+            refetch();
+          } catch (err) {
+            console.error(err);
+            toast({
+              title: "Error",
+              description: "Failed to demote user.",
+              variant: "destructive",
+            });
+          }
+        };
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -240,28 +262,17 @@ export default function UsersPage() {
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
               {isTargetDeleted ? (
-                <>
-                  <DropdownMenuItem
-                    className="text-blue-500 hover:text-blue-500"
-                    disabled={isSelfRow}
-                    onClick={() => {
-                      if (isSelfRow) {
-                        toast({
-                          title: "Action not allowed",
-                          description: "You cannot restore your own account.",
-                          variant: "destructive",
-                        });
-                        return;
-                      }
-
-                      setSelectedUser(target);
-                      setRestoreDialogOpen(true);
-                    }}
-                  >
-                    <Undo className="text-blue-500 hover:text-blue-500" />{" "}
-                    Restore User
-                  </DropdownMenuItem>
-                </>
+                <DropdownMenuItem
+                  className="text-blue-500 hover:text-blue-500"
+                  disabled={isSelfRow}
+                  onClick={() => {
+                    if (isSelfRow) return;
+                    setSelectedUser(target);
+                    setRestoreDialogOpen(true);
+                  }}
+                >
+                  Restore User
+                </DropdownMenuItem>
               ) : (
                 <>
                   <DropdownMenuItem
@@ -274,21 +285,22 @@ export default function UsersPage() {
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
-                    disabled={isSelfRow}
+                  disabled={isSelfRow || target.role !== "admin"}
                     onClick={() => {
-                      if (isSelfRow) {
-                        toast({
-                          title: "Action not allowed",
-                          description: "You cannot block your own account.",
-                          variant: "destructive",
-                        });
-                        return;
-                      }
+                      if (isSelfRow) return;
                       setSelectedUser(target);
                       setBlockDialogOpen(true);
                     }}
                   >
                     {target.is_blocked ? "Unblock User" : "Block User"}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={handleDemote}
+                    disabled={isSelfRow || target.role !== "admin"}
+                    className="text-green-500 hover:text-green-500"
+                  >
+                    Demote to User
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
@@ -297,14 +309,7 @@ export default function UsersPage() {
                     className="text-destructive"
                     disabled={isSelfRow}
                     onClick={() => {
-                      if (isSelfRow) {
-                        toast({
-                          title: "Action not allowed",
-                          description: "You cannot delete your own account.",
-                          variant: "destructive",
-                        });
-                        return;
-                      }
+                      if (isSelfRow) return;
                       setSelectedUser(target);
                       setConfirmName("");
                       setDeleteDialogOpen(true);
@@ -321,16 +326,21 @@ export default function UsersPage() {
     },
   ];
 
-  const totalPages = Math.ceil(total / ENV.PAGE_SIZE);
-
   return (
     <div className="container lg:p-4 space-y-4">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Users</h1>
-        <p className="text-muted-foreground">
-          Manage user accounts by blocking, unblocking, deleting, or restoring
-          access.
-        </p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Admins</h1>
+          <p className="text-muted-foreground">
+            Manage admin accounts. Add new admins from existing users.
+          </p>
+        </div>
+        <Button
+          onClick={() => setAddAdminDialogOpen(true)}
+          className="flex items-center gap-2"
+        >
+          <UserPlus /> Add Admin
+        </Button>
       </div>
 
       <div className="flex items-center gap-2 mb-4">
@@ -344,19 +354,26 @@ export default function UsersPage() {
           }}
         />
         <label htmlFor="showDeleted" className="text-sm">
-          Show deleted users
+          Show deleted admins
         </label>
       </div>
 
       <DataTable
         onSearch={(val) => setSearch(val)}
         columns={columns}
-        data={users}
+        data={users.filter((u) => u.role === "admin")}
         loading={loading}
         page={page}
         totalPages={totalPages}
         onPrev={() => setPage((p) => Math.max(p - 1, 1))}
         onNext={() => setPage((p) => Math.min(p + 1, totalPages))}
+      />
+
+      <AddAdminModal
+        open={addAdminDialogOpen}
+        onOpenChange={setAddAdminDialogOpen}
+        onUpdateSuccess={refetch}
+        currentUserId={userData?.id || ""}
       />
 
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
@@ -377,7 +394,8 @@ export default function UsersPage() {
 
           {selectedUser &&
             (() => {
-              const isSelf = userData?.auth_id === user?.id;
+              const isSelf = userData?.auth_id === user.id;
+
               return (
                 <>
                   <div className="mt-6 space-y-4 text-center text-sm">

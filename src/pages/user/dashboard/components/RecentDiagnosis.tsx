@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ENV } from "@/env";
-import { lexicalToHtml } from "@/helpers/lexicalToHtml";
+import { lexicalToHtml } from "@/utils/lexicalToHtml";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useForums } from "@/hooks/useForums";
 import { getInitial } from "@/utils/getInitial";

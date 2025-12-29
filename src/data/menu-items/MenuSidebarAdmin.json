@@ -54,7 +54,7 @@
     "key": "auth-user",
     "children": [
       {
-        "label": "All Users",
+        "label": "Users",
         "icon": "list",
         "path": "users-all"
       },

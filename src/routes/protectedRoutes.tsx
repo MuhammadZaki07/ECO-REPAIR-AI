@@ -18,6 +18,7 @@ import { ENV } from "@/env";
 import CategoryPage from "@/pages/admin/categories";
 import LeaderboardPage from "@/pages/admin/leaderboards";
 import UsersPage from "@/pages/admin/users";
+import UsersAdmin from "@/pages/admin/users/admin-managment";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -65,7 +66,7 @@ export const protectedRoutes: RouteObject[] = [
       { path: "leaderboard", element: <LeaderboardPage /> },
       { path: "community", element: <LeaderboardPage /> },
       { path: "users-all", element: <UsersPage /> },
-      { path: "admin-all", element: <UsersPage /> },
+      { path: "admin-all", element: <UsersAdmin /> },
     ],
   },
 ];
