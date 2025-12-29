@@ -9,10 +9,24 @@ export const useCategories = (pageSize = 6) => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 500);
+  const [sortBy, setSortBy] = useState("created_at");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  const setSort = (field: string, order: "asc" | "desc") => {
+    setSortBy(field);
+    setSortOrder(order);
+  };
 
   const categoriesQuery = useQuery<{ data: Category[]; total: number }, Error>({
-    queryKey: ["categories", page, debouncedSearch],
-    queryFn: () => CategoryService.getCategories({ page, pageSize, search: debouncedSearch }),
+    queryKey: ["categories", page, debouncedSearch, sortBy, sortOrder],
+    queryFn: () =>
+      CategoryService.getCategories({
+        page,
+        pageSize,
+        search: debouncedSearch,
+        sortBy,
+        sortOrder,
+      }),
     keepPreviousData: true,
     staleTime: 1000 * 60 * 5,
   });
@@ -23,7 +37,8 @@ export const useCategories = (pageSize = 6) => {
   });
 
   const updateCategory = useMutation({
-    mutationFn: ({ id, name }: { id: number; name: string }) => CategoryService.updateCategory(id, name),
+    mutationFn: ({ id, name }: { id: number; name: string }) =>
+      CategoryService.updateCategory(id, name),
     onSuccess: () => queryClient.invalidateQueries(["categories"]),
   });
 
@@ -39,6 +54,7 @@ export const useCategories = (pageSize = 6) => {
     setPage,
     searchTerm,
     setSearchTerm,
+    setSort,
     loading: categoriesQuery.isLoading,
     error: categoriesQuery.error ?? null,
     refetch: categoriesQuery.refetch,

@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
 import type { Forum, ForumReply } from "@/types/forum";
+import type { ParamsService } from "@/types/paramService";
 import type { SerializedEditorState } from "lexical";
 
 const BASE_FORUM_SELECT = `
@@ -29,7 +30,7 @@ export class ForumService {
     page = 1,
     pageSize = 10,
     search = "",
-  }: { page?: number; pageSize?: number; search?: string } = {}): Promise<{
+  }: ParamsService = {}): Promise<{
     data: Forum[];
     total: number;
   }> {

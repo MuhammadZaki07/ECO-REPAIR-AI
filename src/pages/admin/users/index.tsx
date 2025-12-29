@@ -1,7 +1,473 @@
-function UsersPage() {
-  return (
-    <div>UsersPage</div>
-  )
-}
+import { useEffect, useState } from "react";
+import { useUsers } from "@/hooks/useUsers";
+import { DataTable } from "@/components/ui/data-table";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react";
+import type { UserData } from "@/types/auth";
+import { ENV } from "@/env";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useToast } from "@/hooks/use-toast";
+import { formatDateWithDay } from "@/utils/date";
+import { useAuthContext } from "@/hooks/context/AuthContext";
 
-export default UsersPage
+export default function UsersPage() {
+  const {
+    users,
+    total,
+    page,
+    setPage,
+    loading,
+    setSearchTerm,
+    blockUser,
+    unblockUser,
+    deleteUser,
+    refetch,
+    setSort,
+  } = useUsers(ENV.PAGE_SIZE);
+
+  const { toast } = useToast();
+  const { user } = useAuthContext();
+
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [confirmName, setConfirmName] = useState("");
+
+  const [sortBy, setSortBy] = useState<"created_at" | "email" | "username">(
+    "created_at"
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  const isSelf = selectedUser?.auth_id === user?.id;
+
+  useEffect(() => {
+    setPage(1);
+    setSearchTerm(debouncedSearch);
+    setSort(sortBy, sortOrder);
+  }, [debouncedSearch, sortBy, sortOrder]);
+
+  const handleConfirmBlock = async () => {
+    if (!selectedUser) return;
+
+    if (isSelf) {
+      toast({
+        title: "Action not allowed",
+        description: "You cannot block or unblock your own account.",
+        variant: "destructive",
+      });
+      setBlockDialogOpen(false);
+      return;
+    }
+
+    if (selectedUser.is_blocked) {
+      await unblockUser(selectedUser.id);
+      toast({
+        title: "User Unblocked",
+        description: "User access has been restored.",
+      });
+    } else {
+      await blockUser(selectedUser.id);
+      toast({
+        title: "User Blocked",
+        description: "User has been blocked from accessing the system.",
+      });
+    }
+
+    setBlockDialogOpen(false);
+    setSelectedUser(null);
+    refetch();
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedUser) return;
+
+    if (isSelf) {
+      toast({
+        title: "Action not allowed",
+        description: "You cannot delete your own account.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (confirmName !== selectedUser.username) return;
+
+    await deleteUser(selectedUser.id);
+
+    toast({
+      title: "User Deleted",
+      description: "User has been permanently removed.",
+    });
+
+    setDeleteDialogOpen(false);
+    setSelectedUser(null);
+    setConfirmName("");
+    refetch();
+  };
+
+  const columns = [
+    {
+      id: "no",
+      header: "No",
+      cell: ({ row }: any) => row.index + 1 + (page - 1) * ENV.PAGE_SIZE,
+    },
+    {
+      accessorKey: "avatar_url",
+      header: "Avatar",
+      cell: ({ row }: any) => (
+        <Avatar>
+          <AvatarImage src={row.original.avatar_url ?? ""} />
+        </Avatar>
+      ),
+    },
+    {
+      accessorKey: "username",
+      header: "Name",
+      cell: ({ row }: any) => row.original.username ?? "-",
+    },
+    {
+      accessorKey: "email",
+      header: () => (
+        <Button
+          variant="ghost"
+          className="px-0"
+          onClick={() => {
+            setSortBy("email");
+            setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
+          }}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }: any) =>
+        row.original.role === "admin" ? (
+          <Badge className="bg-yellow-400 text-black">admin</Badge>
+        ) : (
+          <Badge variant="outline">user</Badge>
+        ),
+    },
+    {
+      accessorKey: "is_blocked",
+      header: "Status",
+      cell: ({ row }: any) =>
+        row.original.is_blocked ? (
+          <Badge variant="destructive">Blocked</Badge>
+        ) : (
+          <Badge className="bg-green-500/20 text-green-600">Active</Badge>
+        ),
+    },
+    {
+      accessorKey: "created_at",
+      header: () => (
+        <Button
+          variant="ghost"
+          className="px-0"
+          onClick={() => {
+            setSortBy("created_at");
+            setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
+          }}
+        >
+          Created
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }: any) => (
+        <span className="text-sm text-muted-foreground">
+          {row.original.created_at
+            ? formatDateWithDay(row.original.created_at)
+            : "-"}
+        </span>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }: any) => {
+        const target = row.original;
+        const isSelfRow = target.auth_id === user?.id;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedUser(target);
+                  setViewDialogOpen(true);
+                }}
+              >
+                View Details
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => {
+                  if (isSelfRow) {
+                    toast({
+                      title: "Action not allowed",
+                      description: "You cannot block your own account.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  setSelectedUser(target);
+                  setBlockDialogOpen(true);
+                }}
+              >
+                {target.is_blocked ? "Unblock User" : "Block User"}
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem
+                className="text-destructive"
+                disabled={isSelf}
+                onClick={() => {
+                  if (isSelfRow) {
+                    toast({
+                      title: "Action not allowed",
+                      description: "You cannot delete your own account.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  setSelectedUser(target);
+                  setConfirmName("");
+                  setDeleteDialogOpen(true);
+                }}
+              >
+                Delete User
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+
+  const totalPages = Math.ceil(total / ENV.PAGE_SIZE);
+
+  return (
+    <div className="container lg:p-4 space-y-4">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Users</h1>
+        <p className="text-muted-foreground">
+          Manage all registered users, block access, or remove users.
+        </p>
+      </div>
+
+      <DataTable
+        onSearch={(val) => setSearch(val)}
+        columns={columns}
+        data={users}
+        loading={loading}
+        page={page}
+        totalPages={totalPages}
+        onPrev={() => setPage((p) => Math.max(p - 1, 1))}
+        onNext={() => setPage((p) => Math.min(p + 1, totalPages))}
+      />
+
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="items-center text-center space-y-3">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={selectedUser?.avatar_url ?? ""} />
+            </Avatar>
+
+            <DialogTitle className="text-xl">
+              {selectedUser?.username}
+            </DialogTitle>
+
+            <p className="text-sm text-muted-foreground">
+              {selectedUser?.email ?? "-"}
+            </p>
+          </DialogHeader>
+
+          {selectedUser &&
+            (() => {
+              const isSelf = user?.id === selectedUser.id;
+
+              return (
+                <>
+                  <div className="mt-6 space-y-4 text-center text-sm">
+                    <div className="flex justify-center gap-2">
+                      <Badge variant="outline">{selectedUser.role}</Badge>
+                      {selectedUser.is_blocked ? (
+                        <Badge variant="destructive">Blocked</Badge>
+                      ) : (
+                        <Badge className="bg-green-500/20 text-green-600">
+                          Active
+                        </Badge>
+                      )}
+                    </div>
+
+                    <div className="text-muted-foreground">
+                      Joined on{" "}
+                      <span className="font-medium text-foreground">
+                        {formatDateWithDay(selectedUser.created_at)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {isSelf && (
+                    <p className="mt-4 text-xs text-center text-muted-foreground">
+                      You cannot manage your own account.
+                    </p>
+                  )}
+                  <DialogFooter>
+                    <div className="mt-5 flex justify-center gap-3">
+                      <Button
+                        variant={"outline"}
+                        disabled={isSelf}
+                        className={
+                          selectedUser.is_blocked
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }
+                        onClick={() => {
+                          if (isSelf) {
+                            toast({
+                              title: "Action not allowed",
+                              description: "You cannot block your own account.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          setViewDialogOpen(false);
+                          setBlockDialogOpen(true);
+                        }}
+                      >
+                        {selectedUser.is_blocked
+                          ? "Unblock User"
+                          : "Block User"}
+                      </Button>
+                      <Button
+                        disabled={isSelf}
+                        className="bg-red-500 text-white hover:bg-red-400"
+                        onClick={() => {
+                          if (isSelf) {
+                            toast({
+                              title: "Action not allowed",
+                              description:
+                                "You cannot delete your own account.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          setConfirmName("");
+                          setViewDialogOpen(false);
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        <Trash2 />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setViewDialogOpen(false)}
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </DialogFooter>
+                </>
+              );
+            })()}
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={blockDialogOpen} onOpenChange={setBlockDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {selectedUser?.is_blocked ? "Unblock User?" : "Block User?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {selectedUser?.is_blocked
+                ? "This will restore user access."
+                : "This will prevent the user from accessing the system."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmBlock}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please type <b>{selectedUser?.username}</b> to confirm this
+              action.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <Input
+            value={confirmName}
+            onChange={(e) => setConfirmName(e.target.value)}
+            placeholder="Enter username"
+          />
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-500 text-white hover:bg-red-400 disabled:bg-primary disabled:text-black"
+              disabled={confirmName !== selectedUser?.username}
+              onClick={handleConfirmDelete}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}

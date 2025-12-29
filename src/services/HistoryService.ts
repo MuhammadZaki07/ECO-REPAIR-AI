@@ -1,12 +1,8 @@
 import { supabase } from "@/lib/supabase/client";
+import type { ParamsService } from "@/types/paramService";
 
 export class HistoryService {
-  static async getUserHistory(params: {
-    userId: string;
-    page?: number;
-    limit?: number;
-    search?: string;
-  }) {
+  static async getUserHistory(params: ParamsService) {
     const { userId, page = 1, limit = 6, search = "" } = params;
     const from = (page - 1) * limit;
     const to = from + limit - 1;

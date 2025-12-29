@@ -9,6 +9,7 @@ export interface UserData {
   role?: string;
   bio?:string;
   location?:string;
+  is_blocked?:boolean | string;
 }
 
 export interface AuthContextType {

@@ -1,15 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
+import type { LeaderboardQuery } from "@/types/leaderboard";
 
-export type LeaderboardSortBy = "xp" | "username" | "contributions";
-export type SortOrder = "asc" | "desc";
-
-export interface LeaderboardQuery {
-  page?: number;
-  pageSize?: number;
-  sortBy?: LeaderboardSortBy;
-  order?: SortOrder;
-  search?: string;
-}
 
 export class LeaderboardService {
   static async getLeaderboardTable(query: LeaderboardQuery = {}) {

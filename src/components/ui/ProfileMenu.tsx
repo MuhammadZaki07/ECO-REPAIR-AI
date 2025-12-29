@@ -9,17 +9,18 @@ import {
 import { Avatar } from "./Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/hooks/context/AuthContext";
-import { AuthService } from "@/services/AuthService";
 import { getInitial } from "@/utils/getInitial";
+import { useAuth } from "@/hooks/useAuth";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, userData } = useAuthContext();
+  const { logout } = useAuth();
   if (!userData) return null;
 
   const handleLogout = async () => {
     try {
-      await AuthService.logout();
+      await logout();
       navigate("/login", { replace: true });
     } catch (err: any) {
       console.error("Logout failed:", err.message);

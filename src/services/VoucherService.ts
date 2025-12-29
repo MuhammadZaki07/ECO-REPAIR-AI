@@ -1,13 +1,9 @@
 import { ENV } from "@/env";
 import { supabase } from "@/lib/supabase/client";
+import type { ParamsService } from "@/types/paramService";
 
 export class VoucherService {
-  static async getActiveVouchers(params: {
-    search?: string;
-    page?: number;
-    limit?: number;
-  }) {
-
+  static async getActiveVouchers(params: ParamsService) {
     const { search = "", page = 1, limit = ENV.PAGE_SIZE } = params;
 
     const from = (page - 1) * limit;

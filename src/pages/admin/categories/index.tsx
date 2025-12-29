@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { useCategories } from "@/hooks/useCategories";
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -24,7 +24,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import CategoryModal from "./components/CategoryModal";
 import { ENV } from "@/env";
-import { formatDateID } from "@/utils/date";
+import { formatDateWithDay } from "@/utils/date";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CategoryPage() {
   const {
@@ -38,24 +39,30 @@ export default function CategoryPage() {
     createCategory,
     updateCategory,
     refetch,
+    setSort,
   } = useCategories(ENV.PAGE_SIZE);
-  const [search, setSearch] = React.useState("");
+  const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
+  const { toast } = useToast();
 
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [editingCategory, setEditingCategory] = React.useState<{
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<{
     id: number;
     name: string;
   } | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [categoryToDelete, setCategoryToDelete] = React.useState<number | null>(
-    null
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<number | null>(null);
+
+  const [sortBy, setSortBy] = useState<"created_at" | "email" | "username">(
+    "created_at"
   );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
     setPage(1);
     setSearchTerm(debouncedSearch);
-  }, [debouncedSearch, setSearchTerm, setPage]);
+    setSort(sortBy, sortOrder);
+  }, [debouncedSearch, setSearchTerm, setPage, sortBy, sortOrder]);
 
   const handleDelete = async () => {
     if (categoryToDelete !== null) {
@@ -63,6 +70,10 @@ export default function CategoryPage() {
       setDeleteDialogOpen(false);
       setCategoryToDelete(null);
       refetch();
+      toast({
+        title: "Deleted",
+        description: "Data has been deleted successfully.",
+      });
     }
   };
 
@@ -80,12 +91,24 @@ export default function CategoryPage() {
     { accessorKey: "name", header: "Name" },
     {
       accessorKey: "created_at",
-      header: "Created",
+      header: () => (
+        <Button
+          variant="ghost"
+          className="px-0"
+          onClick={() => {
+            setSortBy("created_at");
+            setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+          }}
+        >
+          Created
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }: any) => {
         const date = row.original.created_at;
         return (
           <span className="text-sm text-muted-foreground">
-            {date ? formatDateID(date) : "-"}
+            {date ? formatDateWithDay(date) : "-"}
           </span>
         );
       },
@@ -123,6 +146,28 @@ export default function CategoryPage() {
       },
     },
   ];
+
+  const handleSubmitCategory = async (name: string) => {
+    if (editingCategory) {
+      await updateCategory({ id: editingCategory.id, name });
+      toast({
+        title: "Success",
+        description: "Data has been updated successfully.",
+      });
+    } else {
+      await createCategory(name);
+      toast({
+        title: "Success",
+        description: "Data has been created successfully.",
+      });
+    }
+  };
+
+  const handleModalSuccess = () => {
+    setModalOpen(false);
+    setEditingCategory(null);
+    refetch();
+  };
 
   const totalPages = Math.ceil(total / ENV.PAGE_SIZE);
 
@@ -183,16 +228,8 @@ export default function CategoryPage() {
         isOpen={modalOpen}
         setIsOpen={setModalOpen}
         initialData={editingCategory}
-        onSuccess={() => {
-          setModalOpen(false);
-          setEditingCategory(null);
-          refetch();
-        }}
-        onSubmit={async (name) => {
-          if (editingCategory)
-            await updateCategory({ id: editingCategory.id, name });
-          else await createCategory(name);
-        }}
+        onSuccess={handleModalSuccess}
+        onSubmit={handleSubmitCategory}
       />
     </div>
   );

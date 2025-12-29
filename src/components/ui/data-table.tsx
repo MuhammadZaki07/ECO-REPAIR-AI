@@ -1,8 +1,13 @@
 import * as React from "react";
 import {
   type ColumnDef,
+  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -42,11 +47,24 @@ export function DataTable<TData, TValue>({
   onPrev,
 }: DataTableProps<TData, TValue>) {
   const [searchValue, setSearchValue] = React.useState("");
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
 
   const table = useReactTable({
     data,
     columns,
+    getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
   });
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,7 +138,12 @@ export function DataTable<TData, TValue>({
                   className="h-24 text-center text-muted-foreground"
                 >
                   <EmptyState
-                    icon={<Inbox strokeWidth={1} className="h-20 w-20 text-muted-foreground" />}
+                    icon={
+                      <Inbox
+                        strokeWidth={1}
+                        className="h-20 w-20 text-muted-foreground"
+                      />
+                    }
                     title="No data found"
                     className="border-none bg-transparent"
                     description="There is no data to display at the moment."

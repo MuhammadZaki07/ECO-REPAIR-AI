@@ -1,19 +1,19 @@
 import { supabase } from "@/lib/supabase/client";
 import type { Category } from "@/types/category";
+import type { ParamsService } from "@/types/paramService";
 
 export class CategoryService {
   static async getCategories({
     page = 1,
     pageSize = 6,
     search = "",
-  }: { page?: number; pageSize?: number; search?: string } = {}): Promise<{
-    data: Category[];
-    total: number;
-  }> {
+    sortBy = "created_at",
+    sortOrder = "desc",
+  }: ParamsService) {
     let query = supabase
       .from("categories")
       .select("*", { count: "exact" })
-      .order("created_at", { ascending: false })
+      .order(sortBy, { ascending: sortOrder === "asc" })
       .range((page - 1) * pageSize, page * pageSize - 1);
 
     if (search) query = query.ilike("name", `%${search}%`);

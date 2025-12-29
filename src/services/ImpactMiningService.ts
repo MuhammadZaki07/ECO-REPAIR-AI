@@ -1,14 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-
-export interface ImpactMining {
-  id: string;
-  user_id: string;
-  progress: number;
-  remaining_likes: number;
-  last_claimed: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import type { ImpactMining } from "@/types/impact";
 
 export class ImpactMiningService {
   static async getByUser(userId: string): Promise<ImpactMining | null> {

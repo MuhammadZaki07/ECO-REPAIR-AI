@@ -13,7 +13,7 @@ export default function NotFound() {
 
         <h1 className="text-4xl md:text-6xl font-bold mb-3">404</h1>
         <p className="text-lg md:text-xl mb-6">
-          Halaman yang kamu cari tidak ditemukan.
+          The page you are looking for could not be found.
         </p>
 
         <Button
@@ -21,7 +21,7 @@ export default function NotFound() {
           className="cursor-pointer"
           variant={"outline"}
         >
-          Kembali
+          Go Back
         </Button>
       </div>
     </div>

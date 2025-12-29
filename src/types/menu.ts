@@ -9,3 +9,11 @@ export interface MenuItem {
   href?: string;
   subItems?: SubMenuItem[];
 }
+
+export type MenuItemSidebar = {
+  label: string;
+  icon: string;
+  path: string;
+  badge?: string;
+  children?: MenuItemSidebar[];
+};

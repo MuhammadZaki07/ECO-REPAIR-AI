@@ -35,7 +35,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { useAuthContext } from "@/hooks/context/AuthContext";
-import { AuthService } from "@/services/AuthService";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { SidebarItem } from "../sidebar/SidebarItem";
 import MenuSidebarUser from "@/data/menu-items/MenuSidebarUser.json";
@@ -53,14 +52,8 @@ import {
 } from "../dropdown-menu";
 import { SidebarGroup, SidebarGroupLabel } from "../sidebar";
 import { getInitial } from "@/utils/getInitial";
-
-type MenuItem = {
-  label: string;
-  icon: string;
-  path: string;
-  badge?: string;
-  children?: MenuItem[];
-};
+import { useAuth } from "@/hooks/useAuth";
+import type { MenuItemSidebar } from "@/types/menu";
 
 const iconMap: Record<string, LucideIcon> = {
   home: Home,
@@ -94,18 +87,23 @@ export const Sidebar = () => {
   const [mini, setMini] = useState(false);
 
   const { user, userData } = useAuthContext();
+  const { logout } = useAuth();
   if (!userData) return null;
 
   const isAdmin = userData.role === "admin";
   const basePath = isAdmin ? ENV.URL_ADMIN : ENV.URL_USER;
-  const menuItems: MenuItem[] = isAdmin ? MenuSidebarAdmin : MenuSidebarUser;
+  const menuItems: MenuItemSidebar[] = isAdmin ? MenuSidebarAdmin : MenuSidebarUser;
 
   const isVerified =
     user?.identities?.[0]?.identity_data?.email_verified === true;
 
   const handleLogout = async () => {
-    await AuthService.logout();
-    navigate("/login", { replace: true });
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch (err: any) {
+      console.error("Logout failed:", err.message);
+    }
   };
 
   return (

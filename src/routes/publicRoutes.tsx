@@ -1,4 +1,5 @@
 import MainLayout from "@/layouts/MainLayouts";
+import AccountBlocked from "@/pages/account/Blocked";
 import Forbidden from "@/pages/errors/403";
 import ServerError from "@/pages/errors/500";
 import LandingPage from "@/pages/landing/Index";
@@ -16,6 +17,10 @@ export const publicRoutes: RouteObject[] = [
       {
         path: "/500",
         element: <ServerError />,
+      },
+      {
+        path: "/blocked",
+        element: <AccountBlocked />,
       },
     ],
   },

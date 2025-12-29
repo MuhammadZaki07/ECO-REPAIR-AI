@@ -13,11 +13,11 @@ export default function ServerError() {
 
         <h1 className="text-4xl font-bold mb-3">500</h1>
         <p className="text-muted-foreground mb-6">
-          Terjadi kesalahan pada sistem. Silakan coba lagi nanti.
+          Something went wrong on our end. Please try again later.
         </p>
 
         <Button onClick={() => window.location.reload()}>
-          Muat Ulang
+          Reload Page
         </Button>
       </div>
     </div>

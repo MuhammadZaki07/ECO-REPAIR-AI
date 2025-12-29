@@ -1,8 +1,9 @@
 import { supabase } from "@/lib/supabase/client";
 import type { EcoMerch, MerchOrder } from "@/types/merchandise";
+import type { ParamsService } from "@/types/paramService";
 
 export class MerchandiseService {
-  static async getAllMerch(params?: { page?: number; limit?: number; search?: string }): Promise<{ data: EcoMerch[]; total: number }> {
+  static async getAllMerch(params?: ParamsService): Promise<{ data: EcoMerch[]; total: number }> {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 6;
     const search = params?.search ?? "";

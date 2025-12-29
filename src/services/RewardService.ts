@@ -1,19 +1,7 @@
 import { supabase } from "@/lib/supabase/client";
+import type { Reward, RewardType } from "@/types/reward";
 
-export type RewardType = "voucher" | "merchandise";
 
-export interface Reward {
-  id: string;
-  type: RewardType;
-  title: string;
-  description?: string;
-  cost_eco_coin: number;
-  stock?: number | null;
-  is_active: boolean;
-  created_at: string;
-}
-
-/** ===== PUBLIC (USER) ===== */
 export class RewardService {
   static async getActiveRewards(type?: RewardType): Promise<Reward[]> {
     let qb = supabase
@@ -31,7 +19,6 @@ export class RewardService {
     return data ?? [];
   }
 
-  /** ===== ADMIN ===== */
   static async getAll(): Promise<Reward[]> {
     const { data, error } = await supabase
       .from("rewards")
