@@ -182,7 +182,7 @@ export default function UsersPage() {
       header: "Role",
       cell: ({ row }: any) =>
         row.original.role === "admin" ? (
-          <Badge className="bg-yellow-400 text-black">admin</Badge>
+          <Badge className="bg-yellow-300 text-black">admin</Badge>
         ) : (
           <Badge variant="outline">user</Badge>
         ),

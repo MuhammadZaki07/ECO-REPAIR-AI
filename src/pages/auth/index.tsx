@@ -121,7 +121,7 @@ export default function AuthPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full flex justify-center gap-2 text-black"
+                className="w-full flex justify-center gap-2"
               >
                 {isSubmitting ? (
                   <Loader className="animate-spin text-primary" size={16} />
@@ -149,7 +149,7 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <div className="hidden md:flex items-start justify-center bg-neutral-950">
+      <div className="hidden md:flex items-start justify-center dark:bg-neutral-950 bg-neutral-50">
         <div className="flex flex-col justify-between p-10 h-[500px]">
           <div>
             <div className="flex items-center justify-between gap-4">

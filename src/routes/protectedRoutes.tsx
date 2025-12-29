@@ -67,6 +67,7 @@ export const protectedRoutes: RouteObject[] = [
       { path: "community", element: <LeaderboardPage /> },
       { path: "users-all", element: <UsersPage /> },
       { path: "admin-all", element: <UsersAdmin /> },
+      { path: "profile", element: <ProfilePage /> },
     ],
   },
 ];

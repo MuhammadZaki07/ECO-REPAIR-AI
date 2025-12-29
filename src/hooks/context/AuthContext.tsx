@@ -1,11 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
-import type {
-  AuthContextType,
-  AuthProviderProps,
-  UserData,
-} from "@/types/auth";
+import type { AuthContextType, AuthProviderProps, UserData } from "@/types/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,15 +18,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(data.session?.user ?? null);
       setLoading(false);
     };
-
     loadSession();
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        setSession(newSession ?? null);
-        setUser(newSession?.user ?? null);
-      }
-    );
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession ?? null);
+      setUser(newSession?.user ?? null);
+    });
 
     return () => listener.subscription.unsubscribe();
   }, []);
@@ -44,10 +37,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const cacheKey = `userData-${user.id}`;
       const cached = localStorage.getItem(cacheKey);
-
       if (cached) {
         setUserData(JSON.parse(cached));
-        return;
       }
 
       const { data, error } = await supabase
@@ -65,6 +56,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     fetchUserData();
   }, [user]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel(`user-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "users",
+          filter: `auth_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const newData = payload.new;
+          if (newData) {
+            setUserData(newData);
+            localStorage.setItem(`userData-${user.id}`, JSON.stringify(newData));
+
+            if (newData.is_blocked || newData.deleted_at) {
+              clearUser();
+              alert("Your account has been blocked or deleted.");
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   const updateUserData = (data: UserData) => {
     setUserData(data);
     if (user) {
@@ -78,7 +102,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.removeItem(key);
       }
     });
-
     setUser(null);
     setSession(null);
     setUserData(null);

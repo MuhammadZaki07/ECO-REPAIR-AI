@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfileService } from "@/services/ProfileService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserService } from "@/services/UserService";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,6 +12,24 @@ export const useProfile = () => {
   const [bio, setBio] = useState("");
   const [location, setLocation] = useState("");
 
+  const { data: profileData, refetch: refetchProfile } = useQuery({
+    queryKey: ["user-profile", userData?.id || user?.id],
+    queryFn: () => UserService.getUserById(userData!.id ?? user!.id),
+    enabled: !!userData || !!user,
+    onSuccess: (data) => {
+      if (!data) return;
+      setBio(data.bio ?? "");
+      setLocation(data.location ?? "");
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Fetch failed",
+        description: "Unable to fetch profile",
+      });
+    },
+  });
+
   useEffect(() => {
     if (userData) {
       setBio(userData.bio ?? "");
@@ -20,14 +38,15 @@ export const useProfile = () => {
   }, [userData]);
 
   const saveProfileMutation = useMutation({
-    mutationFn: () =>
-      ProfileService.updateProfile(user!.id, { bio, location }),
+    mutationFn: () => UserService.updateProfile(user!.id, { bio, location }),
     onSuccess: () => {
       toast({
         title: "Profile updated",
         description: "Your profile has been saved",
       });
+      // Refetch agar state terbaru muncul
       queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+      refetchProfile();
     },
     onError: () => {
       toast({
@@ -39,7 +58,7 @@ export const useProfile = () => {
   });
 
   const exportDataMutation = useMutation({
-    mutationFn: () => ProfileService.exportUserData(userData!.id),
+    mutationFn: () => UserService.exportUserData(user!.id),
     onSuccess: (data) => {
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
@@ -66,12 +85,13 @@ export const useProfile = () => {
   });
 
   const deleteAccountMutation = useMutation({
-    mutationFn: ProfileService.deleteAccount,
+    mutationFn: () => UserService.deleteAccount(userData!.id, userData!.id),
     onSuccess: () => {
       toast({
         title: "Account deleted",
         description: "Goodbye 👋",
       });
+      queryClient.invalidateQueries({ queryKey: ["user-profile"] });
       window.location.href = "/";
     },
     onError: () => {
@@ -96,5 +116,7 @@ export const useProfile = () => {
     saving: saveProfileMutation.isPending,
     exporting: exportDataMutation.isPending,
     deleting: deleteAccountMutation.isPending,
+
+    refetch: refetchProfile,
   };
 };

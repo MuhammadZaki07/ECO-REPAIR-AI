@@ -187,7 +187,7 @@ export default function UsersAdmin() {
       accessorKey: "role",
       header: "Role",
       cell: ({ row }: any) => (
-        <Badge className="bg-yellow-400 text-black">{row.original.role}</Badge>
+        <Badge className="bg-yellow-300 text-black">{row.original.role}</Badge>
       ),
     },
     {

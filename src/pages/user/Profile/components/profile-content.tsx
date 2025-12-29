@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function ProfileContent() {
-  const { user } = useAuthContext();
+  const { user, userData } = useAuthContext();
   const {
     bio,
     setBio,
@@ -61,9 +61,7 @@ export default function ProfileContent() {
         <Card>
           <CardHeader>
             <CardTitle>Personal Information</CardTitle>
-            <CardDescription>
-              Update your bio and location.
-            </CardDescription>
+            <CardDescription>Update your bio and location.</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-6">
@@ -118,9 +116,7 @@ export default function ProfileContent() {
         <Card>
           <CardHeader>
             <CardTitle>Account Settings</CardTitle>
-            <CardDescription>
-              Manage your account preferences.
-            </CardDescription>
+            <CardDescription>Manage your account preferences.</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-6">
@@ -145,7 +141,6 @@ export default function ProfileContent() {
 
             <Separator />
 
-            {/* EXPORT */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="outline" disabled={exporting}>
@@ -172,7 +167,6 @@ export default function ProfileContent() {
 
             <Separator />
 
-            {/* DELETE */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive">
@@ -191,7 +185,6 @@ export default function ProfileContent() {
                 </AlertDialogHeader>
 
                 <Input
-                  placeholder="Type: I agree"
                   value={deleteInput}
                   onChange={(e) => setDeleteInput(e.target.value)}
                 />

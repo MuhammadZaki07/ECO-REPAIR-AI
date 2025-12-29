@@ -38,7 +38,7 @@ export default function ProfileHeader() {
           <div className="flex-1 space-y-2">
             <div className="flex flex-col gap-2 md:flex-row md:items-center">
               <h1 className="text-2xl font-bold">{fullName}</h1>
-              <Badge variant="secondary">{role}</Badge>
+              <Badge className={role === "admin" ? "bg-yellow-300 text-black" : ""} variant="secondary">{role}</Badge>
             </div>
             <p className="text-muted-foreground">{userData?.bio || "—"}</p>
 
