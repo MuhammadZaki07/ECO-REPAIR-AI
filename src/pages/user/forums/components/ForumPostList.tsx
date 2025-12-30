@@ -50,12 +50,13 @@ function ForumPostList({
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
+  const [forumToDelete, setForumToDelete] = useState<any>(null);
   const [editingForum, setEditingForum] = useState<any>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<{
     [key: string]: boolean;
   }>({});
   const { toast } = useToast();
-  const {userData} = useAuthContext()
+  const { userData } = useAuthContext();
 
   const forumsHook = useForums(
     activeTab,
@@ -83,22 +84,19 @@ function ForumPostList({
   };
 
   const openDeleteDialog = (forum: any) => {
-    setDeleteDialogOpen((prev) => ({ ...prev, [forum.id]: true }));
+    setForumToDelete(forum);
   };
 
   const handleDelete = async () => {
-    if (!editingForum) return;
+    if (!forumToDelete) return;
+
     try {
-      await forumsHook.deleteForum(editingForum.id);
-      setDeleteDialogOpen((prev) => ({
-        ...prev,
-        [editingForum.id]: false,
-      }));
-      setEditingForum(null);
+      await forumsHook.deleteForum(forumToDelete.id);
       toast({
         title: "Forum deleted",
         description: "The forum has been successfully deleted.",
       });
+      setForumToDelete(null);
       forumsHook.refetch();
     } catch (err) {
       console.error(err);
@@ -160,7 +158,10 @@ function ForumPostList({
                 <CardContent>
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex gap-2">
-                      <Badge variant="outline" className="rounded-md font-medium">
+                      <Badge
+                        variant="outline"
+                        className="rounded-md font-medium"
+                      >
                         {forum.category?.name ?? "Unknown"}
                       </Badge>
                       {forum.status === "solved" ? (
@@ -285,14 +286,10 @@ function ForumPostList({
       />
 
       <AlertDialog
-        open={!!editingForum && !!deleteDialogOpen[editingForum.id]}
-        onOpenChange={(open) =>
-          editingForum &&
-          setDeleteDialogOpen((prev) => ({
-            ...prev,
-            [editingForum.id]: open,
-          }))
-        }
+        open={!!forumToDelete}
+        onOpenChange={(open) => {
+          if (!open) setForumToDelete(null);
+        }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>

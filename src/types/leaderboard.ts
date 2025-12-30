@@ -6,7 +6,7 @@ export type LeaderboardRow = {
   contributions: number;
 };
 
-export type LeaderboardSortBy = "xp" | "username" | "contributions";
+export type LeaderboardSortBy = "total_xp" | "username" | "contributions";
 export type SortOrder = "asc" | "desc";
 
 export interface LeaderboardQuery {

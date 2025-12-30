@@ -77,8 +77,14 @@ const ForumDetailPage = () => {
     try {
       replySchema.parse(reply);
       setReplyError("");
+
       if (!userData) return;
-      await addReply(userData.id, reply);
+
+      await addReply({
+        userId: userData.id,
+        content: reply,
+      });
+
       setReply("");
     } catch (err: any) {
       if (err instanceof z.ZodError) {
@@ -92,7 +98,11 @@ const ForumDetailPage = () => {
       replySchema.parse(editReplyContent);
       setReplyError("");
       if (!updateReply) return;
-      await updateReply(replyId, editReplyContent);
+      await updateReply({
+        replyId,
+        content: editReplyContent,
+      });
+
       setEditReplyId(null);
       setEditReplyContent("");
       await refetch();
@@ -219,9 +229,7 @@ const ForumDetailPage = () => {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Delete Reply?
-                              </AlertDialogTitle>
+                              <AlertDialogTitle>Delete Reply?</AlertDialogTitle>
                               <AlertDialogDescription>
                                 This reply cannot be restored once deleted.
                               </AlertDialogDescription>
@@ -275,9 +283,7 @@ const ForumDetailPage = () => {
                       className={replyError ? "border-red-500" : ""}
                     />
                     {replyError && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {replyError}
-                      </p>
+                      <p className="text-red-500 text-sm mt-1">{replyError}</p>
                     )}
                     <div className="flex justify-end mt-2 gap-2">
                       <Button onClick={() => handleEditSubmit(r.id)}>
@@ -326,7 +332,7 @@ const ForumDetailPage = () => {
         )}
         <div className="flex justify-end mt-2">
           <Button disabled={!reply.trim()} onClick={handleSubmit}>
-             Send Reply
+            Send Reply
           </Button>
         </div>
       </Card>

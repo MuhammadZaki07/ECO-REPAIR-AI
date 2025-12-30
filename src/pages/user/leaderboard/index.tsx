@@ -1,10 +1,32 @@
 import { leaderboardColumns } from "./components/columns";
-import { DataTable } from "../../../components/ui/data-table";
-import { useLeaderboardTable } from "@/hooks/useLeaderboardTable";
+import { DataTable } from "@/components/ui/data-table";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useLeaderboard } from "@/hooks/useLeaderboard";
+import { useEffect } from "react";
 
 export default function LeaderboardPage() {
-  const { data, page, totalPages, loading, setPage, setSearch } =
-    useLeaderboardTable();
+  const {
+    contributors,
+    loadingContributors,
+    page,
+    setPage,
+    pageSize,
+    totalContributors,
+    search,
+    setSearch,
+    sortBy,
+    setSortBy,
+    order,
+    setOrder,
+  } = useLeaderboard();
+
+  const debouncedSearch = useDebounce(search, 1000);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, setPage]);
+
+  const totalPages = Math.max(1, Math.ceil(totalContributors / pageSize));
 
   return (
     <div className="container p-4 space-y-4">
@@ -17,13 +39,19 @@ export default function LeaderboardPage() {
 
       <DataTable
         columns={leaderboardColumns}
-        data={data}
-        loading={loading}
+        data={contributors}
+        loading={loadingContributors}
         page={page}
         totalPages={totalPages}
-        onPrev={() => setPage((p) => p - 1)}
-        onNext={() => setPage((p) => p + 1)}
+        onPrev={() => setPage((p) => Math.max(1, p - 1))}
+        onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
         onSearch={setSearch}
+        sortBy={sortBy}
+        sortOrder={order}
+        onSortChange={(columnId, newOrder) => {
+          setSortBy(columnId as "total_xp" | "username" | "contributions");
+          setOrder(newOrder);
+        }}
       />
     </div>
   );

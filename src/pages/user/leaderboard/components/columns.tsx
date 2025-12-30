@@ -7,16 +7,18 @@ import type { LeaderboardRow } from "@/types/leaderboard";
 import { RankBadge } from "./RankBadge";
 
   const getRankBgClass = (rank: number) => {
-    if (rank === 1) return "bg-yellow-50 dark:bg-yellow-800/30";
-    if (rank === 2) return "bg-gray-50 dark:bg-gray-900/40";
-    if (rank === 3) return "bg-amber-50 dark:bg-amber-950/30";
+    if (rank === 1) return "bg-yellow-300 text-black";
+    if (rank === 2) return "bg-neutral-300 text-black";
+    if (rank === 3) return "bg-amber-900 text-black";
     return "";
   };
 
 export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
   {
     id: "rank",
-    header: "#",
+    header: () => (
+    <div className="text-center font-semibold text-sm">#</div>
+  ),
     cell: ({ row }) => {
       const rank = row.index + 1;
 
@@ -36,7 +38,7 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
     header: ({ column }) => (
       <Button
         variant="ghost"
-        className="px-0 font-semibold"
+        className="px-0 font-semibold flex justify-center mx-auto"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         User
@@ -73,7 +75,7 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
     header: ({ column }) => (
       <Button
         variant="ghost"
-        className="px-0 font-semibold"
+        className="px-0 font-semibold  mx-auto flex justify-center"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         XP
@@ -85,8 +87,8 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
 
       return (
         <Badge
-          variant="outline"
-          className="font-semibold text-green-600 border-green-300"
+          variant="secondary"
+          className="font-semibold text-green-600 mx-auto flex justify-center"
         >
           {xp} XP
         </Badge>
@@ -99,7 +101,7 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
     header: ({ column }) => (
       <Button
         variant="ghost"
-        className="px-0 font-semibold"
+        className="px-0 font-semibold  mx-auto flex justify-center"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Contributions
@@ -107,7 +109,7 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
       </Button>
     ),
     cell: ({ row }) => (
-      <Badge variant="outline" className="font-semibold">
+      <Badge variant="outline" className="font-semibold  mx-auto flex justify-center">
         {row.getValue<number>("contributions")}
       </Badge>
     ),

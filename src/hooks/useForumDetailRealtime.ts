@@ -12,9 +12,6 @@ export const useForumDetailRealtime = (
   const forumKey = ["forum-detail", forumId, userId];
   const statsKey = ["forum-stats", userId];
 
-  /* =========================
-   * Forum + Replies
-   * ========================= */
   const {
     data,
     isLoading: loading,
@@ -32,9 +29,6 @@ export const useForumDetailRealtime = (
     enabled: !!forumId,
   });
 
-  /* =========================
-   * User Stats
-   * ========================= */
   const {
     data: stats = {
       reputation: 0,
@@ -70,9 +64,6 @@ export const useForumDetailRealtime = (
     },
   });
 
-  /* =========================
-   * Mutations
-   * ========================= */
   const invalidateForum = () =>
     queryClient.invalidateQueries({ queryKey: forumKey });
 
@@ -110,9 +101,7 @@ export const useForumDetailRealtime = (
     onSuccess: invalidateForum,
   });
 
-  /* =========================
-   * Realtime Supabase
-   * ========================= */
+
   useEffect(() => {
     if (!forumId) return;
 
