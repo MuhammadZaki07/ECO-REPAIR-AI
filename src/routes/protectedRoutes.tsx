@@ -19,6 +19,7 @@ import CategoryPage from "@/pages/admin/categories";
 import LeaderboardPage from "@/pages/admin/leaderboards";
 import UsersPage from "@/pages/admin/users";
 import UsersAdmin from "@/pages/admin/users/admin-managment";
+import ForumDashboard from "@/pages/admin/forums";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -68,6 +69,7 @@ export const protectedRoutes: RouteObject[] = [
       { path: "users-all", element: <UsersPage /> },
       { path: "admin-all", element: <UsersAdmin /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "forum-dashboard", element: <ForumDashboard /> },
     ],
   },
 ];

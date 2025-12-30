@@ -2,17 +2,9 @@ import { useEffect, useState } from "react";
 import { useUsers } from "@/hooks/useUsers";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
-import { ArrowUpDown, MoreHorizontal, Trash2, UserPlus } from "lucide-react";
+import { Trash2, UserPlus } from "lucide-react";
 import type { UserData } from "@/types/auth";
 import { ENV } from "@/env";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -38,7 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { UserService } from "@/services/UserService";
+import { getUserColumnsWithDemote } from "../components/columns";
 
 export default function UsersAdmin() {
   const { user, userData } = useAuthContext();
@@ -147,191 +139,31 @@ export default function UsersAdmin() {
 
   const totalPages = Math.ceil(total / ENV.PAGE_SIZE);
 
-  const columns = [
-    {
-      id: "no",
-      header: "No",
-      cell: ({ row }: any) => row.index + 1 + (page - 1) * ENV.PAGE_SIZE,
-    },
-    {
-      accessorKey: "avatar_url",
-      header: "Avatar",
-      cell: ({ row }: any) => (
-        <Avatar>
-          <AvatarImage src={row.original.avatar_url ?? ""} />
-        </Avatar>
-      ),
-    },
-    {
-      accessorKey: "username",
-      header: "Name",
-      cell: ({ row }: any) => row.original.username ?? "-",
-    },
-    {
-      accessorKey: "email",
-      header: () => (
-        <Button
-          variant="ghost"
-          className="px-0"
-          onClick={() => {
-            setSortBy("email");
-            setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
-          }}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-    },
-    {
-      accessorKey: "role",
-      header: "Role",
-      cell: ({ row }: any) => (
-        <Badge className="bg-yellow-300 text-black">{row.original.role}</Badge>
-      ),
-    },
-    {
-      accessorKey: "is_blocked",
-      header: "Status",
-      cell: ({ row }: any) =>
-        row.original.is_blocked ? (
-          <Badge variant="destructive">Blocked</Badge>
-        ) : (
-          <Badge className="bg-green-500/20 text-green-600">Active</Badge>
-        ),
-    },
-    {
-      accessorKey: "created_at",
-      header: () => (
-        <Button
-          variant="ghost"
-          className="px-0"
-          onClick={() => {
-            setSortBy("created_at");
-            setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
-          }}
-        >
-          Created
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }: any) => (
-        <span className="text-sm text-muted-foreground">
-          {row.original.created_at
-            ? formatDateWithDay(row.original.created_at)
-            : "-"}
-        </span>
-      ),
-    },
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }: any) => {
-        const target = row.original;
-        const isSelfRow = target.auth_id === user?.id;
-        const isTargetDeleted = !!target.deleted_at;
-
-        const handleDemote = async () => {
-          if (!target) return;
-          try {
-            await UserService.updateRoleToUser(target.id, userData?.id);
-            toast({
-              title: "Role Updated",
-              description: `${target.username} is now a regular user.`,
-            });
-            refetch();
-          } catch (err) {
-            console.error(err);
-            toast({
-              title: "Error",
-              description: "Failed to demote user.",
-              variant: "destructive",
-            });
-          }
-        };
-
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-              {isTargetDeleted ? (
-                <DropdownMenuItem
-                  className="text-blue-500 hover:text-blue-500"
-                  disabled={isSelfRow}
-                  onClick={() => {
-                    if (isSelfRow) return;
-                    setSelectedUser(target);
-                    setRestoreDialogOpen(true);
-                  }}
-                >
-                  Restore User
-                </DropdownMenuItem>
-              ) : (
-                <>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedUser(target);
-                      setViewDialogOpen(true);
-                    }}
-                  >
-                    View Details
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                  disabled={isSelfRow || target.role !== "admin"}
-                    onClick={() => {
-                      if (isSelfRow) return;
-                      setSelectedUser(target);
-                      setBlockDialogOpen(true);
-                    }}
-                  >
-                    {target.is_blocked ? "Unblock User" : "Block User"}
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    onClick={handleDemote}
-                    disabled={isSelfRow || target.role !== "admin"}
-                    className="text-green-500 hover:text-green-500"
-                  >
-                    Demote to User
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-
-                  <DropdownMenuItem
-                    className="text-destructive"
-                    disabled={isSelfRow}
-                    onClick={() => {
-                      if (isSelfRow) return;
-                      setSelectedUser(target);
-                      setConfirmName("");
-                      setDeleteDialogOpen(true);
-                    }}
-                  >
-                    Delete User
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    },
-  ];
+  const columns = getUserColumnsWithDemote({
+    page,
+    ENV,
+    user,
+    userData,
+    setSortBy,
+    setSortOrder,
+    setSelectedUser,
+    setViewDialogOpen,
+    setBlockDialogOpen,
+    setRestoreDialogOpen,
+    setConfirmName,
+    setDeleteDialogOpen,
+    toast,
+    refetch,
+  });
 
   return (
     <div className="container lg:p-4 space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Admins</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Admins
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl">
             Manage admin accounts. Add new admins from existing users.
           </p>
         </div>
@@ -394,7 +226,7 @@ export default function UsersAdmin() {
 
           {selectedUser &&
             (() => {
-              const isSelf = userData?.auth_id === user.id;
+              const isSelf = selectedUser?.auth_id === user?.id;
 
               return (
                 <>

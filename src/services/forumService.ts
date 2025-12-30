@@ -1,6 +1,12 @@
 import { supabase } from "@/lib/supabase/client";
-import type { Forum, ForumReply } from "@/types/forum";
+import type {
+  Forum,
+  ForumDashboardResponse,
+  ForumReply,
+  Timeframe,
+} from "@/types/forum";
 import type { ParamsService } from "@/types/paramService";
+import { timeframeToDays } from "@/utils/timeframe";
 import type { SerializedEditorState } from "lexical";
 
 const BASE_FORUM_SELECT = `
@@ -45,6 +51,23 @@ export class ForumService {
     const { data, error, count } = await query;
     if (error) throw error;
     return { data: data ?? [], total: count ?? 0 };
+  }
+
+  static async getDashboard(
+    timeframe: Timeframe
+  ): Promise<ForumDashboardResponse> {
+    const days = timeframeToDays(timeframe);
+
+    const { data, error } = await supabase.rpc("get_forum_dashboard", {
+      p_days: days,
+    });
+
+    if (error) {
+      console.error("[ForumService.getDashboard]", error);
+      throw error;
+    }
+
+    return data as ForumDashboardResponse;
   }
 
   static async getForumsByUser(

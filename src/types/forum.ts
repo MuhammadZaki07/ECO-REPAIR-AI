@@ -39,7 +39,6 @@ export type ForumReply = {
   };
 };
 
-
 export type ForumLike = {
   id: string;
   forum_id?: string;
@@ -96,3 +95,42 @@ export type ModalForumsProps = {
   initialCategoryId?: number | string | null;
   onSuccess?: () => void;
 };
+
+export type Timeframe = "1d" | "7d" | "30d" | "90d";
+
+export interface ForumDashboardResponse {
+  cards: {
+    total_questions: number;
+    total_answers: number;
+    question_likes: number;
+    answer_likes: number;
+    solutions: number;
+    top_contributor: {
+      user_id: string;
+      username: string;
+      avatar_url: string;
+      points: number;
+    } | null;
+  };
+  charts: {
+    questions_by_date: {
+      date: string;
+      questions: number;
+      answers: number;
+    }[];
+    solutions_by_date: {
+      date: string;
+      solutions: number;
+      pending: number;
+    }[];
+    likes_by_date: {
+      date: string;
+      question_likes: number;
+      reply_likes: number;
+    }[];
+    activity_by_date: {
+      date: string;
+      posts: number;
+    }[];
+  };
+}

@@ -39,8 +39,10 @@ export default function LeaderboardPage() {
 
   return (
     <div className="container p-4 space-y-4">
-      <h1 className="text-3xl font-bold">Leaderboard</h1>
-      <p className="text-muted-foreground">
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+        Leaderboard
+      </h1>
+      <p className="text-lg text-muted-foreground max-w-2xl">
         Top contributors ranked by experience and activity.
       </p>
 

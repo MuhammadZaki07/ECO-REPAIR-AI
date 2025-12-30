@@ -17,7 +17,7 @@
   {
     "label": "Forum",
     "icon": "messagesSquare",
-    "path": "forums"
+    "path": "forum-dashboard"
   },
   {
     "label": "Guide",

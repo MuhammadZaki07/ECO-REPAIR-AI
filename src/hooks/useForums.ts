@@ -15,6 +15,7 @@ export const useForums = (
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const pageSize = ENV.PAGE_SIZE;
+  const [timeframe, setTimeframe] = useState<"1d" | "7d" | "30d" | "90d">("1d");
 
   const forumsQuery = useQuery({
     queryKey: ["forums", tab, page, search, userId],
@@ -39,6 +40,13 @@ export const useForums = (
     enabled: tab !== "my" || !!userId,
   });
 
+  const dashboardQuery = useQuery({
+    queryKey: ["forum-dashboard", timeframe],
+    queryFn: () => ForumService.getDashboard(timeframe),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+
   const createForum = useMutation({
     mutationFn: ({
       userId,
@@ -51,12 +59,7 @@ export const useForums = (
       category_id: number | string;
       editorState: SerializedEditorState;
     }) =>
-      ForumService.createForum(
-        userId,
-        title.trim(),
-        category_id,
-        editorState
-      ),
+      ForumService.createForum(userId, title.trim(), category_id, editorState),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
     },
@@ -74,20 +77,14 @@ export const useForums = (
       category_id: number | string;
       editorState: SerializedEditorState;
     }) =>
-      ForumService.updateForum(
-        forumId,
-        title.trim(),
-        category_id,
-        editorState
-      ),
+      ForumService.updateForum(forumId, title.trim(), category_id, editorState),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
     },
   });
 
   const deleteForum = useMutation({
-    mutationFn: (forumId: string) =>
-      ForumService.deleteForum(forumId),
+    mutationFn: (forumId: string) => ForumService.deleteForum(forumId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forums"] });
     },
@@ -100,20 +97,17 @@ export const useForums = (
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "forum_replies" },
         (payload) => {
-          queryClient.setQueriesData(
-            { queryKey: ["forums"] },
-            (old: any) => {
-              if (!old?.data) return old;
-              return {
-                ...old,
-                data: old.data.map((f: Forum) =>
-                  f.id === payload.new.forum_id
-                    ? { ...f, replies_count: f.replies_count + 1 }
-                    : f
-                ),
-              };
-            }
-          );
+          queryClient.setQueriesData({ queryKey: ["forums"] }, (old: any) => {
+            if (!old?.data) return old;
+            return {
+              ...old,
+              data: old.data.map((f: Forum) =>
+                f.id === payload.new.forum_id
+                  ? { ...f, replies_count: f.replies_count + 1 }
+                  : f
+              ),
+            };
+          });
         }
       )
       .subscribe();
@@ -124,20 +118,17 @@ export const useForums = (
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "forum_likes" },
         (payload) => {
-          queryClient.setQueriesData(
-            { queryKey: ["forums"] },
-            (old: any) => {
-              if (!old?.data) return old;
-              return {
-                ...old,
-                data: old.data.map((f: Forum) =>
-                  f.id === payload.new.forum_id
-                    ? { ...f, likes_count: f.likes_count + 1 }
-                    : f
-                ),
-              };
-            }
-          );
+          queryClient.setQueriesData({ queryKey: ["forums"] }, (old: any) => {
+            if (!old?.data) return old;
+            return {
+              ...old,
+              data: old.data.map((f: Forum) =>
+                f.id === payload.new.forum_id
+                  ? { ...f, likes_count: f.likes_count + 1 }
+                  : f
+              ),
+            };
+          });
         }
       )
       .subscribe();
@@ -165,5 +156,13 @@ export const useForums = (
     createForum: createForum.mutateAsync,
     updateForum: updateForum.mutateAsync,
     deleteForum: deleteForum.mutateAsync,
+
+    dashboard: dashboardQuery.data,
+    dashboardLoading: dashboardQuery.isLoading,
+    dashboardError: dashboardQuery.error,
+
+    timeframe,
+    setTimeframe,
+    refetchDashboard: dashboardQuery.refetch,
   };
 };
