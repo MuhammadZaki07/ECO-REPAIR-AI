@@ -15,7 +15,7 @@ export const useForums = (
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const pageSize = ENV.PAGE_SIZE;
-  const [timeframe, setTimeframe] = useState<"1d" | "7d" | "30d" | "90d">("1d");
+  const [timeframe, setTimeframe] = useState<"1d" | "7d" | "30d" | "90d">("30d");
 
   const forumsQuery = useQuery({
     queryKey: ["forums", tab, page, search, userId],

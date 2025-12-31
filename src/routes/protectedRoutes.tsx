@@ -22,6 +22,7 @@ import UsersAdmin from "@/pages/admin/users/admin-managment";
 import ForumDashboard from "@/pages/admin/forums";
 import GuidesPage from "@/pages/admin/guides";
 import GuideDetailPage from "@/pages/admin/guides/detail-guide";
+import { VouchersPage } from "@/pages/admin/Exchange-Hub/vouchers";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -74,6 +75,7 @@ export const protectedRoutes: RouteObject[] = [
       { path: "forum-dashboard", element: <ForumDashboard /> },
       { path: "guides", element: <GuidesPage /> },
       { path: "guides/:id/:title", element: <GuideDetailPage /> },
+      { path: "Exchange-Hub/vouchers", element: <VouchersPage /> },
     ],
   },
 ];
