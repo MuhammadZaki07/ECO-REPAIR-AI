@@ -19,4 +19,7 @@ export const ENV = {
 
   URL_USER: import.meta.env.VITE_URL_USER || "/user",
   URL_ADMIN: import.meta.env.VITE_URL_ADMIN || "/admin",
+
+  BUCKET_GUIDES: import.meta.env.VITE_BUCKET_GUIDES,
+  FOLDER_GUIDES: import.meta.env.VITE_FOLDER_GUIDES,
 };

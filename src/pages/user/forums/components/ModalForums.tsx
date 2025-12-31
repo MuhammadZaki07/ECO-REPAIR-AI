@@ -23,7 +23,6 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useCategories } from "@/hooks/useCategories";
 import { ForumService } from "@/services/forumService";
-import { AuthService } from "@/services/AuthService";
 import {
   askQuestionSchema,
   editForumSchema,
@@ -32,36 +31,7 @@ import { validateField } from "@/utils/handleFieldValidation";
 import type { ModalForumsProps } from "@/types/forum";
 import { parseLexicalEditorState } from "@/utils/parseLexicalEditorState";
 import { useAuthContext } from "@/hooks/context/AuthContext";
-
-const initialEditorState = {
-  root: {
-    children: [
-      {
-        children: [
-          {
-            detail: 0,
-            format: 0,
-            mode: "normal",
-            style: "",
-            text: "",
-            type: "text",
-            version: 1,
-          },
-        ],
-        direction: "ltr",
-        format: "",
-        indent: 0,
-        type: "paragraph",
-        version: 1,
-      },
-    ],
-    direction: "ltr",
-    format: "",
-    indent: 0,
-    type: "root",
-    version: 1,
-  },
-} as unknown as SerializedEditorState;
+import { initialEditorState } from "@/config/initialEditor";
 
 export default function ModalForums({
   isOpen,
@@ -93,7 +63,7 @@ export default function ModalForums({
     category?: string;
   }>({});
   const [loading, setLoading] = useState(false);
-  const { user, userData } = useAuthContext();
+  const { userData } = useAuthContext();
   useEffect(() => {
     setTitle(initialTitle);
     setEditorState(
@@ -224,24 +194,23 @@ export default function ModalForums({
       <DialogContent className="sm:max-w-[525px] lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {isEditMode ? "Edit Forum" : "Tanya Komunitas"}
+            {isEditMode ? "Edit Forums" : "Ask the Community"}
           </DialogTitle>
           {!isEditMode && (
             <DialogDescription>
-              Jelaskan masalah perangkatmu. Para ahli dan user lain akan
-              membantu.
+              Describe your device problem. Experts and other users will help.
             </DialogDescription>
           )}
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Judul Masalah</Label>
+            <Label htmlFor="title">Problem Title</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="Misal: Baterai HP cepat habis"
+              placeholder="For example: The cellphone battery runs out quickly"
               className={cn(
                 errors.title && "border-red-500 focus-visible:ring-red-500"
               )}
@@ -252,7 +221,7 @@ export default function ModalForums({
           </div>
 
           <div className="space-y-3">
-            <Label htmlFor="category">Kategori</Label>
+            <Label htmlFor="category">Category</Label>
             <Select
               value={selectedCategory?.toString() ?? ""}
               onValueChange={handleCategoryChange}
@@ -261,7 +230,7 @@ export default function ModalForums({
               <SelectTrigger className="w-full">
                 <SelectValue
                   placeholder={
-                    catLoading ? "Memuat kategori..." : "Pilih kategori"
+                    catLoading ? "Loading categories..." : "Select a category"
                   }
                 />
               </SelectTrigger>
@@ -278,16 +247,16 @@ export default function ModalForums({
             )}
             {catError && (
               <p className="text-sm text-red-500">
-                Gagal memuat kategori.{" "}
+                Failed to load category.{" "}
                 <button onClick={refetchCategories} className="underline">
-                  Coba Lagi
+                  Try again
                 </button>
               </p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Deskripsi Lengkap</Label>
+            <Label htmlFor="description">Complete Description</Label>
             <div
               className={cn(
                 "rounded-md",
@@ -309,11 +278,11 @@ export default function ModalForums({
           <Button onClick={handleSubmit} disabled={loading}>
             {loading
               ? isEditMode
-                ? "Menyimpan..."
-                : "Mengirim..."
+                ? "Save...."
+                : "Send..."
               : isEditMode
-              ? "Simpan Perubahan"
-              : "Kirim Pertanyaan"}
+              ? "Save Changes"
+              : "Send Inquiry"}
           </Button>
         </DialogFooter>
       </DialogContent>

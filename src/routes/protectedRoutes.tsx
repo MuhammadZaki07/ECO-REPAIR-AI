@@ -20,6 +20,8 @@ import LeaderboardPage from "@/pages/admin/leaderboards";
 import UsersPage from "@/pages/admin/users";
 import UsersAdmin from "@/pages/admin/users/admin-managment";
 import ForumDashboard from "@/pages/admin/forums";
+import GuidesPage from "@/pages/admin/guides";
+import GuideDetailPage from "@/pages/admin/guides/detail-guide";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -70,6 +72,8 @@ export const protectedRoutes: RouteObject[] = [
       { path: "admin-all", element: <UsersAdmin /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "forum-dashboard", element: <ForumDashboard /> },
+      { path: "guides", element: <GuidesPage /> },
+      { path: "guides/:id/:title", element: <GuideDetailPage /> },
     ],
   },
 ];

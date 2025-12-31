@@ -113,7 +113,7 @@ const DiagnosisDetailPage: React.FC = () => {
   const risks = sections.find((s) => s.tag === "RISK!")?.items ?? [];
 
   return (
-    <div className="lg:p-5 space-y-6">
+    <div className="lg:p-5 space-y-6 max-w-5xl w-full mx-auto">
       <Button variant="ghost" onClick={() => navigate(-1)}>
         <ChevronLeft className="w-4 h-4 mr-2" /> Back
       </Button>

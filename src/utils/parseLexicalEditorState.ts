@@ -6,13 +6,28 @@ export const parseLexicalEditorState = (
 ): SerializedEditorState => {
   if (!value) return fallback;
 
+  let parsed: SerializedEditorState | null = null;
+
   if (typeof value === "string") {
     try {
-      return JSON.parse(value) as SerializedEditorState;
+      parsed = JSON.parse(value) as SerializedEditorState;
     } catch {
       return fallback;
     }
+  } else {
+    parsed = value;
   }
 
-  return value;
+  if (
+    !parsed ||
+    typeof parsed !== "object" ||
+    !("root" in parsed) ||
+    !parsed.root ||
+    parsed.root.type !== "root" ||
+    !Array.isArray(parsed.root.children)
+  ) {
+    return fallback;
+  }
+
+  return parsed;
 };
