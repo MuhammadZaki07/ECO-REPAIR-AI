@@ -43,11 +43,11 @@ export function FinalCTASection() {
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 w-full">
-              <Link to={"/scan"} className="w-full sm:w-auto">
+              <Link to={"/user/scan"} className="w-full sm:w-auto">
                 <LiquidButton className="dark:text-white text-black cursor-pointer" size={'lg'}>{t("final_cta.cta_scan")}</LiquidButton>
               </Link>
 
-              <Link to={"/dashboard/hubs"} className="w-full sm:w-auto">
+              <Link to={"/user/history"} className="w-full sm:w-auto">
                 <LiquidButton className="dark:text-white text-black cursor-pointer" size={'lg'}>{t("final_cta.cta_reward")}</LiquidButton>
               </Link>
             </div>

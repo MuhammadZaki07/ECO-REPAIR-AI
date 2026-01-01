@@ -83,7 +83,7 @@ export function UserXPHistoryModal({
 
           <div className="flex-1 p-6 space-y-6">
             {loadingUserXPHistory ? (
-              <Skeleton className="h-full w-[400px] rounded-lg" />
+              <Skeleton className="w-full h-[500px] rounded-lg" />
             ) : chartData.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <div className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-full mb-4">

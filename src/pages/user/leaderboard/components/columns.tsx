@@ -6,26 +6,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import type { LeaderboardRow } from "@/types/leaderboard";
 import { RankBadge } from "./RankBadge";
 
-  const getRankBgClass = (rank: number) => {
-    if (rank === 1) return "bg-yellow-300 text-black";
-    if (rank === 2) return "bg-neutral-300 text-black";
-    if (rank === 3) return "bg-amber-900 text-black";
-    return "";
-  };
+const getRankBgClass = (rank: number) => {
+  if (rank === 1) return "bg-yellow-300 text-black";
+  if (rank === 2) return "bg-neutral-300 text-black";
+  if (rank === 3) return "bg-amber-900 text-black";
+  return "";
+};
 
 export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
   {
     id: "rank",
-    header: () => (
-    <div className="text-center font-semibold text-sm">#</div>
-  ),
+    header: () => <div className="text-center font-semibold text-sm">#</div>,
     cell: ({ row }) => {
       const rank = row.index + 1;
 
       return (
-        <div
-          className={`flex mx-auto justify-center items-center w-10 h-10`}
-        >
+        <div className={`flex mx-auto justify-center items-center w-10 h-10`}>
           <RankBadge rank={rank} />
         </div>
       );
@@ -55,16 +51,13 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
             rank
           )}`}
         >
-          <Avatar className="h-7 w-7">
-            {user.avatar_url ? (
-              <AvatarImage src={user.avatar_url} />
-            ) : (
-              <AvatarFallback>
-                {user.username.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            )}
+          <Avatar>
+            <AvatarImage loading="lazy" src={row.original.avatar_url} />
+            <AvatarFallback className="bg-gray-200 text-gray-700 font-bold">
+              {row.original.username?.[0]?.toUpperCase() ?? "?"}
+            </AvatarFallback>
           </Avatar>
-          <span className="font-medium">{user.username}</span>
+          <span className="font-medium">{user?.username}</span>
         </div>
       );
     },
@@ -109,7 +102,10 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
       </Button>
     ),
     cell: ({ row }) => (
-      <Badge variant="outline" className="font-semibold  mx-auto flex justify-center">
+      <Badge
+        variant="outline"
+        className="font-semibold  mx-auto flex justify-center"
+      >
         {row.getValue<number>("contributions")}
       </Badge>
     ),

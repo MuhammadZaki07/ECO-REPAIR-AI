@@ -17,12 +17,11 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
       const user = row.original;
       return (
         <div className="flex items-center gap-2">
-          <Avatar className="h-7 w-7">
-            {user.avatar_url ? (
-              <AvatarImage src={user.avatar_url} />
-            ) : (
-              <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
-            )}
+          <Avatar>
+            <AvatarImage loading="lazy" src={row.original.avatar_url} />
+            <AvatarFallback className="bg-gray-200 text-gray-700 font-bold">
+              {row.original.username?.[0]?.toUpperCase() ?? "?"}
+            </AvatarFallback>
           </Avatar>
           <span>{user.username}</span>
         </div>
@@ -32,12 +31,16 @@ export const leaderboardColumns: ColumnDef<LeaderboardRow>[] = [
   {
     accessorKey: "xp",
     header: "XP",
-    cell: ({ row }) => <Badge variant="outline">{row.getValue<number>("xp")} XP</Badge>,
+    cell: ({ row }) => (
+      <Badge variant="outline">{row.getValue<number>("xp")} XP</Badge>
+    ),
   },
   {
     accessorKey: "contributions",
     header: "Contributions",
-    cell: ({ row }) => <Badge variant="outline">{row.getValue<number>("contributions")}</Badge>,
+    cell: ({ row }) => (
+      <Badge variant="outline">{row.getValue<number>("contributions")}</Badge>
+    ),
   },
   {
     id: "action",

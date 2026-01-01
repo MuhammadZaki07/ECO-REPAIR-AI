@@ -1,3 +1,5 @@
+import type { MerchandiseInput } from "@/schemas/MerchandiseSchema";
+
 export interface UIMerch {
   id: string;
   title: string;
@@ -29,4 +31,16 @@ export interface MerchOrder {
   created_at: string;
   updated_at: string;
   merchandise: EcoMerch;
+}
+
+export interface MerchandiseModalProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  initialData?: MerchandiseInput | null;
+  onSubmit: (
+    data: MerchandiseInput,
+    removeImage?: boolean,
+    selectedFile?: File
+  ) => Promise<void>;
+  onSuccess?: () => void;
 }

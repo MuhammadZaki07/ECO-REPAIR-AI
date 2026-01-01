@@ -62,17 +62,12 @@
         "label": "Admin",
         "icon": "userPlus",
         "path": "admin-all"
-      },
-      {
-        "label": "My Profile",
-        "icon": "user2",
-        "path": "profile"
       }
     ]
   },
   {
-    "label": "Settings User",
-    "icon": "settings",
-    "path": "settings"
+    "label": "Profile",
+    "icon": "user2",
+    "path": "profile"
   }
 ]

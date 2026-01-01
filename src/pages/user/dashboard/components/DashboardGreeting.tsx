@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Calendar,
-  Clock,
-  Sun,
-  Moon,
-  Cloud,
-} from "lucide-react";
+import { Calendar, Clock, Sun, Moon, Cloud } from "lucide-react";
 import { DottedGlowBackground } from "@/components/ui/dotted-glow-background";
 import { useAuthContext } from "@/hooks/context/AuthContext";
 import { useUserLevel } from "@/hooks/useUserLevel";
@@ -18,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function DashboardGreeting() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const { userData } = useAuthContext();
-  const { level , loading } = useUserLevel(userData?.id);
+  const { level, loading } = useUserLevel(userData?.id);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -71,9 +65,7 @@ export default function DashboardGreeting() {
   };
 
   if (loading) {
-    return (
-        <Skeleton className="w-full h-[400px]"/>
-    );
+    return <Skeleton className="w-full h-[400px]" />;
   }
 
   return (
@@ -113,8 +105,13 @@ export default function DashboardGreeting() {
             </LiquidGlassCard>
 
             <div className="space-y-2">
+              {userData?.role === "admin" && (
+                <h1 className="text-3xl font-black tracking-tight dark:text-neutral-100 text-neutral-900">
+                  {userData?.role === "admin" && "Welocome"}
+                </h1>
+              )}
               <h1 className="text-4xl lg:text-5xl font-black tracking-tight dark:text-neutral-100 text-neutral-900">
-                {userData?.username || "Eco Hero"}
+                {userData?.username || "Jhon doe"}
               </h1>
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
@@ -124,7 +121,7 @@ export default function DashboardGreeting() {
               </div>
             </div>
 
-            {level && (
+            {(level || userData?.role !== "admin") && (
               <Card className="p-5 bg-transparent w-56 border-none shadow-none">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">

@@ -1,11 +1,18 @@
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import { ArrowUpDown, MoreHorizontal, Undo } from "lucide-react"
-import { Avatar, AvatarImage } from "@/components/ui/Avatar"
-import { formatDateWithDay } from "@/utils/date"
-import type { User } from "@supabase/supabase-js"
-import { UserService } from "@/services/UserService"
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { ArrowUpDown, MoreHorizontal, Undo } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { formatDateWithDay } from "@/utils/date";
+import type { User } from "@supabase/supabase-js";
+import { UserService } from "@/services/UserService";
 
 export const getUserColumns = ({
   page,
@@ -21,18 +28,18 @@ export const getUserColumns = ({
   setDeleteDialogOpen,
   toast,
 }: {
-  page: number
-  ENV: { PAGE_SIZE: number }
-  user: User | null
-  setSortBy: (key: string) => void
-  setSortOrder: (order: "asc" | "desc") => void
-  setSelectedUser: (user: User) => void
-  setViewDialogOpen: (open: boolean) => void
-  setBlockDialogOpen: (open: boolean) => void
-  setRestoreDialogOpen: (open: boolean) => void
-  setConfirmName: (val: string) => void
-  setDeleteDialogOpen: (open: boolean) => void
-  toast: any
+  page: number;
+  ENV: { PAGE_SIZE: number };
+  user: User | null;
+  setSortBy: (key: string) => void;
+  setSortOrder: (order: "asc" | "desc") => void;
+  setSelectedUser: (user: User) => void;
+  setViewDialogOpen: (open: boolean) => void;
+  setBlockDialogOpen: (open: boolean) => void;
+  setRestoreDialogOpen: (open: boolean) => void;
+  setConfirmName: (val: string) => void;
+  setDeleteDialogOpen: (open: boolean) => void;
+  toast: any;
 }) => [
   {
     id: "no",
@@ -44,7 +51,10 @@ export const getUserColumns = ({
     header: "Avatar",
     cell: ({ row }: any) => (
       <Avatar>
-        <AvatarImage src={row.original.avatar_url ?? ""} />
+        <AvatarImage loading="lazy" src={row.original.avatar_url} />
+        <AvatarFallback className="bg-gray-200 text-gray-700 font-bold">
+          {row.original.username?.[0]?.toUpperCase() ?? "?"}
+        </AvatarFallback>
       </Avatar>
     ),
   },
@@ -60,8 +70,8 @@ export const getUserColumns = ({
         variant="ghost"
         className="px-0"
         onClick={() => {
-          setSortBy("email")
-          setSortOrder((p) => (p === "asc" ? "desc" : "asc"))
+          setSortBy("email");
+          setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
         }}
       >
         Email
@@ -96,8 +106,8 @@ export const getUserColumns = ({
         variant="ghost"
         className="px-0"
         onClick={() => {
-          setSortBy("created_at")
-          setSortOrder((p) => (p === "asc" ? "desc" : "asc"))
+          setSortBy("created_at");
+          setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
         }}
       >
         Created
@@ -116,9 +126,9 @@ export const getUserColumns = ({
     id: "actions",
     header: "Actions",
     cell: ({ row }: any) => {
-      const target = row.original
-      const isSelfRow = target.auth_id === user?.id
-      const isTargetDeleted = !!target.deleted_at
+      const target = row.original;
+      const isSelfRow = target.auth_id === user?.id;
+      const isTargetDeleted = !!target.deleted_at;
 
       return (
         <DropdownMenu>
@@ -139,14 +149,13 @@ export const getUserColumns = ({
                   if (isSelfRow) {
                     toast({
                       title: "Action not allowed",
-                      description:
-                        "You cannot restore your own account.",
+                      description: "You cannot restore your own account.",
                       variant: "destructive",
-                    })
-                    return
+                    });
+                    return;
                   }
-                  setSelectedUser(target)
-                  setRestoreDialogOpen(true)
+                  setSelectedUser(target);
+                  setRestoreDialogOpen(true);
                 }}
               >
                 <Undo className="text-blue-500 hover:text-blue-500" /> Restore
@@ -156,8 +165,8 @@ export const getUserColumns = ({
               <>
                 <DropdownMenuItem
                   onClick={() => {
-                    setSelectedUser(target)
-                    setViewDialogOpen(true)
+                    setSelectedUser(target);
+                    setViewDialogOpen(true);
                   }}
                 >
                   View Details
@@ -169,14 +178,13 @@ export const getUserColumns = ({
                     if (isSelfRow) {
                       toast({
                         title: "Action not allowed",
-                        description:
-                          "You cannot block your own account.",
+                        description: "You cannot block your own account.",
                         variant: "destructive",
-                      })
-                      return
+                      });
+                      return;
                     }
-                    setSelectedUser(target)
-                    setBlockDialogOpen(true)
+                    setSelectedUser(target);
+                    setBlockDialogOpen(true);
                   }}
                 >
                   {target.is_blocked ? "Unblock User" : "Block User"}
@@ -191,15 +199,14 @@ export const getUserColumns = ({
                     if (isSelfRow) {
                       toast({
                         title: "Action not allowed",
-                        description:
-                          "You cannot delete your own account.",
+                        description: "You cannot delete your own account.",
                         variant: "destructive",
-                      })
-                      return
+                      });
+                      return;
                     }
-                    setSelectedUser(target)
-                    setConfirmName("")
-                    setDeleteDialogOpen(true)
+                    setSelectedUser(target);
+                    setConfirmName("");
+                    setDeleteDialogOpen(true);
                   }}
                 >
                   Delete User
@@ -208,10 +215,10 @@ export const getUserColumns = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
 export const getUserColumnsWithDemote = ({
   page,
@@ -229,20 +236,20 @@ export const getUserColumnsWithDemote = ({
   toast,
   refetch,
 }: {
-  page: number
-  ENV: { PAGE_SIZE: number }
-  user: User | null
-  userData: User | null
-  setSortBy: (key: string) => void
-  setSortOrder: (order: "asc" | "desc") => void
-  setSelectedUser: (user: User) => void
-  setViewDialogOpen: (open: boolean) => void
-  setBlockDialogOpen: (open: boolean) => void
-  setRestoreDialogOpen: (open: boolean) => void
-  setConfirmName: (val: string) => void
-  setDeleteDialogOpen: (open: boolean) => void
-  toast: any
-  refetch: () => void
+  page: number;
+  ENV: { PAGE_SIZE: number };
+  user: User | null;
+  userData: User | null;
+  setSortBy: (key: string) => void;
+  setSortOrder: (order: "asc" | "desc") => void;
+  setSelectedUser: (user: User) => void;
+  setViewDialogOpen: (open: boolean) => void;
+  setBlockDialogOpen: (open: boolean) => void;
+  setRestoreDialogOpen: (open: boolean) => void;
+  setConfirmName: (val: string) => void;
+  setDeleteDialogOpen: (open: boolean) => void;
+  toast: any;
+  refetch: () => void;
 }) => [
   {
     id: "no",
@@ -254,7 +261,10 @@ export const getUserColumnsWithDemote = ({
     header: "Avatar",
     cell: ({ row }: any) => (
       <Avatar>
-        <AvatarImage src={row.original.avatar_url ?? ""} />
+        <AvatarImage loading="lazy" src={row.original.avatar_url} />
+        <AvatarFallback className="bg-gray-200 text-gray-700 font-bold">
+          {row.original.username?.[0]?.toUpperCase() ?? "?"}
+        </AvatarFallback>
       </Avatar>
     ),
   },
@@ -270,8 +280,8 @@ export const getUserColumnsWithDemote = ({
         variant="ghost"
         className="px-0"
         onClick={() => {
-          setSortBy("email")
-          setSortOrder((p) => (p === "asc" ? "desc" : "asc"))
+          setSortBy("email");
+          setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
         }}
       >
         Email
@@ -303,8 +313,8 @@ export const getUserColumnsWithDemote = ({
         variant="ghost"
         className="px-0"
         onClick={() => {
-          setSortBy("created_at")
-          setSortOrder((p) => (p === "asc" ? "desc" : "asc"))
+          setSortBy("created_at");
+          setSortOrder((p) => (p === "asc" ? "desc" : "asc"));
         }}
       >
         Created
@@ -323,35 +333,33 @@ export const getUserColumnsWithDemote = ({
     id: "actions",
     header: "Actions",
     cell: ({ row }: any) => {
-      const target = row.original
-      const isSelfRow = target.auth_id === user?.id
-      const isTargetDeleted = !!target.deleted_at
+      const target = row.original;
+      const isSelfRow = target.auth_id === user?.id;
+      const isTargetDeleted = !!target.deleted_at;
 
       const handleDemote = async () => {
-        if (!target) return
+        if (!target) return;
         try {
-          await UserService.updateRoleToUser(target.id, userData?.id)
+          await UserService.updateRoleToUser(target.id, userData?.id);
           toast({
             title: "Role Updated",
             description: `${target.username} is now a regular user.`,
-          })
-          refetch()
+          });
+          refetch();
         } catch (err) {
-          console.error(err)
+          console.error(err);
           toast({
             title: "Error",
             description: "Failed to demote user.",
             variant: "destructive",
-          })
+          });
         }
-      }
+      };
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+            <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end">
@@ -362,9 +370,9 @@ export const getUserColumnsWithDemote = ({
                 className="text-blue-500 hover:text-blue-500"
                 disabled={isSelfRow}
                 onClick={() => {
-                  if (isSelfRow) return
-                  setSelectedUser(target)
-                  setRestoreDialogOpen(true)
+                  if (isSelfRow) return;
+                  setSelectedUser(target);
+                  setRestoreDialogOpen(true);
                 }}
               >
                 Restore User
@@ -373,8 +381,8 @@ export const getUserColumnsWithDemote = ({
               <>
                 <DropdownMenuItem
                   onClick={() => {
-                    setSelectedUser(target)
-                    setViewDialogOpen(true)
+                    setSelectedUser(target);
+                    setViewDialogOpen(true);
                   }}
                 >
                   View Details
@@ -383,9 +391,9 @@ export const getUserColumnsWithDemote = ({
                 <DropdownMenuItem
                   disabled={isSelfRow || target.role !== "admin"}
                   onClick={() => {
-                    if (isSelfRow) return
-                    setSelectedUser(target)
-                    setBlockDialogOpen(true)
+                    if (isSelfRow) return;
+                    setSelectedUser(target);
+                    setBlockDialogOpen(true);
                   }}
                 >
                   {target.is_blocked ? "Unblock User" : "Block User"}
@@ -405,10 +413,10 @@ export const getUserColumnsWithDemote = ({
                   className="text-destructive"
                   disabled={isSelfRow}
                   onClick={() => {
-                    if (isSelfRow) return
-                    setSelectedUser(target)
-                    setConfirmName("")
-                    setDeleteDialogOpen(true)
+                    if (isSelfRow) return;
+                    setSelectedUser(target);
+                    setConfirmName("");
+                    setDeleteDialogOpen(true);
                   }}
                 >
                   Delete User
@@ -417,7 +425,7 @@ export const getUserColumnsWithDemote = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];

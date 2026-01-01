@@ -23,6 +23,9 @@ import ForumDashboard from "@/pages/admin/forums";
 import GuidesPage from "@/pages/admin/guides";
 import GuideDetailPage from "@/pages/admin/guides/detail-guide";
 import { VouchersPage } from "@/pages/admin/Exchange-Hub/vouchers";
+import MerchandisePage from "@/pages/admin/Exchange-Hub/merchandise";
+import DonationPage from "@/pages/admin/Exchange-Hub/donations";
+import AdminDashboard from "@/pages/admin/dashboard";
 
 export const protectedRoutes: RouteObject[] = [
   {
@@ -65,7 +68,7 @@ export const protectedRoutes: RouteObject[] = [
     ),
     children: [
       { index: true, element: <Dashboard /> },
-      { path: "dashboard", element: <Dashboard /> },
+      { path: "dashboard", element: <AdminDashboard /> },
       { path: "categories", element: <CategoryPage /> },
       { path: "leaderboard", element: <LeaderboardPage /> },
       { path: "community", element: <LeaderboardPage /> },
@@ -76,6 +79,8 @@ export const protectedRoutes: RouteObject[] = [
       { path: "guides", element: <GuidesPage /> },
       { path: "guides/:id/:title", element: <GuideDetailPage /> },
       { path: "Exchange-Hub/vouchers", element: <VouchersPage /> },
+      { path: "Exchange-Hub/merchindase", element: <MerchandisePage /> },
+      { path: "Exchange-Hub/donations", element: <DonationPage /> },
     ],
   },
 ];

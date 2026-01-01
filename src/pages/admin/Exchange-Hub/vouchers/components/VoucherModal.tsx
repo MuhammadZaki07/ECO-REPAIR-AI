@@ -135,12 +135,15 @@ export default function VoucherModal({
                 placeholder="0"
                 value={form.eco_coin_cost}
                 min={0}
+                step={1}
                 onChange={(e) => {
-                  const val = Number(e.target.value);
-                  handleChange("eco_coin_cost", val < 0 ? 0 : val);
+                  let val = Number(e.target.value.replace(/^0+(?=\d)/, ""));
+                  val = Math.max(0, Math.floor(val));
+                  handleChange("eco_coin_cost", val);
                 }}
                 className={error.eco_coin_cost ? "border-destructive" : ""}
               />
+
               {error.eco_coin_cost && (
                 <p className="text-destructive text-sm mt-1">
                   {error.eco_coin_cost}
@@ -172,13 +175,12 @@ export default function VoucherModal({
                 id="start_date"
                 type="date"
                 value={form.start_date?.slice(0, 10) || ""}
-                min={new Date().toISOString().slice(0, 10)} // hari ini atau nanti
+                min={new Date().toISOString().slice(0, 10)}
                 onChange={(e) => {
                   const value = e.target.value;
                   setForm((prev) => ({
                     ...prev,
                     start_date: value,
-                    // otomatis adjust end_date jika lebih kecil dari start_date
                     end_date:
                       prev.end_date && prev.end_date < value
                         ? value

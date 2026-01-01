@@ -14,7 +14,7 @@ export default function EcoWalletCard() {
       {loading ? (
         <Skeleton />
       ) : (
-        <Card className="p-8 flex flex-col justify-between relative overflow-hidden dark:bg-black ">
+        <Card className="p-8 h-80 flex flex-col justify-between relative overflow-hidden dark:bg-black ">
           <div>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
               Eco Coin Balance

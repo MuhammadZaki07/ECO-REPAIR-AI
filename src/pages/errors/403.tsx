@@ -16,16 +16,14 @@ export default function Forbidden() {
 
         <h1 className="text-4xl font-bold mb-3">403</h1>
         <p className="text-muted-foreground mb-6">
-          Kamu tidak memiliki akses ke halaman ini.
+          You do not have access to this page.
         </p>
 
         <div className="flex justify-center gap-3">
           <Button variant="outline" onClick={() => navigate(-1)}>
-            Kembali
+            Back
           </Button>
-          <Button onClick={() => navigate("/")}>
-            Ke Beranda
-          </Button>
+          <Button onClick={() => navigate("/")}>Go to Home</Button>
         </div>
       </div>
     </div>

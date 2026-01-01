@@ -37,3 +37,32 @@ export type CampaignWithDonors = EcoDonationCampaign & {
     amount: number;
   }[];
 };
+
+export interface DonationCampaignForm {
+  title: string;
+  description?: string;
+  goal_eco_coin: number;
+  current_eco_coin: number;
+  is_active: boolean;
+  image_file?: File | null;
+  remove_image?: boolean;
+}
+
+export interface DonationModalProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  initialData?: Partial<DonationCampaignForm> & { id?: string; image_url?: string };
+  onSubmit: (data: DonationCampaignForm) => void | Promise<void>;
+  onSuccess?: () => void;
+  schema?: any;
+}
+
+export interface GetDonorsParams {
+  campaignId?: string | null;
+  page: number;
+  pageSize: number;
+  search?: string;
+  sortBy?: "amount" | "created_at";
+  sortOrder?: "asc" | "desc";
+}
+

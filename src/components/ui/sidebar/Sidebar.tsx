@@ -92,7 +92,9 @@ export const Sidebar = () => {
 
   const isAdmin = userData.role === "admin";
   const basePath = isAdmin ? ENV.URL_ADMIN : ENV.URL_USER;
-  const menuItems: MenuItemSidebar[] = isAdmin ? MenuSidebarAdmin : MenuSidebarUser;
+  const menuItems: MenuItemSidebar[] = isAdmin
+    ? MenuSidebarAdmin
+    : MenuSidebarUser;
 
   const isVerified =
     user?.identities?.[0]?.identity_data?.email_verified === true;
@@ -271,11 +273,13 @@ export const Sidebar = () => {
 
             <DropdownMenuSeparator />
 
-            <Link to="/help-page">
-              <DropdownMenuItem>
-                <HelpCircle size={18} /> Help
-              </DropdownMenuItem>
-            </Link>
+            {!isAdmin && (
+              <Link to="/help" target="_blank">
+                <DropdownMenuItem>
+                  <HelpCircle size={18} /> Help
+                </DropdownMenuItem>
+              </Link>
+            )}
 
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut size={18} /> Logout
