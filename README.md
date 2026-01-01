@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# Eco Repair AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Gadget Tetap Prima, Bumi Tetap Bersih**
 
-Currently, two official plugins are available:
+Eco Repair AI adalah platform web berbasis AI Gemini yang dirancang untuk membantu pengguna memperbaiki gadget dan mengurangi limbah elektronik. Web ini menggabungkan teknologi AI, komunitas interaktif, dan sistem gamifikasi untuk menciptakan pengalaman perbaikan gadget yang cerdas, hemat biaya, dan berdampak positif bagi lingkungan.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Fitur Utama
 
-## React Compiler
+* **AI Gemini Diagnosis:** Identifikasi kerusakan gadget secara real-time.
+* **Step-by-Step Guides:** Panduan perbaikan visual yang mudah diikuti.
+* **Community Forum:** Ruang diskusi dan solusi bersama.
+* **Eco-Exchange Hub:** Marketplace untuk menukarkan Eco Coin dengan Voucher, Merchandise, atau Donasi.
+* **Impact Dashboard:** Laporan real-time pengurangan limbah elektronik.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Teknologi
 
-## Expanding the ESLint configuration
+* **Frontend:** Vite + React
+* **UI:** Shadcn UI, responsive dengan efek premium (Glassmorphism & 3D Globe)
+* **Backend / Database:** Supabase
+* **Code Structure:** Clean Code & SOLID Principles (DB → Service → Hook → UI)
+* **Type Safety & Security:** TypeScript dan Row Level Security (RLS) di Supabase
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Role
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* **User:** Tanya ke AI, ikut forum, dapat XP & Eco Coin (gimmick), redeem reward.
+* **Admin:** Kelola kategori, guides, merchandise, voucher, donasi, dan pantau statistik.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Instalasi & Penggunaan
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone repository:
+
+```bash
+git clone https://github.com/MuhammadZaki07/ECO-REPAIR-AI.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Masuk ke folder proyek:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd ECO-REPAIR-AI
 ```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+4. Jalankan development server:
+
+```bash
+npm run dev
+```
+
+5. Buka browser di [http://localhost:5173](http://localhost:5173) untuk melihat aplikasi.
+
+## Kontribusi
+
+Silakan buka pull request atau issue di GitHub jika ingin berkontribusi. Pastikan mengikuti standar **Clean Code** dan prinsip **SOLID**.
+
+## Lisensi
+
+Eco Repair AI berada di bawah lisensi MIT. Untuk informasi lebih lanjut, lihat file LICENSE di repository.
+
+## Link Repository
+
+[https://github.com/MuhammadZaki07/ECO-REPAIR-AI.git](https://github.com/MuhammadZaki07/ECO-REPAIR-AI.git)
