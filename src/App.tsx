@@ -24,9 +24,9 @@ function App() {
       <I18nextProvider i18n={i18n}>
         <ToastProviderWrapper>
           <QueryClientProvider client={queryClient}>
-            {/* <BrowserRouter> */}
-            <AppRoutes />
-            {/* </BrowserRouter> */}
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
           </QueryClientProvider>
           <ToastViewport />
         </ToastProviderWrapper>
