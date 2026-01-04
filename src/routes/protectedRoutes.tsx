@@ -1,36 +1,58 @@
+import { lazy, Suspense, type JSX } from "react";
+import type { RouteObject } from "react-router-dom";
+
 import AuthGuard from "@/layouts/guards/AuthGuard";
 import UserLayout from "@/layouts/UserLayout";
-import Dashboard from "@/pages/admin/dashboard";
-import AuthCallback from "@/pages/auth/callback";
-import ScanPage from "../pages/user/chat-ai/ScanPage";
-import type { RouteObject } from "react-router-dom";
-import ProfilePage from "@/pages/user/Profile";
-import DashboardForums from "@/pages/user/forums";
-import EcoCoints from "@/pages/user/Eco-coints";
-import DiagnosisHistoryPage from "@/pages/user/Diagnosis-history";
-import DiagnosisDetailPage from "@/pages/user/Diagnosis-history/detail-diagnosa";
-import ForumDetailPage from "@/pages/user/forums/detail-forums";
-import UserDashboard from "@/pages/user/dashboard";
 import AdminLayout from "@/layouts/AdminLayouts";
-import Leaderboard from "@/pages/user/leaderboard";
-import DonationDetailPage from "@/pages/user/Eco-coints/DonationDetailPage";
 import { ENV } from "@/env";
-import CategoryPage from "@/pages/admin/categories";
-import LeaderboardPage from "@/pages/admin/leaderboards";
-import UsersPage from "@/pages/admin/users";
-import UsersAdmin from "@/pages/admin/users/admin-managment";
-import ForumDashboard from "@/pages/admin/forums";
-import GuidesPage from "@/pages/admin/guides";
-import GuideDetailPage from "@/pages/admin/guides/detail-guide";
-import { VouchersPage } from "@/pages/admin/Exchange-Hub/vouchers";
-import MerchandisePage from "@/pages/admin/Exchange-Hub/merchandise";
-import DonationPage from "@/pages/admin/Exchange-Hub/donations";
-import AdminDashboard from "@/pages/admin/dashboard";
+import GlobalLoading from "@/components/ui/GlobalLoading";
+
+const withSuspense = (el: JSX.Element) => (
+  <Suspense fallback={<GlobalLoading/>}>{el}</Suspense>
+);
+
+const AuthCallback = lazy(() => import("@/pages/auth/callback"));
+
+const UserDashboard = lazy(() => import("@/pages/user/dashboard"));
+const ScanPage = lazy(() => import("@/pages/user/chat-ai/ScanPage"));
+const DiagnosisHistoryPage = lazy(
+  () => import("@/pages/user/Diagnosis-history")
+);
+const DiagnosisDetailPage = lazy(
+  () => import("@/pages/user/Diagnosis-history/detail-diagnosa")
+);
+const DashboardForums = lazy(() => import("@/pages/user/forums"));
+const ForumDetailPage = lazy(() => import("@/pages/user/forums/detail-forums"));
+const EcoCoints = lazy(() => import("@/pages/user/Eco-coints"));
+const DonationDetailPage = lazy(
+  () => import("@/pages/user/Eco-coints/DonationDetailPage")
+);
+const ProfilePage = lazy(() => import("@/pages/user/Profile"));
+const Leaderboard = lazy(() => import("@/pages/user/leaderboard"));
+
+const AdminDashboard = lazy(() => import("@/pages/admin/dashboard"));
+const CategoryPage = lazy(() => import("@/pages/admin/categories"));
+const LeaderboardPage = lazy(() => import("@/pages/admin/leaderboards"));
+const UsersPage = lazy(() => import("@/pages/admin/users"));
+const UsersAdmin = lazy(() => import("@/pages/admin/users/admin-managment"));
+const ForumDashboard = lazy(() => import("@/pages/admin/forums"));
+const GuidesPage = lazy(() => import("@/pages/admin/guides"));
+const GuideDetailPage = lazy(() => import("@/pages/admin/guides/detail-guide"));
+const VouchersPage = lazy(() =>
+  import("@/pages/admin/Exchange-Hub/vouchers").then((m) => ({
+    default: m.VouchersPage,
+  }))
+);
+
+const MerchandisePage = lazy(
+  () => import("@/pages/admin/Exchange-Hub/merchandise")
+);
+const DonationPage = lazy(() => import("@/pages/admin/Exchange-Hub/donations"));
 
 export const protectedRoutes: RouteObject[] = [
   {
     path: "/auth/callback",
-    element: (
+    element: withSuspense(
       <AuthGuard>
         <AuthCallback />
       </AuthGuard>
@@ -38,49 +60,73 @@ export const protectedRoutes: RouteObject[] = [
   },
 
   {
-    path: `${ENV.URL_USER}`,
+    path: ENV.URL_USER,
     element: (
       <AuthGuard>
         <UserLayout />
       </AuthGuard>
     ),
     children: [
-      { index: true, element: <UserDashboard /> },
-      { path: "dashboard", element: <UserDashboard /> },
-      { path: "scan", element: <ScanPage /> },
-      { path: "history", element: <DiagnosisHistoryPage /> },
-      { path: "history/:id", element: <DiagnosisDetailPage /> },
-      { path: "forums", element: <DashboardForums /> },
-      { path: "forums/:id", element: <ForumDetailPage /> },
-      { path: "ecocoin", element: <EcoCoints /> },
-      { path: "profile", element: <ProfilePage /> },
-      { path: "leaderboard", element: <Leaderboard /> },
-      { path: "ecocoin/donation/:id", element: <DonationDetailPage /> },
+      { index: true, element: withSuspense(<UserDashboard />) },
+      { path: "dashboard", element: withSuspense(<UserDashboard />) },
+      { path: "scan", element: withSuspense(<ScanPage />) },
+      { path: "history", element: withSuspense(<DiagnosisHistoryPage />) },
+      {
+        path: "history/:id",
+        element: withSuspense(<DiagnosisDetailPage />),
+      },
+      { path: "forums", element: withSuspense(<DashboardForums />) },
+      {
+        path: "forums/:id",
+        element: withSuspense(<ForumDetailPage />),
+      },
+      { path: "ecocoin", element: withSuspense(<EcoCoints />) },
+      {
+        path: "ecocoin/donation/:id",
+        element: withSuspense(<DonationDetailPage />),
+      },
+      { path: "profile", element: withSuspense(<ProfilePage />) },
+      { path: "leaderboard", element: withSuspense(<Leaderboard />) },
     ],
   },
 
   {
-    path: `${ENV.URL_ADMIN}`,
+    path: ENV.URL_ADMIN,
     element: (
       <AuthGuard>
         <AdminLayout />
       </AuthGuard>
     ),
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: "dashboard", element: <AdminDashboard /> },
-      { path: "categories", element: <CategoryPage /> },
-      { path: "leaderboard", element: <LeaderboardPage /> },
-      { path: "community", element: <LeaderboardPage /> },
-      { path: "users-all", element: <UsersPage /> },
-      { path: "admin-all", element: <UsersAdmin /> },
-      { path: "profile", element: <ProfilePage /> },
-      { path: "forum-dashboard", element: <ForumDashboard /> },
-      { path: "guides", element: <GuidesPage /> },
-      { path: "guides/:id/:title", element: <GuideDetailPage /> },
-      { path: "Exchange-Hub/vouchers", element: <VouchersPage /> },
-      { path: "Exchange-Hub/merchindase", element: <MerchandisePage /> },
-      { path: "Exchange-Hub/donations", element: <DonationPage /> },
+      { index: true, element: withSuspense(<AdminDashboard />) },
+      { path: "dashboard", element: withSuspense(<AdminDashboard />) },
+      { path: "categories", element: withSuspense(<CategoryPage />) },
+      { path: "leaderboard", element: withSuspense(<LeaderboardPage />) },
+      { path: "community", element: withSuspense(<LeaderboardPage />) },
+      { path: "users-all", element: withSuspense(<UsersPage />) },
+      { path: "admin-all", element: withSuspense(<UsersAdmin />) },
+      { path: "profile", element: withSuspense(<ProfilePage />) },
+      {
+        path: "forum-dashboard",
+        element: withSuspense(<ForumDashboard />),
+      },
+      { path: "guides", element: withSuspense(<GuidesPage />) },
+      {
+        path: "guides/:id/:title",
+        element: withSuspense(<GuideDetailPage />),
+      },
+      {
+        path: "Exchange-Hub/vouchers",
+        element: withSuspense(<VouchersPage />),
+      },
+      {
+        path: "Exchange-Hub/merchindase",
+        element: withSuspense(<MerchandisePage />),
+      },
+      {
+        path: "Exchange-Hub/donations",
+        element: withSuspense(<DonationPage />),
+      },
     ],
   },
 ];

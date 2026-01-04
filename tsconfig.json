@@ -9,9 +9,10 @@
     }
   ],
   "compilerOptions": {
-    // "baseUrl": ".",
+    "types": ["react", "react-dom"],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "ignoreDeprecations": "all"
   }
 }
